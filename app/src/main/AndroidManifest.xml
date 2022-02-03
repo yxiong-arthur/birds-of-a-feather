@@ -3,10 +3,13 @@
     package="com.swift.birdsofafeather">
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
-    <!--uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/-->
-    <!--uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/-->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="true" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -14,6 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Birdsofafeather">
+        <activity
+            android:name=".PictureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NameActivity"
+            android:exported="false" />
         <activity
             android:name=".BluetoothCheckActivity"
             android:exported="false" />
@@ -27,8 +36,5 @@
             </intent-filter>
         </activity>
     </application>
-
-    <uses-feature android:name="android.hardware.bluetooth"
-                    android:required="true" />
 
 </manifest>
