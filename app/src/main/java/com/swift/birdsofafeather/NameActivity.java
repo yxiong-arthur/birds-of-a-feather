@@ -40,6 +40,20 @@ public class NameActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    // unrequired method here for reference
+//    public void loadProfile(){
+//        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+//
+//        String name = preferences.getString("name", "Name");
+//        String status = preferences.getString("status", "Status");
+//
+//        TextView nameTextView = (TextView) findViewById(R.id.name_textview);
+//        TextView statusTextView = (TextView) findViewById(R.id.status_textview);
+//
+//        nameTextView.setText(name);
+//        statusTextView.setText(status);
+//    }
+
     // adapted from: https://gist.github.com/ohjongin/7986386
     @SuppressLint("Range")
     public String getUserDisplayName() {
