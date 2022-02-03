@@ -22,7 +22,7 @@
         android:id="@+id/submit_name_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onSubmitClicked"
+        android:onClick="onConfirmClicked"
         android:text="Confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

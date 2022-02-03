@@ -23,7 +23,7 @@ public class NameActivity extends AppCompatActivity {
         if(!Utils.isEmpty(firstName)) firstNameTextView.setText(firstName);
     }
 
-    protected void onSubmitClicked(View view){
+    protected void onConfirmClicked(View view){
         saveProfile();
         Intent pictureIntent = new Intent(this, PictureActivity.class);
         startActivity(pictureIntent);
