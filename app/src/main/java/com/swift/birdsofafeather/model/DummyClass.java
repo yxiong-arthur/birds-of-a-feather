@@ -8,9 +8,9 @@ public class DummyClass implements IClass{
 
     public DummyClass(int year, String quarter, String subject, String courseNumber){
         this.year = year;
-        this.quarter = quarter;
-        this.subject = subject;
-        this.courseNumber = courseNumber;
+        this.quarter = quarter.toLowerCase();
+        this.subject = subject.toLowerCase();
+        this.courseNumber = courseNumber.toLowerCase();
     }
 
     @Override
@@ -31,5 +31,26 @@ public class DummyClass implements IClass{
     @Override
     public String getCourseNumber() {
         return this.courseNumber;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        DummyClass other = (DummyClass) o;
+
+        return this.year == other.year &&
+                this.quarter.equals(other.quarter) &&
+                this.subject.equals(other.subject) &&
+                this.courseNumber.equals(other.courseNumber);
+    }
+
+    @Override
+    public int hashCode(){
+        String toHash = Integer.toString(year) + quarter + subject + courseNumber;
+        return toHash.hashCode();
     }
 }
