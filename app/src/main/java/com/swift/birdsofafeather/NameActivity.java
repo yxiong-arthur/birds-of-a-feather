@@ -25,8 +25,9 @@ public class NameActivity extends AppCompatActivity {
 
     protected void onConfirmClicked(View view){
         saveProfile();
-        Intent pictureIntent = new Intent(this, PictureActivity.class);
-        startActivity(pictureIntent);
+        // for dev branch to next acitivty
+        // Intent pictureIntent = new Intent(this, PictureActivity.class);
+        // startActivity(pictureIntent);
     }
 
     public void saveProfile(){
