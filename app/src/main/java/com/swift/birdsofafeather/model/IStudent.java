@@ -8,4 +8,5 @@ public interface IStudent {
     String getName();
     Image getPicture();
     Set<IClass> getClasses();
+    boolean addClass(IClass classToAdd);
 }
