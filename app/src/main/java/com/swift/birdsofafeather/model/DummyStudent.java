@@ -29,4 +29,11 @@ public class DummyStudent implements IStudent {
     public Set<IClass> getClasses() {
         return this.classes;
     }
+
+    @Override
+    public boolean addClass(IClass classToAdd){
+        if(classes.contains(classToAdd)) return false;
+        classes.add(classToAdd);
+        return true;
+    }
 }
