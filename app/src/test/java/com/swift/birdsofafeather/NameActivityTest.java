@@ -1,11 +1,19 @@
 package com.swift.birdsofafeather;
+import android.content.Context;
+import android.content.SharedPreferences;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+
 
 import static org.junit.Assert.*;
 
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,25 +23,46 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import static org.mockito.Mockito.*;
+import org.mockito.MockedStatic;
 
 @RunWith(AndroidJUnit4.class)
-public class ExampleUnitTest {
+public class NameActivityTest {
     @Rule
     public ActivityScenarioRule<NameActivity> scenarioRule = new ActivityScenarioRule<>(NameActivity.class);
 
     @Test
-    public void test_empty_name() {
+    public void test_save_profile() {
         ActivityScenario<NameActivity> scenario = scenarioRule.getScenario();
         scenario.moveToState(Lifecycle.State.CREATED);
-
         scenario.onActivity(activity -> {
+            TextView firstNameTextView = (TextView) activity.findViewById(R.id.first_name_textview);
+            firstNameTextView.setText("Eugene");
+            Button confirmButton = activity.findViewById(R.id.submit_name_button);
+            confirmButton.performClick();
 
-            assertFalse(activity.hasResult());
+            SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
+            assertEquals("Eugene", preferences.getString("first_name", null));
         });
+    }
 
-        assertEquals(4, 2 + 2);
+    @Test
+    public void test_save_profile_empty_string() {
+        ActivityScenario<NameActivity> scenario = scenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.onActivity(activity -> {
+            TextView firstNameTextView = (TextView) activity.findViewById(R.id.first_name_textview);
+            firstNameTextView.setText("");
+            Button confirmButton = activity.findViewById(R.id.submit_name_button);
+            confirmButton.performClick();
+
+            SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
+            assertNull(preferences.getString("first_name", null));
+        });
     }
 }
+
+
 
 /*
 public class ExampleRobolectricTest {
