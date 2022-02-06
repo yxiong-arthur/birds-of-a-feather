@@ -24,6 +24,13 @@ public class NameActivity extends AppCompatActivity {
     }
 
     protected void onConfirmClicked(View view){
+        TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
+        String enteredName = firstNameTextView.getText().toString();
+        if(Utils.isEmpty(enteredName)) {
+           Utils.showAlert(this, "Name can't be empty");
+           return;
+        }
+
         saveProfile();
         // for dev branch to next acitivty
         // Intent pictureIntent = new Intent(this, PictureActivity.class);
@@ -68,11 +75,11 @@ public class NameActivity extends AppCompatActivity {
 
         // Retrieves the profile from the Contacts Provider
         Cursor c = this.getContentResolver().query(
-                ContactsContract.Profile.CONTENT_URI,
-                projections,
-                null,
-                null,
-                null
+                        ContactsContract.Profile.CONTENT_URI,
+                        projections,
+                        null,
+                        null,
+                        null
         );
 
         String name = "";
@@ -83,7 +90,7 @@ public class NameActivity extends AppCompatActivity {
             do {
                 int is_user_profile = c.getInt(c.getColumnIndex(ContactsContract.Profile.IS_USER_PROFILE));
                 if (count == 1 || (count > 1 && is_user_profile == 1)) {
-                    name = c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME));
+                    name = c.getString(c.getColumnIndex(ContactsContract.Profile.DISPLAY_NAME_PRIMARY));
                     break;
                 }
             } while (c.moveToNext());

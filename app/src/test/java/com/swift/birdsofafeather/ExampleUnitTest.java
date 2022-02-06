@@ -18,8 +18,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ExampleUnitTest {
+    @Rule
+    public ActivityScenarioRule<NameActivity> scenarioRule = new ActivityScenarioRule<>(NameActivity.class);
+
     @Test
-    public void addition_isCorrect() {
+    public void test_empty_name() {
+        ActivityScenario<NameActivity> scenario = scenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
+
+        scenario.onActivity(activity -> {
+
+            assertFalse(activity.hasResult());
+        });
+
         assertEquals(4, 2 + 2);
     }
 }
