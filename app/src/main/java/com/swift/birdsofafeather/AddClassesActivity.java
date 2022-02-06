@@ -74,10 +74,10 @@ public class AddClassesActivity extends AppCompatActivity {
     protected void initializeDatabase(){
         this.db = AppDatabase.singleton(this);
 
-        //TODO: Get name from shared preferences
-        String temp = "temp";
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String name = preferences.getString("first_name", "");
 
-        Student currentStudent = new Student(this.studentId, temp);
+        Student currentStudent = new Student(this.studentId, name);
         db.studentDao().insert(currentStudent);
     }
 
