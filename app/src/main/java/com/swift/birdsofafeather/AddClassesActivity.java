@@ -22,6 +22,8 @@ public class AddClassesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_classes);
 
+        // test works if spinners are removed
+        // might need custom spinner item layout https://stackoverflow.com/questions/16694786/how-to-customize-a-spinner-in-android
         Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
         ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
                 R.array.years_array, android.R.layout.simple_spinner_item);
