@@ -13,9 +13,11 @@
     </integer-array>
 
     <string-array name="quarters_array">
-        <item>Fall Quarter</item>
-        <item>Winter Quarter</item>
-        <item>Spring Quarter</item>
-        <item>Summer Quarter</item>
+        <item>FA</item>
+        <item>WI</item>
+        <item>SP</item>
+        <item>SS1</item>
+        <item>SS2</item>
+        <item>SSS</item>
     </string-array>
 </resources>

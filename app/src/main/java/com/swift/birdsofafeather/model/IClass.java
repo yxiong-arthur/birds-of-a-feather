@@ -3,6 +3,8 @@ package com.swift.birdsofafeather.model;
 import com.swift.birdsofafeather.model.db.Class;
 
 public abstract class IClass {
+    private int classId;
+    private int studentId;
     private int year;
     private String quarter;
     private String subject;

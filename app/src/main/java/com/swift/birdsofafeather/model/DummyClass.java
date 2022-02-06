@@ -1,14 +1,16 @@
 package com.swift.birdsofafeather.model;
 
 public class DummyClass extends IClass{
-    private final int id;
+    private final int classId;
+    private final int studentId;
     private final int year;
     private final String quarter;
     private final String subject;
     private final String courseNumber;
 
-    public DummyClass(int id, int year, String quarter, String subject, String courseNumber){
-        this.id = id;
+    public DummyClass(int classId, int studentId, int year, String quarter, String subject, String courseNumber){
+        this.classId = classId;
+        this.studentId = studentId;
         this.year = year;
         this.quarter = quarter.toLowerCase();
         this.subject = subject.toLowerCase();
@@ -16,7 +18,7 @@ public class DummyClass extends IClass{
     }
 
     @Override
-    public int getId() { return this.id; }
+    public int getId() { return this.classId; }
 
     @Override
     public int getYear() {

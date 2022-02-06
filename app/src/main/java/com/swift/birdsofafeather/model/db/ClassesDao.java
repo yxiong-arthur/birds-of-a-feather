@@ -20,10 +20,13 @@ public interface ClassesDao {
     List<IClass> getForStudent(int studentId);
 
     @Query("SELECT * FROM classes WHERE id=:id")
-    Class getClass(int id);
+    IClass getClass(int id);
 
     @Query("SELECT COUNT(*) FROM classes")
     int count();
+
+    @Query("SELECT COUNT(*) FROM classes WHERE year=:year AND quarter=:quarter AND subject=:subject AND course_number=:courseNumber")
+    int checkExist(int year, String quarter, String subject, String courseNumber);
 
     @Insert
     void insert(Class toInsert);

@@ -17,7 +17,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-public class ExampleUnitTest {
+public class AddClassUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
