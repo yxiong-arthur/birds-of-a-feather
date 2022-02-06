@@ -22,17 +22,19 @@ public class AddClassesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_classes);
 
-        // test works if spinners are removed
-        // might need custom spinner item layout https://stackoverflow.com/questions/16694786/how-to-customize-a-spinner-in-android
+        String[] years = {"2022", "2021", "2020", "2019", "2018", "2017", "2016"};
+        String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
+
+        // TODO: find out why commented out ArrayAdapter creation does not work
         Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
-        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
-                R.array.years_array, android.R.layout.simple_spinner_item);
+        //ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this, R.array.years_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
         Spinner quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
-        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
-                R.array.quarters_array, android.R.layout.simple_spinner_item);
+        //ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this, R.array.quarters_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> quarterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, quarters);
         quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quarterSpinner.setAdapter(quarterAdapter);
 
