@@ -5,15 +5,20 @@ import android.media.Image;
 import java.util.Set;
 
 public class DummyStudent implements IStudent {
+    private final int id;
     private final String name;
     private final Image picture;
     private final Set<IClass> classes;
 
-    public DummyStudent(String name, Image picture, Set<IClass> classes){
+    public DummyStudent(int id, String name, Image picture, Set<IClass> classes){
+        this.id = id;
         this.name = name;
         this.picture = picture;
         this.classes = classes;
     }
+
+    @Override
+    public int getId() { return this.id; }
 
     @Override
     public String getName() {
