@@ -16,11 +16,23 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.swift.birdsofafeather.model.db.AppDatabase;
+
 @RunWith(AndroidJUnit4.class)
 public class AddClassUnitTest {
+    @Rule
+    public ActivityScenarioRule<AddClassesActivity> scenarioRule = new ActivityScenarioRule<>(AddClassesActivity.class);
+
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void test_if_student_added() {
+        ActivityScenario<AddClassesActivity> scenario = scenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
+
+        scenario.onActivity(activity -> {
+            AppDatabase db = AppDatabase.singleton(activity.getApplicationContext());
+            int count = db.studentDao().count();
+            assertEquals(1, count);
+        });
     }
 }
 

@@ -4,11 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.swift.birdsofafeather.model.DummyClass;
-import com.swift.birdsofafeather.model.IClass;
-
 @Entity(tableName = "classes")
-public class Class extends IClass {
+public class Class {
     @PrimaryKey
     @ColumnInfo(name = "id")
     public int classId;
@@ -37,28 +34,42 @@ public class Class extends IClass {
         this.courseNumber = courseNumber.toLowerCase();
     }
 
-    @Override
     public int getId() {
         return this.classId;
     }
 
-    @Override
     public int getYear() {
         return this.year;
     }
 
-    @Override
     public String getQuarter() {
         return this.quarter;
     }
 
-    @Override
     public String getSubject() {
         return this.subject;
     }
 
-    @Override
     public String getCourseNumber() {
         return this.courseNumber;
+    }
+
+    public boolean equals(Object o){
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Class other = (Class) o;
+
+        return this.year == other.year &&
+                this.quarter.equals(other.quarter) &&
+                this.subject.equals(other.subject) &&
+                this.courseNumber.equals(other.courseNumber);
+    }
+
+    public int hashCode(){
+        String toHash = Integer.toString(year) + quarter + subject + courseNumber;
+        return toHash.hashCode();
     }
 }

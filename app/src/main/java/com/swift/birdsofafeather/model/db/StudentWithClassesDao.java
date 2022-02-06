@@ -12,6 +12,7 @@ public interface StudentWithClassesDao {
     @Query("SELECT * FROM students")
     List<StudentWithClasses> getAllStudents();
 
+    @Transaction
     @Query("SELECT * FROM students WHERE id=:id")
     StudentWithClasses getStudent(int id);
 

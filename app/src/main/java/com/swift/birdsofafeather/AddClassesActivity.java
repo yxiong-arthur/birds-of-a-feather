@@ -5,13 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.swift.birdsofafeather.model.DummyClass;
-import com.swift.birdsofafeather.model.IClass;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
@@ -25,13 +22,13 @@ public class AddClassesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_classes);
 
-        Spinner yearSpinner = findViewById(R.id.year_select);
+        Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
         ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
                 R.array.years_array, android.R.layout.simple_spinner_item);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
-        Spinner quarterSpinner = findViewById(R.id.quarter_select);
+        Spinner quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
         ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
                 R.array.quarters_array, android.R.layout.simple_spinner_item);
         quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -72,7 +69,7 @@ public class AddClassesActivity extends AppCompatActivity {
     }
 
     protected void initializeDatabase(){
-        this.db = AppDatabase.singleton(this);
+        this.db = AppDatabase.singleton(this.getApplicationContext());
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         String name = preferences.getString("first_name", "");

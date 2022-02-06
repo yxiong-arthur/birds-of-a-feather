@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.swift.birdsofafeather.model.IClass;
+import com.swift.birdsofafeather.model.db.Class;
 
 import java.util.List;
 
@@ -13,14 +13,14 @@ import java.util.List;
 public interface ClassesDao {
     @Transaction
     @Query("SELECT * FROM classes")
-    List<IClass> getAllClasses(int studentId);
+    List<Class> getAllClasses();
 
     @Transaction
     @Query("SELECT * FROM classes WHERE student_id=:studentId")
-    List<IClass> getForStudent(int studentId);
+    List<Class> getForStudent(int studentId);
 
     @Query("SELECT * FROM classes WHERE id=:id")
-    IClass getClass(int id);
+    Class getClass(int id);
 
     @Query("SELECT COUNT(*) FROM classes")
     int count();
