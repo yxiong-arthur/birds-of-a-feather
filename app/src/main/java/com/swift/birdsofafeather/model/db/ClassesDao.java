@@ -25,8 +25,9 @@ public interface ClassesDao {
     @Query("SELECT COUNT(*) FROM classes")
     int count();
 
-    @Query("SELECT COUNT(*) FROM classes WHERE year=:year AND quarter=:quarter AND subject=:subject AND course_number=:courseNumber")
-    int checkExist(int year, String quarter, String subject, String courseNumber);
+    @Query("SELECT EXISTS(SELECT * FROM classes WHERE year=:year AND quarter=:quarter " +
+            "AND subject=:subject AND course_number=:courseNumber)")
+    boolean checkExist(int year, String quarter, String subject, String courseNumber);
 
     @Insert
     void insert(Class toInsert);
