@@ -19,7 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 
 @RunWith(AndroidJUnit4.class)
-public class AddClassUnitTest {
+public class AddClassIntegrationTest {
     @Rule
     public ActivityScenarioRule<AddClassesActivity> scenarioRule = new ActivityScenarioRule<>(AddClassesActivity.class);
 
