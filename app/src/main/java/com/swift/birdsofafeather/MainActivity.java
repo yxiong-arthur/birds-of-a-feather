@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLaunchTestsClicked(View view) {
-        Intent intent = new Intent(this, AddClassesActivity.class);
+        Intent intent = new Intent(this, NameActivity.class);
         startActivity(intent);
     }
 }
