@@ -18,7 +18,19 @@ public class Student {
         this.name = name;
     }
 
-    public String getName() {
+    public boolean equals(Object o){
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Student other = (Student) o;
+
+        return this.studentId == other.studentId &&
+                this.name.equals(other.name);
+     }
+    
+      public String getName() {
         return name;
-    }
+      }
 }
