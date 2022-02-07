@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 
 public class MainActivity extends AppCompatActivity {
-    TextView answerbox;
-    AppDatabase db;
+    private TextView answerbox;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
