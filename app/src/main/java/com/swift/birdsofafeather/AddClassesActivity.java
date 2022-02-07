@@ -23,12 +23,14 @@ public class AddClassesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_classes);
 
         Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
-        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this, R.array.years_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
+                R.array.years_array, android.R.layout.simple_spinner_item);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
         Spinner quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
-        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this, R.array.quarters_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
+                R.array.quarters_array, android.R.layout.simple_spinner_item);
         quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quarterSpinner.setAdapter(quarterAdapter);
 
