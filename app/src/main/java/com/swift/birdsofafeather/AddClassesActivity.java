@@ -73,8 +73,7 @@ public class AddClassesActivity extends AppCompatActivity {
 
         if(db.studentDao().count() > 0) return;
 
-        SharedPreferences preferences = getSharedPreferences(
-                getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
         String name = preferences.getString("first_name", "");
 
         Student currentStudent = new Student(this.studentId, name);

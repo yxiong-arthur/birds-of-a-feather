@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGetNameClicked(View view) {
-        SharedPreferences preferences = getSharedPreferences(
-                getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
         String name = preferences.getString("first_name", "err not found");
         String answer = "Name retrieved is: \"" + name + "\"";
         answerbox.setText(answer);

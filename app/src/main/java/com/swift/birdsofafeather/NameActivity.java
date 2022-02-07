@@ -40,8 +40,7 @@ public class NameActivity extends AppCompatActivity {
     }
 
     protected void saveName(String enteredName){
-        SharedPreferences preferences = getSharedPreferences(
-                getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putString("first_name", enteredName);
