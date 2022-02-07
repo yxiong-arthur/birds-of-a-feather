@@ -14,8 +14,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void onLaunchClassesClicked(View view) {
-        Intent intent = new Intent(this, SearchStudentWithSimilarClasses.class);
+    public void onLaunchTestsClicked(View view) {
+        Intent intent = new Intent(this, AddClassesActivity.class);
         startActivity(intent);
     }
 }
