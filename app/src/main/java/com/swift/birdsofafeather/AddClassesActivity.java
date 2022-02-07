@@ -15,7 +15,7 @@ import com.swift.birdsofafeather.model.db.Student;
 
 public class AddClassesActivity extends AppCompatActivity {
     private AppDatabase db;
-    private final int studentId = 1;
+    private int studentId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +38,8 @@ public class AddClassesActivity extends AppCompatActivity {
     }
 
     public void onEnterClicked(View view){
-        Spinner yearSpinner = findViewById(R.id.year_select);
-        Spinner quarterSpinner = findViewById(R.id.quarter_select);
+        Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
+        Spinner quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
         TextView subjectTextView = (TextView) findViewById(R.id.subject_textview);
         TextView courseNumberTextView = (TextView) findViewById(R.id.courseNumber_textview);
 
