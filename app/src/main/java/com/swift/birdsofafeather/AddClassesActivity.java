@@ -71,7 +71,8 @@ public class AddClassesActivity extends AppCompatActivity {
     protected void initializeDatabase(){
         this.db = AppDatabase.singleton(this.getApplicationContext());
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(
+                getString(R.string.preference_file_key), MODE_PRIVATE);
         String name = preferences.getString("first_name", "");
 
         Student currentStudent = new Student(this.studentId, name);

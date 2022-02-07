@@ -26,41 +26,27 @@ public class NameActivity extends AppCompatActivity {
     public void onConfirmClicked(View view){
         TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
         String enteredName = firstNameTextView.getText().toString();
+
         if(Utils.isEmpty(enteredName)) {
            Utils.showAlert(this, "Name can't be empty");
            return;
         }
 
-        saveProfile();
-        // for dev branch to next acitivty
+        saveName(enteredName);
+
+        // for dev branch to next activity
         // Intent pictureIntent = new Intent(this, PictureActivity.class);
         // startActivity(pictureIntent);
     }
 
-    public void saveProfile(){
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+    public void saveName(String enteredName){
+        SharedPreferences preferences = getSharedPreferences(
+                getString(R.string.preference_file_key), MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
-
-        editor.putString("first_name", firstNameTextView.getText().toString());
-
+        editor.putString("first_name", enteredName);
         editor.apply();
     }
-
-    // unrequired method here for reference
-//    public void loadProfile(){
-//        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-//
-//        String name = preferences.getString("name", "Name");
-//        String status = preferences.getString("status", "Status");
-//
-//        TextView nameTextView = (TextView) findViewById(R.id.name_textview);
-//        TextView statusTextView = (TextView) findViewById(R.id.status_textview);
-//
-//        nameTextView.setText(name);
-//        statusTextView.setText(status);
-//    }
 
     // adapted from: https://gist.github.com/ohjongin/7986386
     @SuppressLint("Range")
