@@ -35,10 +35,6 @@ public class StudentWithClasses {
     }
 
     public Set<Class> getClasses() {
-        return new HashSet<Class>(this.classes);
-    }
-
-    public boolean addClass(Class classToAdd) {
-        return false;
+        return new HashSet<>(this.classes);
     }
 }

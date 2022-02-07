@@ -18,7 +18,7 @@ public class NameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
 
-        String firstName = this.getUserDisplayName(this);
+        String firstName = getUserDisplayName(this);
         TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
         if(!Utils.isEmpty(firstName)) firstNameTextView.setText(firstName);
     }
@@ -34,12 +34,12 @@ public class NameActivity extends AppCompatActivity {
 
         saveName(enteredName);
 
-        // for dev branch to next activity
+        // TODO: for dev branch to next activity
         // Intent pictureIntent = new Intent(this, PictureActivity.class);
         // startActivity(pictureIntent);
     }
 
-    public void saveName(String enteredName){
+    protected void saveName(String enteredName){
         SharedPreferences preferences = getSharedPreferences(
                 getString(R.string.preference_file_key), MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -50,7 +50,7 @@ public class NameActivity extends AppCompatActivity {
 
     // adapted from: https://gist.github.com/ohjongin/7986386
     @SuppressLint("Range")
-    public static String getUserDisplayName(Context context) {
+    protected String getUserDisplayName(Context context) {
         if (!Utils.hasPermission(context, "android.permission.READ_PROFILE")) return "";
 
         // Sets the columns to retrieve for the user profile

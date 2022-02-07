@@ -82,9 +82,8 @@ public class AddClassesActivity extends AppCompatActivity {
     }
 
     protected boolean validateInput(String yearString, String quarter, String subject, String courseNumber){
-        int year = 0;
         try {
-            year = Integer.parseInt(yearString);
+            Integer.parseInt(yearString);
         } catch(Exception e) {
             Utils.showAlert(this, "Invalid year");
             return false;

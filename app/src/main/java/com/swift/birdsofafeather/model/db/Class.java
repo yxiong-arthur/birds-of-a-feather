@@ -69,7 +69,7 @@ public class Class {
     }
 
     public int hashCode(){
-        String toHash = Integer.toString(year) + quarter + subject + courseNumber;
+        String toHash = year + quarter + subject + courseNumber;
         return toHash.hashCode();
     }
 }

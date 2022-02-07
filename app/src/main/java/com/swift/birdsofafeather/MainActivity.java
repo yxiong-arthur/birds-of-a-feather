@@ -52,15 +52,16 @@ public class MainActivity extends AppCompatActivity {
     public void onDatabaseSizeClicked(View view) {
         int numClasses = db.classesDao().count();
         int numStudents = db.studentDao().count();
-        answerbox.setText("# of Classes in db: " + Integer.toString(numClasses) + "\n" +
-                            "# of Students in db: " + Integer.toString(numStudents));
+        String answer = "# of Classes in db: " + numClasses + "\n# of Students in db: " + numStudents;
+        answerbox.setText(answer);
     }
 
     public void onGetNameClicked(View view) {
         SharedPreferences preferences = getSharedPreferences(
                 getString(R.string.preference_file_key), MODE_PRIVATE);
         String name = preferences.getString("first_name", "err not found");
-        answerbox.setText("Name retrieved is: \"" + name + "\"");
+        String answer = "Name retrieved is: \"" + name + "\"";
+        answerbox.setText(answer);
     }
 }
 

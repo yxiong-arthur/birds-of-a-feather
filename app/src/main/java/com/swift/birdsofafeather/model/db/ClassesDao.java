@@ -5,8 +5,6 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import com.swift.birdsofafeather.model.db.Class;
-
 import java.util.List;
 
 @Dao
