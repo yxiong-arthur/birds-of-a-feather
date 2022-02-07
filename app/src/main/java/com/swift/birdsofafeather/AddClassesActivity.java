@@ -37,21 +37,21 @@ public class AddClassesActivity extends AppCompatActivity {
         initializeDatabase();
     }
 
-    protected void onEnterClicked(View view){
+    public void onEnterClicked(View view){
         Spinner yearSpinner = findViewById(R.id.year_select);
         Spinner quarterSpinner = findViewById(R.id.quarter_select);
         TextView subjectTextView = (TextView) findViewById(R.id.subject_textview);
         TextView courseNumberTextView = (TextView) findViewById(R.id.courseNumber_textview);
 
         String yearString = yearSpinner.getSelectedItem().toString();
-        String quarter = quarterSpinner.getSelectedItem().toString();
-        String subject = subjectTextView.getText().toString();
-        String courseNumber = courseNumberTextView.getText().toString();
+        String quarter = quarterSpinner.getSelectedItem().toString().toLowerCase();
+        String subject = subjectTextView.getText().toString().toLowerCase();
+        String courseNumber = courseNumberTextView.getText().toString().toLowerCase();
 
         if(validateInput(yearString, quarter, subject, courseNumber)){
             int year = Integer.parseInt(yearString);
 
-            if(db.classesDao().checkExist(year, quarter, subject, courseNumber) > 0){
+            if(db.classesDao().checkExist(year, quarter, subject, courseNumber)){
                 Utils.showAlert(this, "No duplicates allowed");
                 return;
             }
@@ -63,13 +63,15 @@ public class AddClassesActivity extends AppCompatActivity {
         }
     }
 
-    protected void onDoneClicked(View view){
+    public void onDoneClicked(View view){
         // go to next activity
         // TODO: dev branch
     }
 
     protected void initializeDatabase(){
-        this.db = AppDatabase.singleton(this.getApplicationContext());
+        db = AppDatabase.singleton(this.getApplicationContext());
+
+        if(db.studentDao().count() > 0) return;
 
         SharedPreferences preferences = getSharedPreferences(
                 getString(R.string.preference_file_key), MODE_PRIVATE);
