@@ -36,7 +36,7 @@ public class PhotoUploadSuccess {
     @Test
     public void photoUploadSuccess() {
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.button31), withText("uploadPhotoPage"),
+                allOf(withId(R.id.savePhotoButton), withText("uploadPhotoPage"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

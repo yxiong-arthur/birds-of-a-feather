@@ -34,7 +34,7 @@ public class EmptyUrl {
     @Test
     public void emptyUrl() {
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.button31), withText("uploadPhotoPage"),
+                allOf(withId(R.id.savePhotoButton), withText("uploadPhotoPage"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
