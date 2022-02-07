@@ -68,6 +68,7 @@ public class PhotoUpload extends AppCompatActivity {
         });
     }
 
+
     private class LoadImage extends AsyncTask<String,Void, Bitmap> {
         ImageView imageView;
         public LoadImage(ImageView imageView){

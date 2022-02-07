@@ -19,6 +19,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, PhotoUpload.class);
         startActivity(intent);
     }
-
-
 }
