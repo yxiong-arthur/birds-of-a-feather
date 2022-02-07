@@ -19,6 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Birdsofafeather">
         <activity
+            android:name=".StudentProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchStudentWithSimilarClasses"
+            android:exported="false" />
+        <activity
             android:name=".AddClassesActivity"
             android:exported="false" />
         <activity

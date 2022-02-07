@@ -28,5 +28,8 @@ public class Student {
 
         return this.studentId == other.studentId &&
                 this.name.equals(other.name);
+    
+      public String getName() {
+        return name;
     }
 }

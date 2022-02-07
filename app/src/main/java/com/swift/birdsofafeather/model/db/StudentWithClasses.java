@@ -22,6 +22,10 @@ public class StudentWithClasses {
         return this.student.studentId;
     }
 
+    public Student getStudent() {
+        return this.student;
+    }
+
     public String getName() {
         return this.student.name;
     }
