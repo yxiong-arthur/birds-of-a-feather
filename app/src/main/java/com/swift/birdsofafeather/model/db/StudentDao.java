@@ -21,4 +21,7 @@ public interface StudentDao {
 
     @Insert
     void insert(Student student);
+
+    @Query("DELETE FROM students")
+    void nukeTable();
 }

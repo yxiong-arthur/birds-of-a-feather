@@ -30,4 +30,7 @@ public interface ClassesDao {
 
     @Insert
     void insert(Class toInsert);
+
+    @Query("DELETE FROM classes")
+    void nukeTable();
 }
