@@ -1,5 +1,6 @@
 package com.swift.birdsofafeather.model.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Entity(tableName = "students")
 public class Student {
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "id")
     public UUID studentId;
 
