@@ -2,6 +2,7 @@ package com.swift.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -102,5 +103,10 @@ public class AddClassesActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void onGoBackHome(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
