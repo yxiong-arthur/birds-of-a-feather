@@ -38,8 +38,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_with_similar_classes);
 
-
-
         this.future = backgroundThreadExecutor.submit(() -> {
             db = AppDatabase.singleton(getApplicationContext());
 
