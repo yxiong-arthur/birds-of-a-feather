@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
@@ -47,5 +48,10 @@ public class StudentProfileActivity extends AppCompatActivity {
         mateClasses.retainAll(myClasses);
 
         return mateClasses;
+    }
+
+    public void onGoBackHome(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

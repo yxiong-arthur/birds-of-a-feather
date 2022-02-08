@@ -62,7 +62,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
-
     }
 
     private List<Student> findPriorClassmates() {
@@ -91,6 +90,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     //for milestone2's turn-off button
     public void onTurnOff(View view) {
         this.future.cancel(true);
-        finish();
+        //finish();
     }
 }
