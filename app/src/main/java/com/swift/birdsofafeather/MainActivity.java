@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLaunchPhotoClicked(View view) {
-        //Intent intent = new Intent(this, NameActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, PhotoUpload.class);
+        startActivity(intent);
     }
 
     public void onLaunchAddClassesClicked(View view) {
