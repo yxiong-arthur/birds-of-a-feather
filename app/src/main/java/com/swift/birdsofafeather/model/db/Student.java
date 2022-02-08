@@ -30,7 +30,7 @@ public class Student {
 
         Student other = (Student) o;
 
-        return this.studentId == other.studentId &&
+        return this.studentId.equals(other.studentId) &&
                 this.name.equals(other.name);
      }
 
