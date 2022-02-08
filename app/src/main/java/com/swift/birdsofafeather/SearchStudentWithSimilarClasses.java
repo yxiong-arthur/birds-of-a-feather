@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
@@ -17,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private AppDatabase db;
@@ -26,31 +30,39 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private RecyclerView studentsRecyclerView;
     private RecyclerView.LayoutManager studentsLayoutManager;
     private StudentViewAdapter studentsViewAdapter;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future future;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_with_similar_classes);
 
-        db = AppDatabase.singleton(getApplicationContext());
 
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
-        String UUIDString = preferences.getString("student_id", "");
-        studentId = UUID.fromString(UUIDString);
 
-        myself = db.studentWithClassesDao().getStudent(studentId);
-        myClasses = myself.getClasses();
+        this.future = backgroundThreadExecutor.submit(() -> {
+            db = AppDatabase.singleton(getApplicationContext());
 
-        List<Student> myClassmates = findPriorClassmates();
+            SharedPreferences preferences = Utils.getSharedPreferences(this);
+            String UUIDString = preferences.getString("student_id", "");
+            studentId = UUID.fromString(UUIDString);
 
-        // Set up the recycler view to show our database contents
-        studentsRecyclerView = findViewById(R.id.persons_view);
+            myself = db.studentWithClassesDao().getStudent(studentId);
+            myClasses = myself.getClasses();
+            List<Student> myClassmates = findPriorClassmates();
 
-        studentsLayoutManager = new LinearLayoutManager(this);
-        studentsRecyclerView.setLayoutManager(studentsLayoutManager);
+            runOnUiThread(() -> {
+                // Set up the recycler view to show our database contents
+                studentsRecyclerView = findViewById(R.id.persons_view);
 
-        studentsViewAdapter = new StudentViewAdapter(myClassmates);
-        studentsRecyclerView.setAdapter(studentsViewAdapter);
+                studentsLayoutManager = new LinearLayoutManager(this);
+                studentsRecyclerView.setLayoutManager(studentsLayoutManager);
+
+                studentsViewAdapter = new StudentViewAdapter(myClassmates);
+                studentsRecyclerView.setAdapter(studentsViewAdapter);
+            });
+        });
+
     }
 
     private List<Student> findPriorClassmates() {
@@ -74,5 +86,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         mateClasses.retainAll(myClasses);
 
         return mateClasses.size();
+    }
+
+    //for milestone2's turn-off button
+    public void onTurnOff(View view) {
+        this.future.cancel(true);
+        finish();
     }
 }
