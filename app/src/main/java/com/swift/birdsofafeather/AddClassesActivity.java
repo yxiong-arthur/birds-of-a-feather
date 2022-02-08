@@ -13,9 +13,11 @@ import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 
+import java.util.UUID;
+
 public class AddClassesActivity extends AppCompatActivity {
     private AppDatabase db;
-    private int studentId = 1;
+    private UUID studentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,9 @@ public class AddClassesActivity extends AppCompatActivity {
                 return;
             }
 
-            int newClassId = db.classesDao().count() + 1;
+            UUID newClassId = UUID.randomUUID();
 
-            Class newClass = new Class(newClassId, this.studentId, year, quarter, subject, courseNumber);
+            Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
             db.classesDao().insert(newClass);
         }
     }
@@ -73,10 +75,16 @@ public class AddClassesActivity extends AppCompatActivity {
 
         if(db.studentDao().count() > 0) return;
 
+        studentId = UUID.randomUUID();
+
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         String name = preferences.getString("first_name", "");
 
-        Student currentStudent = new Student(this.studentId, name);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("student_id", studentId.toString());
+        editor.apply();
+
+        Student currentStudent = new Student(studentId, name);
         db.studentDao().insert(currentStudent);
     }
 

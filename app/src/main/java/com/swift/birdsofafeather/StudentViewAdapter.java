@@ -57,19 +57,12 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.studentNameView.setText(student.getName());
         }
 
-
         @Override
         public void onClick(View view) {
             Context context = view.getContext();
             Intent intent = new Intent(context, StudentProfileActivity.class);
-            // intent.putExtra("stuent_name", this.student.getName());
-            // intent.putExtra("student_class", this.student.getName());
+            intent.putExtra("classmate_id", this.student.getId().toString());
             context.startActivity(intent);
-
         }
-
-
-
     }
-
 }
