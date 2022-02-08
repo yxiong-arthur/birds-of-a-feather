@@ -4,14 +4,16 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "classes")
 public class Class {
     @PrimaryKey
     @ColumnInfo(name = "id")
-    public int classId;
+    public UUID classId;
 
     @ColumnInfo(name = "student_id")
-    public int studentId;
+    public UUID studentId;
 
     @ColumnInfo(name = "year")
     public int year;
@@ -25,7 +27,7 @@ public class Class {
     @ColumnInfo(name = "course_number")
     public String courseNumber;
 
-    public Class(int classId, int studentId, int year, String quarter, String subject, String courseNumber){
+    public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber){
         this.classId = classId;
         this.studentId = studentId;
         this.year = year;
@@ -34,7 +36,7 @@ public class Class {
         this.courseNumber = courseNumber.toLowerCase();
     }
 
-    public int getId() {
+    public UUID getId() {
         return this.classId;
     }
 

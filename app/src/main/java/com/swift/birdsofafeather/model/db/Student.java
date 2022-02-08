@@ -4,16 +4,18 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "students")
 public class Student {
     @PrimaryKey
     @ColumnInfo(name = "id")
-    public int studentId;
+    public UUID studentId;
 
     @ColumnInfo(name = "name")
     public String name;
 
-    public Student (int studentId, String name){
+    public Student (UUID studentId, String name){
         this.studentId = studentId;
         this.name = name;
     }
@@ -29,8 +31,12 @@ public class Student {
         return this.studentId == other.studentId &&
                 this.name.equals(other.name);
      }
-    
-      public String getName() {
+
+    public String getName() {
         return name;
       }
+
+    public UUID getId() {
+        return studentId;
+    }
 }

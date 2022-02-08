@@ -8,6 +8,7 @@ import androidx.room.Relation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class StudentWithClasses {
     @Embedded
@@ -18,7 +19,7 @@ public class StudentWithClasses {
                 entity = Class.class)
     public List<Class> classes;
 
-    public int getId(){
+    public UUID getId(){
         return this.student.studentId;
     }
 
