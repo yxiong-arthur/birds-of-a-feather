@@ -1,9 +1,15 @@
 package com.swift.birdsofafeather;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 
 public class Utils {
     public static boolean isEmpty(String str) {
@@ -35,5 +41,11 @@ public class Utils {
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+    }
+
+    public static SharedPreferences getSharedPreferences(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(
+                context.getApplicationContext().getString(R.string.preference_file_key), MODE_PRIVATE);
+        return preferences;
     }
 }
