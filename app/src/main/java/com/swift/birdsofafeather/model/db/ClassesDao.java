@@ -6,6 +6,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import java.util.List;
+import java.util.UUID;
 
 @Dao
 public interface ClassesDao {
@@ -15,10 +16,10 @@ public interface ClassesDao {
 
     @Transaction
     @Query("SELECT * FROM classes WHERE student_id=:studentId")
-    List<Class> getForStudent(int studentId);
+    List<Class> getForStudent(UUID studentId);
 
     @Query("SELECT * FROM classes WHERE id=:id")
-    Class getClass(int id);
+    Class getClass(UUID id);
 
     @Query("SELECT COUNT(*) FROM classes")
     int count();
