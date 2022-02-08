@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class AppDatabaseUnitTest {
@@ -46,7 +47,7 @@ public class AppDatabaseUnitTest {
 
     @Test
     public void insertStudentCheckExistence() throws Exception {
-        int currStudentId = 1;
+        UUID currStudentId = UUID.randomUUID();
         Student student = new Student(currStudentId, "Test");
 
         assertEquals(0, studentDao.count());
@@ -58,14 +59,14 @@ public class AppDatabaseUnitTest {
         List<Student> allStudents = studentDao.getAllStudents();
         Student byId = studentDao.getStudent(currStudentId);
 
-        assertEquals(student, allStudents.get(currStudentId-1));
+        assertEquals(student, allStudents.get(0));
         assertEquals(student, byId);
     }
 
     @Test
     public void insertStudentInsertClassCheckExistence() throws Exception {
-        int currStudentId = 1;
-        int currClassId = 1;
+        UUID currStudentId = UUID.randomUUID();
+        UUID currClassId = UUID.randomUUID();
         Student student = new Student(currStudentId, "Test");
         studentDao.insert(student);
 
@@ -79,7 +80,7 @@ public class AppDatabaseUnitTest {
         List<Class> allClasses = classesDao.getAllClasses();
         Class byId = classesDao.getClass(currClassId);
 
-        assertEquals(class1, allClasses.get(currClassId - 1));
+        assertEquals(class1, allClasses.get(0));
         assertEquals(class1, byId);
     }
 }
