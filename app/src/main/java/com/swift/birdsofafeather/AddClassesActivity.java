@@ -76,7 +76,7 @@ public class AddClassesActivity extends AppCompatActivity {
         SharedPreferences preferences = Utils.getSharedPreferences(this);
 
         if(db.studentDao().count() > 0){
-            String UUIDString = preferences.getString("student_id)", "");
+            String UUIDString = preferences.getString("student_id", "");
             studentId = UUID.fromString(UUIDString);
             return;
         }
