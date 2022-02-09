@@ -2,6 +2,7 @@ package com.swift.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -72,12 +73,16 @@ public class AddClassesActivity extends AppCompatActivity {
 
     protected void initializeDatabase(){
         db = AppDatabase.singleton(this.getApplicationContext());
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
 
-        if(db.studentDao().count() > 0) return;
+        if(db.studentDao().count() > 0){
+            String UUIDString = preferences.getString("student_id", "");
+            studentId = UUID.fromString(UUIDString);
+            return;
+        }
 
         studentId = UUID.randomUUID();
 
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
         String name = preferences.getString("first_name", "");
 
         SharedPreferences.Editor editor = preferences.edit();
@@ -102,5 +107,10 @@ public class AddClassesActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void onGoBackHome(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }
