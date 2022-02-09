@@ -73,12 +73,16 @@ public class AddClassesActivity extends AppCompatActivity {
 
     protected void initializeDatabase(){
         db = AppDatabase.singleton(this.getApplicationContext());
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
 
-        if(db.studentDao().count() > 0) return;
+        if(db.studentDao().count() > 0){
+            String UUIDString = preferences.getString("student_id)", "");
+            studentId = UUID.fromString(UUIDString);
+            return;
+        }
 
         studentId = UUID.randomUUID();
 
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
         String name = preferences.getString("first_name", "");
 
         SharedPreferences.Editor editor = preferences.edit();
