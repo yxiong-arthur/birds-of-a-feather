@@ -52,7 +52,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
             StudentWithClasses classmate = db.studentWithClassesDao().getStudent(classmateId);
             Set<Class> similarClasses = getSimilarClasses(classmate);
-            List<Class> similarC = setToList(similarClasses);
+            List<Class> similarC = new ArrayList<Class>(similarClasses);
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -65,14 +65,6 @@ public class StudentProfileActivity extends AppCompatActivity {
                 ClassesRecyclerView.setAdapter(classesViewAdapter);
             });
         });
-    }
-
-    private List<Class> setToList(Set<Class> inputC){
-        List<Class> toReturned = new ArrayList<Class>();
-        for(Class eachC : inputC){
-            toReturned.add(eachC);
-        }
-        return toReturned;
     }
 
     private Set<Class> getSimilarClasses(StudentWithClasses classmate){
