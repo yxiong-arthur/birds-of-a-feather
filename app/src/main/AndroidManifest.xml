@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Birdsofafeather">
         <activity
+            android:name=".AddStudentActivity"
+            android:exported="false" />
+        <activity
             android:name=".StudentProfileActivity"
             android:exported="false" />
         <activity
