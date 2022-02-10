@@ -62,5 +62,11 @@ public class MainActivity extends AppCompatActivity {
         String answer = "Name retrieved is: \"" + name + "\"";
         answerbox.setText(answer);
     }
+
+    public void onBTFunctClicked(View view) {
+        Intent intent = new Intent(this, BluetoothCheckActivity.class);
+        startActivity(intent);
+    }
+
 }
 
