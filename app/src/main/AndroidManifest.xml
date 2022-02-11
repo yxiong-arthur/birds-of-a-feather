@@ -31,7 +31,7 @@
             android:name=".AddClassesActivity"
             android:exported="false" />
         <activity
-            android:name=".PictureActivity"
+            android:name=".PhotoUpload"
             android:exported="false" />
         <activity
             android:name=".NameActivity"
