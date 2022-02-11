@@ -79,7 +79,7 @@ public class PhotoUpload extends AppCompatActivity {
                 }
 
                 else {
-                    Glide.with(PhotoUpload.this).load(URLLink).apply(new RequestOptions().override(200, 200)).into(imageResult);
+                    Glide.with(PhotoUpload.this).load(URLLink).apply(new RequestOptions().centerCrop()).into(imageResult);
                 }
             }
         });
