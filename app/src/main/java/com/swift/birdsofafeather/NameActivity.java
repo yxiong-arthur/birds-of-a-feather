@@ -34,9 +34,8 @@ public class NameActivity extends AppCompatActivity {
 
         saveName(enteredName);
 
-        // TODO: for dev branch to next activity
-        // Intent pictureIntent = new Intent(this, PictureActivity.class);
-        // startActivity(pictureIntent);
+        Intent photoIntent = new Intent(this, PhotoUpload.class);
+        startActivity(photoIntent);
     }
 
     protected void saveName(String enteredName){

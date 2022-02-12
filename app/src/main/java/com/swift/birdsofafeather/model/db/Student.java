@@ -1,5 +1,7 @@
 package com.swift.birdsofafeather.model.db;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -17,9 +19,13 @@ public class Student {
     @ColumnInfo(name = "name")
     public String name;
 
-    public Student (UUID studentId, String name){
+    @ColumnInfo(name = "profile_picture")
+    public Bitmap picture;
+
+    public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
+        this.picture = picture;
     }
 
     public boolean equals(Object o){
@@ -41,4 +47,6 @@ public class Student {
     public UUID getId() {
         return studentId;
     }
+
+    public Bitmap getPicture() { return picture; }
 }

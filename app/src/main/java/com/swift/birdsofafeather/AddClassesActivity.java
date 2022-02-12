@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
@@ -63,12 +65,14 @@ public class AddClassesActivity extends AppCompatActivity {
 
             Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
             db.classesDao().insert(newClass);
+
+            Toast.makeText(getApplicationContext(), "Added new class", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void onDoneClicked(View view){
-        // go to next activity
-        // TODO: dev branch
+        Intent searchStudentIntent = new Intent(this, SearchStudentWithSimilarClasses.class);
+        startActivity(searchStudentIntent);
     }
 
     protected void initializeDatabase(){
@@ -84,12 +88,15 @@ public class AddClassesActivity extends AppCompatActivity {
         studentId = UUID.randomUUID();
 
         String name = preferences.getString("first_name", "");
+        String pictureData = preferences.getString("image_data","");
+
+        Bitmap pictureBMap = Utils.stringToBitmap(pictureData);
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("student_id", studentId.toString());
         editor.apply();
 
-        Student currentStudent = new Student(studentId, name);
+        Student currentStudent = new Student(studentId, name, pictureBMap);
         db.studentDao().insert(currentStudent);
     }
 

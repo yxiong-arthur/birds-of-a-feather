@@ -9,7 +9,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
+import android.util.Base64;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.ByteArrayOutputStream;
 
 public class Utils {
     public static int MESSAGE_READ = 0;
@@ -50,5 +59,38 @@ public class Utils {
         SharedPreferences preferences = context.getSharedPreferences(
                 context.getApplicationContext().getString(R.string.preference_file_key), MODE_PRIVATE);
         return preferences;
+    }
+
+    public static Bitmap urlToBitmap(Context context, ImageView imageResult, String URL){
+        Glide
+                .with(context)
+                .load(URL)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.logo)
+                        .override(200, 200)
+                        .centerCrop())
+                .into(imageResult);
+
+        imageResult.buildDrawingCache();
+        Bitmap bmap = imageResult.getDrawingCache();
+
+        return bmap;
+    }
+
+    public static String bitmapToString(Bitmap bmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        return encodedImage;
+    }
+
+    public static Bitmap stringToBitmap(String bmap_string){
+        byte[] b = Base64.decode(bmap_string, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+
+        return bitmap;
     }
 }

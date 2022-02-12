@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 @Database(entities = {Student.class, Class.class}, version = 2)
-@TypeConverters({UUIDConverter.class})
+@TypeConverters({UUIDConverter.class, BitmapConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase singletonInstance;
 

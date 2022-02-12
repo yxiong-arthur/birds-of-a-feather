@@ -1,5 +1,6 @@
 package com.swift.birdsofafeather.model.db;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 
 import androidx.room.Embedded;
@@ -31,8 +32,8 @@ public class StudentWithClasses {
         return this.student.name;
     }
 
-    public Image getPicture() {
-        return null;
+    public Bitmap getPicture() {
+        return this.student.picture;
     }
 
     public Set<Class> getClasses() {

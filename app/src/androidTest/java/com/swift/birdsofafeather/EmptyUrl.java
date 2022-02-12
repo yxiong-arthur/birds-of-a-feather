@@ -44,7 +44,7 @@ public class EmptyUrl {
         materialButton.perform(click());
 
         ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.loadPhotoButton), withText("Load"),
+                allOf(withId(R.id.submitPhotoButton), withText("Load"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
