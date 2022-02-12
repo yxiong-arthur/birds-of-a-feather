@@ -23,6 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Birdsofafeather">
+        <meta-data
+            android:name="com.google.android.nearby.messages.API_KEY"
+            android:value="AIzaSyDXW9zz-iBpxU5IR3iau_Cux0adojwbYPI" />
         <activity
             android:name=".AddStudentActivity"
             android:exported="false" />
