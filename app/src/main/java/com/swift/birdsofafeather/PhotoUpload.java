@@ -2,6 +2,7 @@ package com.swift.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,42 +31,18 @@ import java.net.URL;
 public class PhotoUpload extends AppCompatActivity {
 
     EditText loadURL;
-    Button saveButton, loadButton;
+    Button loadButton;
     ImageView imageResult;
-    Button downloadButton;
+    String url = "https://www.ikea.com/us/en/images/products/smycka-artificial-flower-rose-red__0903311_pe596728_s5.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_photo_upload);
 
-        saveButton = findViewById(R.id.savePhotoButton);
         loadButton = findViewById(R.id.loadPhotoButton);
         loadURL = (EditText) findViewById(R.id.photoUploadURL);
         imageResult = findViewById(R.id.uploadedPhoto);
-        downloadButton = findViewById(R.id.downloadPhotoButton);
-        ImageView downloadPhoto = findViewById(R.id.downloadPhoto);
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageResult.buildDrawingCache();
-                Bitmap bmap = imageResult.getDrawingCache();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] b = baos.toByteArray();
-
-                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-                SharedPreferences shre = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor edit = shre.edit();
-                edit.putString("image_data",encodedImage);
-                edit.apply();
-                downloadPhoto.setImageBitmap(null);
-                downloadPhoto.setImageResource(0);
-            }
-        });
 
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,49 +56,51 @@ public class PhotoUpload extends AppCompatActivity {
                 }
 
                 else {
-                    Glide.with(PhotoUpload.this).load(URLLink).apply(new RequestOptions().centerCrop()).into(imageResult);
+                    // Glide.with(PhotoUpload.this).load(URLLink).apply(new RequestOptions().centerCrop()).into(imageResult);
+
+                        Glide
+                                .with(PhotoUpload.this)
+                                .load(URLLink)
+                                .apply(new RequestOptions()
+                                        .placeholder(R.drawable.logo)
+                                        .override(200, 200)
+                                        .centerCrop())
+                                .into(imageResult);
+                    imageResult.buildDrawingCache();
+                    Bitmap bmap = imageResult.getDrawingCache();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                    SharedPreferences shre = getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor edit = shre.edit();
+                    edit.putString("image_data",encodedImage);
+                    edit.apply();
                 }
+
+                Intent intent = new Intent(getApplicationContext(), AddClassesActivity.class);
+                startActivity(intent);
             }
         });
 
+        /* Code to reference how to get string representation of bitmap from Extra
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences shre = getPreferences(MODE_PRIVATE);
                 String previouslyEncodedImage = shre.getString("image_data", "");
 
-                if( !previouslyEncodedImage.equalsIgnoreCase("") ){
+                if(!previouslyEncodedImage.equalsIgnoreCase("") ){
                     byte[] b = Base64.decode(previouslyEncodedImage, Base64.DEFAULT);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
                     downloadPhoto.setImageBitmap(bitmap);
                 }
             }
         });
+        */
+
     }
 
-    private class LoadImage extends AsyncTask<String,Void, Bitmap> {
-        ImageView imageView;
-        public LoadImage(ImageView imageView){
-            this.imageView = imageView;
-        }
-        
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String link = urls[0]; //??
-            Bitmap bitmap = null;
-            try {
-                InputStream inputS = new java.net.URL(link).openStream();
-                bitmap = BitmapFactory.decodeStream(inputS);
-            } catch (Exception e){
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
-    }
 }
