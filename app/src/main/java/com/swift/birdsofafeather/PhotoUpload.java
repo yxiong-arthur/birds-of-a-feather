@@ -48,7 +48,6 @@ public class PhotoUpload extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 String URLLink = loadURL.getText().toString();
-                loadURL.setText("");
                 imageResult.setImageBitmap(null);
 
                 if(URLLink.isEmpty()){
@@ -56,16 +55,15 @@ public class PhotoUpload extends AppCompatActivity {
                 }
 
                 else {
-                    // Glide.with(PhotoUpload.this).load(URLLink).apply(new RequestOptions().centerCrop()).into(imageResult);
+                    Glide
+                            .with(PhotoUpload.this)
+                            .load(URLLink)
+                            .apply(new RequestOptions()
+                                    .placeholder(R.drawable.logo)
+                                    .override(200, 200)
+                                    .centerCrop())
+                            .into(imageResult);
 
-                        Glide
-                                .with(PhotoUpload.this)
-                                .load(URLLink)
-                                .apply(new RequestOptions()
-                                        .placeholder(R.drawable.logo)
-                                        .override(200, 200)
-                                        .centerCrop())
-                                .into(imageResult);
                     imageResult.buildDrawingCache();
                     Bitmap bmap = imageResult.getDrawingCache();
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -78,10 +76,9 @@ public class PhotoUpload extends AppCompatActivity {
                     SharedPreferences.Editor edit = shre.edit();
                     edit.putString("image_data",encodedImage);
                     edit.apply();
+                    Intent intent = new Intent(getApplicationContext(), AddClassesActivity.class);
+                    startActivity(intent);
                 }
-
-                Intent intent = new Intent(getApplicationContext(), AddClassesActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -100,7 +97,6 @@ public class PhotoUpload extends AppCompatActivity {
             }
         });
         */
-
     }
 
 }
