@@ -18,7 +18,13 @@ public class StudentWithClasses {
     @Relation(parentColumn = "id",
                 entityColumn = "student_id",
                 entity = Class.class)
+
     public List<Class> classes;
+
+    public StudentWithClasses(UUID uuid, String name, Bitmap picture, List<Class> classes) {
+        student = new Student(uuid, name, picture);
+        this.classes = classes;
+    }
 
     public UUID getId(){
         return this.student.studentId;

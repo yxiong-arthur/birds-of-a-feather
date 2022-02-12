@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBTFunctClicked(View view) {
-        Intent intent = new Intent(this, BluetoothCheckActivity.class);
+        Intent intent = new Intent(this, NearbyStudentsActivity.class);
         startActivity(intent);
     }
 

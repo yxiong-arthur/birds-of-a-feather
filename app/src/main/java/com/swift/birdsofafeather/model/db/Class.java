@@ -13,10 +13,10 @@ import java.util.UUID;
 
 @Entity(tableName = "classes", foreignKeys = {
         @ForeignKey(onDelete = CASCADE,entity = Student.class,
-                parentColumns = "studentId",childColumns = "studentId")
+                parentColumns = "id",childColumns = "student_id")
         },
         indices = {
-                @Index("studentId"),
+                @Index("student_id"),
         })
 public class Class {
     @PrimaryKey

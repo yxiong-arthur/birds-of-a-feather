@@ -59,9 +59,9 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     public void onFindClassmatesClicked(View view){
-        startDiscovering();
+        toggleDiscovering();
 
-        //reading part, getting information
+        //reading part, getting information, storing other classmates info in database
     }
 
     public void onGoBackHome(View view) {
@@ -69,7 +69,7 @@ public class BluetoothActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void startDiscovering() {
+    private void toggleDiscovering() {
 
         // If we're already discovering, stop it
         if (adapter.isDiscovering()) {
