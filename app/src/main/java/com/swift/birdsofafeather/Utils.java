@@ -11,14 +11,23 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.provider.ContactsContract;
+import android.transition.Transition;
 import android.util.Base64;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Utils {
     public static int MESSAGE_READ = 0;
@@ -61,20 +70,32 @@ public class Utils {
         return preferences;
     }
 
-    public static Bitmap urlToBitmap(Context context, ImageView imageResult, String URL){
-        Glide
-                .with(context)
-                .load(URL)
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.logo)
-                        .override(200, 200)
-                        .centerCrop())
-                .into(imageResult);
+    public static Bitmap urlToBitmap(Context context, String URL){
+        ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+        Future<Bitmap> bmap;
 
-        imageResult.buildDrawingCache();
-        Bitmap bmap = imageResult.getDrawingCache();
+        bmap = backgroundThreadExecutor.submit(() -> {
+            return Glide
+                    .with(context)
+                    .asBitmap()
+                    .load(URL)
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.logo)
+                            .override(200, 200)
+                            .centerCrop())
+                    .submit()
+                    .get();
+        });
 
-        return bmap;
+        try {
+            return bmap.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static String bitmapToString(Bitmap bmap){

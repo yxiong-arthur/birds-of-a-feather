@@ -21,11 +21,11 @@ import java.io.ByteArrayOutputStream;
 
 
 public class PhotoUpload extends AppCompatActivity {
-
-    EditText loadURL;
-    Button loadButton;
-    Button SubmitButton;
-    ImageView imageResult;
+    private EditText loadURL;
+    private Button loadButton;
+    private Button SubmitButton;
+    private ImageView imageResult;
+    private Bitmap picture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,22 +47,14 @@ public class PhotoUpload extends AppCompatActivity {
         if (URLLink.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please enter url", Toast.LENGTH_SHORT).show();
         } else {
-            Glide
-                    .with(PhotoUpload.this)
-                    .load(URLLink)
-                    .apply(new RequestOptions()
-                            .placeholder(R.drawable.logo)
-                            .override(200, 200)
-                            .centerCrop())
-                    .into(imageResult);
+            picture = Utils.urlToBitmap(this, URLLink);
+            imageResult.setImageBitmap(picture);
         }
     }
 
     public void onSubmitClicked(View view) {
-        imageResult.buildDrawingCache();
-        Bitmap bmap = imageResult.getDrawingCache();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
 
         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);

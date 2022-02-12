@@ -48,7 +48,6 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
     }
 
     public void addStudent(int index,Student student) {
-
         this.students.add(index,student);
         this.notifyItemInserted(index);
     }

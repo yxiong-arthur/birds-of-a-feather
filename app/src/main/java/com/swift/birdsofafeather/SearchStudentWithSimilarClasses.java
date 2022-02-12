@@ -110,7 +110,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return mateClasses.size();
     }
 
-    public int CalculatePosition (Student classmate) {
+    public int calculatePosition (Student classmate) {
         myself = db.studentWithClassesDao().getStudent(studentId);
         myClasses = myself.getClasses();
         List<Student> myClassmates = findPriorClassmates();
