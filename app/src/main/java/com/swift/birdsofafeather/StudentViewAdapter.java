@@ -42,6 +42,12 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
         return this.students.size();
     }
 
+    public void addStudent(int index,Student student) {
+
+        this.students.add(index,student);
+        this.notifyItemInserted(index);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView studentNameView;
         private Student student;
@@ -51,6 +57,7 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.studentNameView = itemView.findViewById(R.id.student_row_name);
             itemView.setOnClickListener(this);
         }
+
 
         public void setStudent(Student student) {
             this.student = student;

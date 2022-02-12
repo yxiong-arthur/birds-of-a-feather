@@ -68,10 +68,25 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         studentList.remove(myself);
 
         List<Student> commonClassmates = new ArrayList<>();
+        List<StudentWithClasses> tempCommon = new ArrayList<>();
 
         for (StudentWithClasses classmate : studentList) {
             if(countSimilarClasses(classmate) > 0) {
-                commonClassmates.add(classmate.getStudent());
+                if(commonClassmates.size() == 0) {
+                    commonClassmates.add(classmate.getStudent());
+                    tempCommon.add(classmate);
+                } else if (countSimilarClasses(classmate) < countSimilarClasses(tempCommon.get(tempCommon.size()-1))) {
+                    commonClassmates.add(classmate.getStudent());
+                    tempCommon.add(classmate);
+                } else{
+                    for(int i=0; i<commonClassmates.size(); i++) {
+                        if(countSimilarClasses(classmate) >= countSimilarClasses(tempCommon.get(i))) {
+                            commonClassmates.add(i,classmate.getStudent());
+                            tempCommon.add(i,classmate);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -86,12 +101,25 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return mateClasses.size();
     }
 
+    public int CalculatePosition (Student classmate) {
+        myself = db.studentWithClassesDao().getStudent(studentId);
+        myClasses = myself.getClasses();
+        List<Student> myClassmates = findPriorClassmates();
+        for(int i=0; i<myClassmates.size(); i++) {
+            if(myClassmates.get(i).getId().equals(classmate.getId())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     //for milestone2's turn-off button
     public void onToggle(View view) {
         this.future.cancel(true);
         //finish();
     }
 
+    //public void
     public void onAddStudentsClicked(View view){
         Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
         startActivity(addStudentsIntent);
