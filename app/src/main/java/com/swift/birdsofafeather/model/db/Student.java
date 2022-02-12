@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
-    @ColumnInfo(name = "similar_classes_count")
+    @Ignore
     public int count;
 
     public Student (UUID studentId, String name, Bitmap picture){
