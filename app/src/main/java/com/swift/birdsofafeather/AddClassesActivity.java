@@ -17,29 +17,37 @@ import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AddClassesActivity extends AppCompatActivity {
     private AppDatabase db;
     private UUID studentId;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future future;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_classes);
 
-        Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
-        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
-                R.array.years_array, android.R.layout.simple_spinner_item);
-        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        yearSpinner.setAdapter(yearAdapter);
+        this.future = backgroundThreadExecutor.submit(() -> {
+            Spinner yearSpinner = (Spinner) findViewById(R.id.year_select);
+            ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
+                    R.array.years_array, android.R.layout.simple_spinner_item);
+            yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            yearSpinner.setAdapter(yearAdapter);
 
-        Spinner quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
-        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
-                R.array.quarters_array, android.R.layout.simple_spinner_item);
-        quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        quarterSpinner.setAdapter(quarterAdapter);
+            Spinner quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
+            ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
+                    R.array.quarters_array, android.R.layout.simple_spinner_item);
+            quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            quarterSpinner.setAdapter(quarterAdapter);
 
-        initializeDatabase();
+            initializeDatabase();
+
+        });
     }
 
     public void onEnterClicked(View view){
@@ -48,26 +56,31 @@ public class AddClassesActivity extends AppCompatActivity {
         TextView subjectTextView = (TextView) findViewById(R.id.subject_textview);
         TextView courseNumberTextView = (TextView) findViewById(R.id.courseNumber_textview);
 
-        String yearString = yearSpinner.getSelectedItem().toString();
-        String quarter = quarterSpinner.getSelectedItem().toString().toLowerCase();
-        String subject = subjectTextView.getText().toString().toLowerCase();
-        String courseNumber = courseNumberTextView.getText().toString().toLowerCase();
 
-        if(validateInput(yearString, quarter, subject, courseNumber)){
-            int year = Integer.parseInt(yearString);
+            String yearString = yearSpinner.getSelectedItem().toString();
+            String quarter = quarterSpinner.getSelectedItem().toString().toLowerCase();
+            String subject = subjectTextView.getText().toString().toLowerCase();
+            String courseNumber = courseNumberTextView.getText().toString().toLowerCase();
 
-            if(db.classesDao().checkExist(year, quarter, subject, courseNumber)){
-                Utils.showAlert(this, "No duplicates allowed");
-                return;
+            if(validateInput(yearString, quarter, subject, courseNumber)){
+
+                    int year = Integer.parseInt(yearString);
+
+                    if(db.classesDao().checkExist(year, quarter, subject, courseNumber)){
+                        Utils.showAlert(this, "No duplicates allowed");
+                        return;
+                    }
+
+                    UUID newClassId = UUID.randomUUID();
+
+                    Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
+                    db.classesDao().insert(newClass);
+
+                    Toast.makeText(getApplicationContext(), "Added new class", Toast.LENGTH_SHORT).show();
+
             }
 
-            UUID newClassId = UUID.randomUUID();
 
-            Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
-            db.classesDao().insert(newClass);
-
-            Toast.makeText(getApplicationContext(), "Added new class", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void onDoneClicked(View view){
