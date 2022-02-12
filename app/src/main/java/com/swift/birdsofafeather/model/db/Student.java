@@ -29,6 +29,7 @@ public class Student {
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
+        this.count = 0;
     }
 
     public boolean equals(Object o){
