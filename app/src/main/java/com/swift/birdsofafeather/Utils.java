@@ -12,6 +12,9 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 public class Utils {
+    public static int MESSAGE_READ = 0;
+    public static int MESSAGE_WRITE = 1;
+
     public static boolean isEmpty(String str) {
         if (str == null) {
             return true;

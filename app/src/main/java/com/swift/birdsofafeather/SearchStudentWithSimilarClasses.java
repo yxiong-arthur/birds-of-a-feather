@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -62,7 +63,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         });
     }
 
-    private List<Student> findPriorClassmates() {
+    protected List<Student> findPriorClassmates() {
         List<StudentWithClasses> studentList = db.studentWithClassesDao().getAllStudents();
         studentList.remove(myself);
 
@@ -77,7 +78,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return commonClassmates;
     }
 
-    private int countSimilarClasses(StudentWithClasses classmate){
+    protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
 
         mateClasses.retainAll(myClasses);
@@ -86,8 +87,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     //for milestone2's turn-off button
-    public void onTurnOff(View view) {
+    public void onToggle(View view) {
         this.future.cancel(true);
         //finish();
+    }
+
+    public void onAddStudentsClicked(View view){
+        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
+        startActivity(addStudentsIntent);
     }
 }

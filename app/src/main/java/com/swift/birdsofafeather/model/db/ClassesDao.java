@@ -28,6 +28,10 @@ public interface ClassesDao {
             "AND subject=:subject AND course_number=:courseNumber)")
     boolean checkExist(int year, String quarter, String subject, String courseNumber);
 
+    @Query("SELECT EXISTS(SELECT * FROM classes WHERE student_id=:studentId AND year=:year " +
+            "AND quarter=:quarter AND subject=:subject AND course_number=:courseNumber)")
+    boolean checkExist(UUID studentId, int year, String quarter, String subject, String courseNumber);
+
     @Insert
     void insert(Class toInsert);
 
