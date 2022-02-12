@@ -16,5 +16,24 @@
         android:lineHeight="32sp"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:layout_gravity="center"
         tools:text="@tools:sample/full_names"/>
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/number_of_classes"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:layout_marginTop="16sp"
+        android:height="32sp"
+        android:lineHeight="32sp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="number" />
 </FrameLayout>
