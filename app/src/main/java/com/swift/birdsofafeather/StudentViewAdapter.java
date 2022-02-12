@@ -11,10 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.swift.birdsofafeather.model.db.AppDatabase;
+import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.util.List;
+import java.util.Set;
 
 public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.ViewHolder> {
     private final List<Student> students;
@@ -70,6 +73,7 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.student = student;
             this.studentNameView.setText(student.getName());
             this.thumbnail.setImageBitmap(student.getPicture());
+            this.number.setText(String.valueOf(this.student.getCount()));
         }
 
         @Override

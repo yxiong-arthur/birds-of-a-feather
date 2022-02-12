@@ -22,6 +22,9 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
+    @ColumnInfo(name = "similar_classes_count")
+    public int count;
+
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
@@ -49,4 +52,12 @@ public class Student {
     }
 
     public Bitmap getPicture() { return picture; }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
 }
