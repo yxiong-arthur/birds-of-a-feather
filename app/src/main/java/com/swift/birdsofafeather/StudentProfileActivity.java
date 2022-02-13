@@ -12,7 +12,6 @@ import android.widget.ImageView;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
-import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 }

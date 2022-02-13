@@ -1,24 +1,17 @@
 package com.swift.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.transition.Transition;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.view.View;
-import android.widget.TextView;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class BluetoothActivity extends AppCompatActivity {
@@ -65,7 +58,7 @@ public class BluetoothActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 

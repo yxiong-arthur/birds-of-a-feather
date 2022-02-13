@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 public class uploadLinkFailTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<DashboardActivity> mActivityTestRule = new ActivityTestRule<>(DashboardActivity.class);
 
     @Test
     public void uploadLinkFailTest() {

@@ -85,7 +85,7 @@ public class NameActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 }
