@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
@@ -32,11 +33,13 @@ public class StudentProfileActivity extends AppCompatActivity {
     private ClassViewAdapter classesViewAdapter;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future future;
+    private ImageView portrait;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
+        portrait = findViewById(R.id.portrait);
 
         Intent intent = getIntent();
         UUID classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
@@ -49,6 +52,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
             myself = db.studentWithClassesDao().getStudent(studentId);
             myClasses = myself.getClasses();
+            this.portrait.setImageBitmap(myself.getPicture());
 
             StudentWithClasses classmate = db.studentWithClassesDao().getStudent(classmateId);
             Set<Class> similarClasses = getSimilarClasses(classmate);

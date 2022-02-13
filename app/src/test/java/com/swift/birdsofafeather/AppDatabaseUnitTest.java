@@ -3,6 +3,9 @@ package com.swift.birdsofafeather;
 import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -45,10 +48,20 @@ public class AppDatabaseUnitTest {
         db.close();
     }
 
+    public static Bitmap createImage(int width, int height, int color) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(color);
+        canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
+        return bitmap;
+    }
+
     @Test
     public void insertStudentCheckExistence() throws Exception {
         UUID currStudentId = UUID.randomUUID();
-        Student student = new Student(currStudentId, "Test");
+        Bitmap picture = createImage(4, 4, 4);
+        Student student = new Student(currStudentId, "Test", picture);
 
         assertEquals(0, studentDao.count());
 
@@ -67,7 +80,8 @@ public class AppDatabaseUnitTest {
     public void insertStudentInsertClassCheckExistence() throws Exception {
         UUID currStudentId = UUID.randomUUID();
         UUID currClassId = UUID.randomUUID();
-        Student student = new Student(currStudentId, "Test");
+        Bitmap picture = createImage(4, 4, 4);
+        Student student = new Student(currStudentId, "Test", picture);
         studentDao.insert(student);
 
         assertEquals(0, classesDao.count());

@@ -54,7 +54,7 @@ public class AddStudentActivity extends AppCompatActivity {
             if(i == 1){
                 String pictureURL = studentRowData.get(0);
                 ImageView pictureView = findViewById(R.id.imageView);
-                Bitmap pictureBMap = Utils.urlToBitmap(this, pictureView, pictureURL);
+                Bitmap pictureBMap = Utils.urlToBitmap(this, pictureURL);
 
                 Student student = new Student(studentId, studentName, pictureBMap);
                 studentDao.insert(student);

@@ -16,57 +16,56 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+
 import java.io.ByteArrayOutputStream;
 
 
 public class PhotoUpload extends AppCompatActivity {
-
-    EditText loadURL;
-    Button loadButton;
-    ImageView imageResult;
-    String url = "https://www.ikea.com/us/en/images/products/smycka-artificial-flower-rose-red__0903311_pe596728_s5.jpg";
+    private EditText loadURL;
+    private Button loadButton;
+    private Button SubmitButton;
+    private ImageView imageResult;
+    private Bitmap picture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_upload);
 
-        loadButton = findViewById(R.id.submitPhotoButton);
+        SubmitButton = findViewById(R.id.submitPhotoButton);
+        loadButton = findViewById(R.id.loadPhotoButton);
+
         loadURL = (EditText) findViewById(R.id.photoUploadURL);
         imageResult = findViewById(R.id.uploadedPhoto);
     }
 
-    public void onSubmitClicked(View view) {
+    public void onLoadClicked(View view) {
         String URLLink = loadURL.getText().toString();
         imageResult.setImageBitmap(null);
+        loadURL.setText("");
 
         if (URLLink.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please enter url", Toast.LENGTH_SHORT).show();
         } else {
-            Glide
-                    .with(PhotoUpload.this)
-                    .load(URLLink)
-                    .apply(new RequestOptions()
-                            .placeholder(R.drawable.logo)
-                            .override(200, 200)
-                            .centerCrop())
-                    .into(imageResult);
-
-            imageResult.buildDrawingCache();
-            Bitmap bmap = imageResult.getDrawingCache();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] b = baos.toByteArray();
-
-            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-            SharedPreferences preferences = Utils.getSharedPreferences(PhotoUpload.this);
-            SharedPreferences.Editor edit = preferences.edit();
-            edit.putString("image_data", encodedImage);
-            edit.apply();
-
-            Intent addClassIntent = new Intent(PhotoUpload.this, AddClassesActivity.class);
-            startActivity(addClassIntent);
+            picture = Utils.urlToBitmap(this, URLLink);
+            imageResult.setImageBitmap(picture);
         }
+    }
+
+    public void onSubmitClicked(View view) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        SharedPreferences preferences = Utils.getSharedPreferences(PhotoUpload.this);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("image_data", encodedImage);
+        edit.apply();
+
+        Intent addClassIntent = new Intent(PhotoUpload.this, AddClassesActivity.class);
+        startActivity(addClassIntent);
+
     }
 }

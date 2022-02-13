@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.UUID;
@@ -22,10 +23,14 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
+    @Ignore
+    public int count;
+
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
+        this.count = 0;
     }
 
     public boolean equals(Object o){
@@ -40,18 +45,26 @@ public class Student {
                 this.name.equals(other.name);
      }
 
-    public String getName() {
-        return name;
-      }
-
     public UUID getId() {
         return studentId;
     }
+
+    public String getName() {
+        return name;
+      }
 
     public Bitmap getPicture() { return picture; }
 
     @Override
     public String toString() {
         return name;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

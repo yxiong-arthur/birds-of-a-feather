@@ -8,24 +8,37 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/persons_view"
-        android:layout_width="381dp"
-        android:layout_height="549dp"
-        android:layout_marginTop="68dp"
+        android:layout_width="385dp"
+        android:layout_height="411dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/portrait"
+        app:layout_constraintVertical_bias="0.361" />
 
     <Button
-        android:id="@+id/toggle_search_button"
+        android:id="@+id/backhome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="640dp"
+        android:layout_marginTop="340dp"
         android:onClick="onGoBackHome"
         android:text="BackHome"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.877"
+        app:layout_constraintHorizontal_bias="0.866"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/persons_view" />
+
+    <ImageView
+        android:id="@+id/portrait"
+        android:layout_width="200sp"
+        android:layout_height="200sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.137"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

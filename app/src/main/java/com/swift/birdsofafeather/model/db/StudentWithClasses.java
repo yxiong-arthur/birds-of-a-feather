@@ -18,17 +18,14 @@ public class StudentWithClasses {
     @Relation(parentColumn = "id",
                 entityColumn = "student_id",
                 entity = Class.class)
-
     public List<Class> classes;
-
-    public StudentWithClasses() {};
-
-    public UUID getId(){
-        return this.student.studentId;
-    }
 
     public Student getStudent() {
         return this.student;
+    }
+
+    public UUID getId(){
+        return this.student.studentId;
     }
 
     public String getName() {
@@ -38,6 +35,10 @@ public class StudentWithClasses {
     public Bitmap getPicture() {
         return this.student.picture;
     }
+
+    public int getCount() { return this.student.count; }
+
+    public void setCount(int count) { this.student.count = count; }
 
     public Set<Class> getClasses() {
         return new HashSet<>(this.classes);
