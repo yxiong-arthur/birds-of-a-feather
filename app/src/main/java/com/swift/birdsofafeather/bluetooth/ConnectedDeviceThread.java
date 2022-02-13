@@ -1,8 +1,10 @@
-package com.swift.birdsofafeather;
+package com.swift.birdsofafeather.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
+
+import com.swift.birdsofafeather.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;

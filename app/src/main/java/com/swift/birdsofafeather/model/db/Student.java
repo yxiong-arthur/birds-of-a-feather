@@ -56,6 +56,11 @@ public class Student {
 
     public Bitmap getPicture() { return picture; }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public int getCount() {
         return count;
     }

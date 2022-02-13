@@ -1,13 +1,23 @@
 package com.swift.birdsofafeather.model.db;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.UUID;
 
-@Entity(tableName = "classes")
+@Entity(tableName = "classes", foreignKeys = {
+        @ForeignKey(onDelete = CASCADE,entity = Student.class,
+                parentColumns = "id",childColumns = "student_id")
+        },
+        indices = {
+                @Index("student_id"),
+        })
 public class Class {
     @PrimaryKey
     @NonNull
@@ -76,7 +86,13 @@ public class Class {
 
     @Override
     public int hashCode(){
-        String toHash = year + quarter + subject + courseNumber;
+        String toHash = this.year + this.quarter + this.subject + this.courseNumber;
         return toHash.hashCode();
+    }
+
+    @Override
+    public String toString(){
+        return this.classId + "," + this.year + "," + this.quarter + "," + this.subject
+                + "," + this.courseNumber;
     }
 }
