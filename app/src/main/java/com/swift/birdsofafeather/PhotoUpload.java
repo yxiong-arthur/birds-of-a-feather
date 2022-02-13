@@ -26,6 +26,7 @@ public class PhotoUpload extends AppCompatActivity {
     private Button SubmitButton;
     private ImageView imageResult;
     private Bitmap picture;
+    String URLLink = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,25 +35,41 @@ public class PhotoUpload extends AppCompatActivity {
 
         SubmitButton = findViewById(R.id.submitPhotoButton);
         loadButton = findViewById(R.id.loadPhotoButton);
+        SubmitButton.setVisibility(View.INVISIBLE);
 
         loadURL = (EditText) findViewById(R.id.photoUploadURL);
         imageResult = findViewById(R.id.uploadedPhoto);
     }
 
     public void onLoadClicked(View view) {
-        String URLLink = loadURL.getText().toString();
+        URLLink = loadURL.getText().toString();
         imageResult.setImageBitmap(null);
         loadURL.setText("");
 
         if (URLLink.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please enter url", Toast.LENGTH_SHORT).show();
         } else {
-            picture = Utils.urlToBitmap(this, URLLink);
-            imageResult.setImageBitmap(picture);
+            // picture = Utils.urlToBitmap(this, URLLink);
+            // imageResult.setImageBitmap(picture);
+
+            // Previous method cannot load default image
+            Glide
+                    .with(this)
+                    .asBitmap()
+                    .load(URLLink)
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.logo)
+                            .override(200, 200)
+                            .centerCrop())
+                    .into(imageResult);
+            SubmitButton.setVisibility(View.VISIBLE);
         }
     }
 
     public void onSubmitClicked(View view) {
+        imageResult.buildDrawingCache();
+        picture = imageResult.getDrawingCache();
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         picture.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
@@ -66,6 +83,5 @@ public class PhotoUpload extends AppCompatActivity {
 
         Intent addClassIntent = new Intent(PhotoUpload.this, AddClassesActivity.class);
         startActivity(addClassIntent);
-
     }
 }
