@@ -21,10 +21,7 @@ public class StudentWithClasses {
 
     public List<Class> classes;
 
-    public StudentWithClasses(UUID uuid, String name, Bitmap picture, List<Class> classes) {
-        student = new Student(uuid, name, picture);
-        this.classes = classes;
-    }
+    public StudentWithClasses() {};
 
     public UUID getId(){
         return this.student.studentId;

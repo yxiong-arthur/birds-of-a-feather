@@ -20,7 +20,4 @@ public interface StudentWithClassesDao {
 
     @Query("SELECT COUNT(*) FROM students")
     int count();
-
-    @Insert
-    void insert(StudentWithClasses student);
 }

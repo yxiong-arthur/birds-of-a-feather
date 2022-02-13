@@ -44,23 +44,23 @@ public class NearbyStudentsActivity extends AppCompatActivity {
             public void onFound(@NonNull Message message) {
                 String messageContent = new String(message.getContent());
                 String[] decodedMessage = messageContent.split(",");
-                String name = decodedMessage[0];
-                String pictureURL = decodedMessage[1];
-                UUID uuid = UUID.randomUUID();
-                List<Class> classes = new ArrayList<Class>();
+                UUID studentUUID = UUID.fromString(decodedMessage[0]);
+                String name = decodedMessage[1];
+                String pictureURL = decodedMessage[2];
+
 
                 //TODO set to default
                 Bitmap image = null;
 
 
-                for(int i = 2; i < decodedMessage.length; i+=5) {
+                for(int i = 3; i < decodedMessage.length; i+=5) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
                     int year = Integer.parseInt(decodedMessage[i + 1]);
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
                     String courseNumber = decodedMessage[i + 4];
-                    Class newClass = new Class(classId, uuid, year, quarter, subject, courseNumber);
-                    classes.add(newClass);
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    db.classesDao().insert(newClass);
                 }
 
                 try {
@@ -70,8 +70,8 @@ public class NearbyStudentsActivity extends AppCompatActivity {
                     //TODO log
                 }
 
-                StudentWithClasses classmate = new StudentWithClasses(uuid, name, image, classes);
-                db.studentWithClassesDao().insert(classmate);
+                Student classmate = new Student(studentUUID, name, image);
+                db.studentDao().insert(classmate);
             }
 
             @Override
@@ -84,12 +84,11 @@ public class NearbyStudentsActivity extends AppCompatActivity {
         String photoString = preferences.getString("image_data", "default");
 
         // TODO: delete after testing
-        // student object for testing
         String studentUUIDString = preferences.getString("student_id", null);
         UUID studentUUID = studentUUIDString != null ? UUID.fromString(studentUUIDString) : UUID.randomUUID();
-        String studentName = "travis";
+        String studentName = preferences.getString("first_name", "default name");
         List<Class> classes = db.classesDao().getForStudent(studentUUID);
-        String encodedString = studentName + "," + photoString;
+        String encodedString = studentUUIDString + "," + studentName + "," + photoString;
 
         // TODO serialize? but how do we combine multiple serialized objects?
         for(Class c : classes) {
