@@ -54,16 +54,12 @@ public class NearbyUnitTest {
         realListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
-                System.out.println("HI");
                 String messageContent = new String(message.getContent());
                 String[] decodedMessage = messageContent.split(",");
 
                 UUID studentUUID = UUID.fromString(decodedMessage[0]);
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
-
-                System.out.println(pictureURL);
-
                 Bitmap image = Utils.urlToBitmap(context, pictureURL);
 
 
@@ -98,7 +94,6 @@ public class NearbyUnitTest {
 
     @Test
     public void test_entries_database() {
-
         try {
             Thread.sleep(5000);
 
@@ -110,10 +105,13 @@ public class NearbyUnitTest {
         List<Class> classes = db.classesDao().getAllClasses();
 
         Student first = students.get(0);
-        Class c1 = classes.get(0);
-        Class c2 = classes.get(1);
+        Class c1 = classes.get(0).getQuarter().equals("winter") ? classes.get(0) : classes.get(1);
+        Class c2 = classes.get(0).getQuarter().equals("winter") ? classes.get(1) : classes.get(0);
 
-        assertEquals(100, students.size());
+        assertEquals(1, students.size());
+        assertEquals("Travis", first.getName());
+        assertEquals("winter", c1.getQuarter());
+        assertEquals("130", c1.getCourseNumber());
         assertEquals(2, classes.size());
 
 
@@ -122,34 +120,32 @@ public class NearbyUnitTest {
     private String getTestMessage(Context context) {
         UUID randomUUID = UUID.randomUUID();
         String testName = "Travis";
-        String pictureURL = "default";
-        Bitmap testImage = Utils.stringToBitmap("https://media.wired.co.uk/photos/606d9a3ba876dd2203a639aa/1:1/w_2000,h_2000,c_limit/wired-uk-google-watching.jpg");
-
+        String pictureURL = "https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg";
+        Bitmap testImage = Utils.urlToBitmap(context, pictureURL);
 
         Student testStudent = new Student(randomUUID, testName, testImage);
 
         UUID id1 = UUID.randomUUID();
-        String quarter = "Fall";
+        String quarter = "fall";
         int year = 2007;
         String courseNumber = "110";
-        String subject = "CSE";
+        String subject = "cse";
         Class class1 = new Class(id1, randomUUID, year, quarter, subject, courseNumber);
 
         UUID id2 = UUID.randomUUID();
-        String quarter2 = "Winter";
+        String quarter2 = "winter";
         int year2 = 2007;
         String courseNumber2 = "130";
-        String subject2 = "CSE";
+        String subject2 = "cse";
         Class class2 = new Class(id2, randomUUID, year2, quarter2, subject2, courseNumber2);
 
-        String encodeMessage = testStudent.toString() + "," + class1.toString() + "," + class2.toString();
+        String encodeMessage = randomUUID.toString() + "," + testName + "," + pictureURL
+                + testStudent.toString() + "," + class1.toString() + "," + class2.toString();
         return encodeMessage;
     }
 
     @After
     public void closeDb() throws IOException {
         db.close();
-        Nearby.getMessagesClient(context).unsubscribe(realListener);
-        Nearby.getMessagesClient(context).unpublish(myStudentData);
     }
 }
