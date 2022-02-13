@@ -54,6 +54,7 @@ public class NearbyUnitTest {
         realListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
+                System.out.println("HI");
                 String messageContent = new String(message.getContent());
                 String[] decodedMessage = messageContent.split(",");
 
@@ -61,8 +62,10 @@ public class NearbyUnitTest {
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
 
-                //Bitmap image = Utils.urlToBitmap(NearbyStudentsActivity.this, pictureURL);
-                Bitmap image = null;
+                System.out.println(pictureURL);
+
+                Bitmap image = Utils.urlToBitmap(context, pictureURL);
+
 
                 Student classmate = new Student(studentUUID, name, image);
                 db.studentDao().insert(classmate);
@@ -90,10 +93,12 @@ public class NearbyUnitTest {
         Message myStudentData = new Message(testMessage.getBytes(StandardCharsets.UTF_8));
         Nearby.getMessagesClient(context).subscribe(fakeListener);
         Nearby.getMessagesClient(context).publish(myStudentData);
+
     }
 
     @Test
     public void test_entries_database() {
+
         try {
             Thread.sleep(5000);
 
@@ -118,7 +123,8 @@ public class NearbyUnitTest {
         UUID randomUUID = UUID.randomUUID();
         String testName = "Travis";
         String pictureURL = "default";
-        Bitmap testImage = null;
+        Bitmap testImage = Utils.stringToBitmap("https://media.wired.co.uk/photos/606d9a3ba876dd2203a639aa/1:1/w_2000,h_2000,c_limit/wired-uk-google-watching.jpg");
+
 
         Student testStudent = new Student(randomUUID, testName, testImage);
 

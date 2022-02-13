@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import com.swift.birdsofafeather.bluetooth.BluetoothService;
+
 import java.util.Set;
 
 public class BluetoothActivity extends AppCompatActivity {
