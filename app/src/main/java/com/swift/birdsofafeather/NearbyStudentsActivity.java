@@ -44,14 +44,15 @@ public class NearbyStudentsActivity extends AppCompatActivity {
             public void onFound(@NonNull Message message) {
                 String messageContent = new String(message.getContent());
                 String[] decodedMessage = messageContent.split(",");
+
                 UUID studentUUID = UUID.fromString(decodedMessage[0]);
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
 
+                Bitmap image = Utils.urlToBitmap(NearbyStudentsActivity.this, pictureURL);
 
-                //TODO set to default
-                Bitmap image = null;
-
+                Student classmate = new Student(studentUUID, name, image);
+                db.studentDao().insert(classmate);
 
                 for(int i = 3; i < decodedMessage.length; i+=5) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
@@ -59,19 +60,10 @@ public class NearbyStudentsActivity extends AppCompatActivity {
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
                     String courseNumber = decodedMessage[i + 4];
+
                     Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
                     db.classesDao().insert(newClass);
                 }
-
-                try {
-                    URL url =  new URL(pictureURL);
-                    image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (IOException e) {
-                    //TODO log
-                }
-
-                Student classmate = new Student(studentUUID, name, image);
-                db.studentDao().insert(classmate);
             }
 
             @Override
@@ -80,20 +72,19 @@ public class NearbyStudentsActivity extends AppCompatActivity {
             }
         };
 
-        SharedPreferences preferences = Utils.getSharedPreferences(NearbyStudentsActivity.this);
-        String photoString = preferences.getString("image_data", "default");
+        SharedPreferences preferences = Utils.getSharedPreferences(this.getApplicationContext());
 
-        // TODO: delete after testing
-        String studentUUIDString = preferences.getString("student_id", null);
-        UUID studentUUID = studentUUIDString != null ? UUID.fromString(studentUUIDString) : UUID.randomUUID();
-        String studentName = preferences.getString("first_name", "default name");
+        String studentUUIDString = preferences.getString("student_id", "default");
+        String studentName = preferences.getString("first_name", "default");
+        String photoURL = preferences.getString("image_url", "default");
+
+        UUID studentUUID = UUID.fromString(studentUUIDString);
         List<Class> classes = db.classesDao().getForStudent(studentUUID);
-        String encodedString = studentUUIDString + "," + studentName + "," + photoString;
 
-        // TODO serialize? but how do we combine multiple serialized objects?
+        String encodedString = studentUUIDString + "," + studentName + "," + photoURL;
+
         for(Class c : classes) {
-            encodedString += "," + c.getId().toString() + "," + c.getYear() + "," + c.getQuarter() + "," +
-                    c.getSubject() + "," + c.getCourseNumber();
+            encodedString += "," + c;
         }
 
         myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));

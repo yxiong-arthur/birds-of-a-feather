@@ -86,7 +86,13 @@ public class Class {
 
     @Override
     public int hashCode(){
-        String toHash = year + quarter + subject + courseNumber;
+        String toHash = this.year + this.quarter + this.subject + this.courseNumber;
         return toHash.hashCode();
+    }
+
+    @Override
+    public String toString(){
+        return this.classId + "," + this.year + "," + this.quarter + "," + this.subject
+                + "," + this.courseNumber;
     }
 }

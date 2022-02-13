@@ -46,7 +46,6 @@ public class AddClassesActivity extends AppCompatActivity {
             quarterSpinner.setAdapter(quarterAdapter);
 
             initializeDatabase();
-
         });
     }
 
@@ -56,31 +55,26 @@ public class AddClassesActivity extends AppCompatActivity {
         TextView subjectTextView = (TextView) findViewById(R.id.subject_textview);
         TextView courseNumberTextView = (TextView) findViewById(R.id.courseNumber_textview);
 
+        String yearString = yearSpinner.getSelectedItem().toString();
+        String quarter = quarterSpinner.getSelectedItem().toString().toLowerCase();
+        String subject = subjectTextView.getText().toString().toLowerCase();
+        String courseNumber = courseNumberTextView.getText().toString().toLowerCase();
 
-            String yearString = yearSpinner.getSelectedItem().toString();
-            String quarter = quarterSpinner.getSelectedItem().toString().toLowerCase();
-            String subject = subjectTextView.getText().toString().toLowerCase();
-            String courseNumber = courseNumberTextView.getText().toString().toLowerCase();
+        if(!validateInput(yearString, quarter, subject, courseNumber)) return;
 
-            if(validateInput(yearString, quarter, subject, courseNumber)){
+        int year = Integer.parseInt(yearString);
 
-                    int year = Integer.parseInt(yearString);
+        if(db.classesDao().checkExist(year, quarter, subject, courseNumber)) {
+            Utils.showAlert(this, "No duplicates allowed");
+            return;
+        }
 
-                    if(db.classesDao().checkExist(year, quarter, subject, courseNumber)){
-                        Utils.showAlert(this, "No duplicates allowed");
-                        return;
-                    }
+        UUID newClassId = UUID.randomUUID();
 
-                    UUID newClassId = UUID.randomUUID();
+        Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
+        db.classesDao().insert(newClass);
 
-                    Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
-                    db.classesDao().insert(newClass);
-
-                    Toast.makeText(getApplicationContext(), "Added new class", Toast.LENGTH_SHORT).show();
-
-            }
-
-
+        Toast.makeText(getApplicationContext(), "Added new class", Toast.LENGTH_SHORT).show();
     }
 
     public void onDoneClicked(View view){
