@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -18,17 +19,21 @@ public class PhotoUpload extends AppCompatActivity {
     private Bitmap picture;
     private String URLLink;
 
+    Button submitButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_upload);
 
-
+        submitButton = findViewById(R.id.submitPhotoButton);
+        submitButton.setVisibility(View.INVISIBLE);
     }
 
     public void onLoadClicked(View view) {
         EditText loadURL = (EditText) findViewById(R.id.photoUploadURL);;
         ImageView imageResult = findViewById(R.id.uploadedPhoto);
+
 
         URLLink = loadURL.getText().toString();
         imageResult.setImageBitmap(null);
@@ -39,6 +44,7 @@ public class PhotoUpload extends AppCompatActivity {
         } else {
             picture = Utils.urlToBitmap(this, URLLink);
             imageResult.setImageBitmap(picture);
+            submitButton.setVisibility(View.VISIBLE);
         }
     }
 
