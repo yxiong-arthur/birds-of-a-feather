@@ -75,23 +75,24 @@ public class Utils {
         Future<Bitmap> bmap;
 
         bmap = backgroundThreadExecutor.submit(() -> {
-            return Glide
-                    .with(context)
-                    .asBitmap()
-                    .load(URL)
-                    .apply(new RequestOptions()
-                            .placeholder(R.drawable.logo)
-                            .override(200, 200)
-                            .centerCrop())
-                    .submit()
-                    .get();
+            try {
+                return Glide
+                        .with(context)
+                        .asBitmap()
+                        .load(URL)
+                        .apply(new RequestOptions()
+                                .override(200, 200)
+                                .centerCrop())
+                        .submit()
+                        .get();
+            } catch (Exception e){
+                return BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
+            }
         });
 
         try {
             return bmap.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
