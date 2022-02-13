@@ -45,21 +45,21 @@ public class Student {
                 this.name.equals(other.name);
      }
 
-    public String getName() {
-        return name;
-      }
-
     public UUID getId() {
         return studentId;
     }
 
-    public Bitmap getPicture() { return picture; }
+    public String getName() {
+        return name;
+      }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+    public Bitmap getPicture() { return picture; }
 
     public int getCount() {
         return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }
