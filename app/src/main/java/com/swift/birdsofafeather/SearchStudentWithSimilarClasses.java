@@ -1,20 +1,27 @@
 package com.swift.birdsofafeather;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,30 +31,39 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class SearchStudentWithSimilarClasses extends AppCompatActivity {
+    private static final String TAG = "BluetoothActivity";
+    private MessageListener realListener;
+    private Message myStudentData;
+
     private AppDatabase db;
+
     private UUID studentId;
     private StudentWithClasses myself;
     private Set<Class> myClasses;
+
     private RecyclerView studentsRecyclerView;
     private RecyclerView.LayoutManager studentsLayoutManager;
     private StudentViewAdapter studentsViewAdapter;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future future;
 
+    private boolean searching = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_with_similar_classes);
 
+        db = AppDatabase.singleton(getApplicationContext());
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        String UUIDString = preferences.getString("student_id", "");
+        studentId = UUID.fromString(UUIDString);
+
+        myself = db.studentWithClassesDao().getStudent(studentId);
+        myClasses = myself.getClasses();
+
         this.future = backgroundThreadExecutor.submit(() -> {
-            db = AppDatabase.singleton(getApplicationContext());
-
-            SharedPreferences preferences = Utils.getSharedPreferences(this);
-            String UUIDString = preferences.getString("student_id", "");
-            studentId = UUID.fromString(UUIDString);
-
-            myself = db.studentWithClassesDao().getStudent(studentId);
-            myClasses = myself.getClasses();
             List<Student> myClassmates = findPriorClassmates();
 
             for(Student classmate:myClassmates){
@@ -56,7 +72,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 int count = mateClasses.size();
                 classmate.setCount(count);
             }
-
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -69,6 +84,49 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
+
+        this.realListener = new MessageListener() {
+            @Override
+            public void onFound(@NonNull Message message) {
+                String messageContent = new String(message.getContent());
+                String[] decodedMessage = messageContent.split(",");
+
+                UUID studentUUID = UUID.fromString(decodedMessage[0]);
+                String name = decodedMessage[1];
+                String pictureURL = decodedMessage[2];
+
+                Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
+
+                Student classmate = new Student(studentUUID, name, image);
+                db.studentDao().insert(classmate);
+
+                for(int i = 3; i < decodedMessage.length; i+=5) {
+                    UUID classId = UUID.fromString(decodedMessage[i]);
+                    int year = Integer.parseInt(decodedMessage[i + 1]);
+                    String quarter = decodedMessage[i + 2];
+                    String subject = decodedMessage[i + 3];
+                    String courseNumber = decodedMessage[i + 4];
+
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    db.classesDao().insert(newClass);
+                }
+
+                int listPosition = calculatePosition(classmate);
+                studentsViewAdapter.addStudent(listPosition, classmate);
+            }
+
+            @Override
+            public void onLost(@NonNull Message message) {
+                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+            }
+        };
+
+        String studentUUIDString = preferences.getString("student_id", "default");
+        UUID studentUUID = UUID.fromString(studentUUIDString);
+        List<Class> classes = db.classesDao().getForStudent(studentUUID);
+
+        String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
+        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
     }
 
     protected List<Student> findPriorClassmates() {
@@ -123,8 +181,28 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     //for milestone2's turn-off button
     public void onToggle(View view) {
-        this.future.cancel(true);
-        //finish();
+        if(searching) {
+            this.onStop();
+        }
+        else {
+            this.onStart();
+        }
+
+        searching = !searching;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Nearby.getMessagesClient(this).subscribe(realListener);
+        Nearby.getMessagesClient(this).publish(myStudentData);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Nearby.getMessagesClient(this).unsubscribe(realListener);
+        Nearby.getMessagesClient(this).unpublish(myStudentData);
     }
 
     //public void
