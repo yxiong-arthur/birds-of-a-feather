@@ -20,9 +20,10 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="left"
+        android:layout_marginTop="5sp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView

@@ -24,6 +24,9 @@ public class StudentWithClasses {
         return this.student;
     }
 
+    @Override
+    public boolean equals(Object o){ return this.student.equals(o); }
+
     public UUID getId(){
         return this.student.studentId;
     }

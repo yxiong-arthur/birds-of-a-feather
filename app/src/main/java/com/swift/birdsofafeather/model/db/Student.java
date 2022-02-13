@@ -33,6 +33,7 @@ public class Student {
         this.count = 0;
     }
 
+    @Override
     public boolean equals(Object o){
         if (this == o)
             return true;

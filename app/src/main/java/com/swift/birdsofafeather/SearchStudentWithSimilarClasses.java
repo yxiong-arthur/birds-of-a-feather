@@ -72,8 +72,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     protected List<Student> findPriorClassmates() {
-        List<StudentWithClasses> studentList = db.studentWithClassesDao().getAllStudents();
-        studentList.remove(myself);
+        List<StudentWithClasses> studentList = db.studentWithClassesDao().getAllStudentsExceptFor(studentId);
 
         List<Student> commonClassmates = new ArrayList<>();
         List<StudentWithClasses> tempCommon = new ArrayList<>();

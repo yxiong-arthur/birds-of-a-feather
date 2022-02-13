@@ -69,6 +69,7 @@ public class Class {
         return this.courseNumber;
     }
 
+    @Override
     public boolean equals(Object o){
         if (this == o)
             return true;
@@ -83,6 +84,7 @@ public class Class {
                 this.courseNumber.equals(other.courseNumber);
     }
 
+    @Override
     public int hashCode(){
         String toHash = year + quarter + subject + courseNumber;
         return toHash.hashCode();
