@@ -122,10 +122,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     //for milestone2's turn-off button
-    public void onToggle(View view) {
+    /*public void onToggle(View view) {
         this.future.cancel(true);
         //finish();
-    }
+    }*/
 
     //public void
     public void onAddStudentsClicked(View view){

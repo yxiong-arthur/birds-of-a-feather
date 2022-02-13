@@ -92,7 +92,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
+        finish();
     }
 }
