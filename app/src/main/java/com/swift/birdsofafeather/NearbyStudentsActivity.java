@@ -30,6 +30,7 @@ import java.util.UUID;
 public class NearbyStudentsActivity extends AppCompatActivity {
     private static final String TAG = "BluetoothActivity";
     private MessageListener realListener;
+    private Message myStudentData;
     private AppDatabase db;
 
     @Override
@@ -71,6 +72,13 @@ public class NearbyStudentsActivity extends AppCompatActivity {
             }
         };
 
+        SharedPreferences preferences = Utils.getSharedPreferences(this.getApplicationContext());
+        String studentUUIDString = preferences.getString("student_id", "default");
+        UUID studentUUID = UUID.fromString(studentUUIDString);
+        List<Class> classes = db.classesDao().getForStudent(studentUUID);
+
+        String encodedString = Utils.encodeStudent(NearbyStudentsActivity.this) + "," + Utils.encodeClasses(classes);
+        Message myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
         //this.messageListener = new FakedMessageListener(realListener, 5, encodedString);
     }
 
@@ -78,16 +86,14 @@ public class NearbyStudentsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Nearby.getMessagesClient(this).subscribe(realListener);
-        Intent intent = new Intent(NearbyStudentsActivity.this, NotifyOtherDevicesService.class);
-        startService(intent);
+        Nearby.getMessagesClient(this).publish(myStudentData);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Nearby.getMessagesClient(this).unsubscribe(realListener);
-        Intent intent = new Intent(NearbyStudentsActivity.this, NotifyOtherDevicesService.class);
-        stopService(intent);
+        Nearby.getMessagesClient(this).unpublish(myStudentData);
     }
 }
 

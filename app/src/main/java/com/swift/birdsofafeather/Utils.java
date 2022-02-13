@@ -22,8 +22,11 @@ import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.swift.birdsofafeather.model.db.Class;
+import com.swift.birdsofafeather.model.db.Student;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,8 +39,7 @@ public class Utils {
     public static boolean isEmpty(String str) {
         if (str == null) {
             return true;
-        }
-        else return str.equals("");
+        } else return str.equals("");
     }
 
     public static int getWriteFrequency() {
@@ -56,25 +58,27 @@ public class Utils {
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
-    public static void showAlert(Activity activity, String message){
+    public static void showAlert(Activity activity, String message) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
 
         alertBuilder.setTitle("Alert!")
                 .setMessage(message)
-                .setPositiveButton("OK", (dialog, id) -> {dialog.cancel();})
+                .setPositiveButton("OK", (dialog, id) -> {
+                    dialog.cancel();
+                })
                 .setCancelable(true);
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
     }
 
-    public static SharedPreferences getSharedPreferences(Context context){
+    public static SharedPreferences getSharedPreferences(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(
                 context.getApplicationContext().getString(R.string.preference_file_key), MODE_PRIVATE);
         return preferences;
     }
 
-    public static Bitmap urlToBitmap(Context context, String URL){
+    public static Bitmap urlToBitmap(Context context, String URL) {
         ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
         Future<Bitmap> bmap;
 
@@ -102,7 +106,7 @@ public class Utils {
         return null;
     }
 
-    public static String bitmapToString(Bitmap bmap){
+    public static String bitmapToString(Bitmap bmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
@@ -112,10 +116,31 @@ public class Utils {
         return encodedImage;
     }
 
-    public static Bitmap stringToBitmap(String bmap_string){
+    public static Bitmap stringToBitmap(String bmap_string) {
         byte[] b = Base64.decode(bmap_string, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
 
         return bitmap;
+    }
+
+    public static String encodeStudent(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(
+                context.getApplicationContext().getString(R.string.preference_file_key), MODE_PRIVATE);
+
+        String studentUUIDString = preferences.getString("student_id", "default");
+        String studentName = preferences.getString("first_name", "default");
+        String photoURL = preferences.getString("image_url", "default");
+
+        return studentUUIDString + "," + studentName + "," + photoURL;
+    }
+
+    public static String encodeClasses(List<Class> classes) {
+        String res = "";
+
+        for (Class c : classes) {
+            res += "," + c;
+        }
+
+        return res;
     }
 }

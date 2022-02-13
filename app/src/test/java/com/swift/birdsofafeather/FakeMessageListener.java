@@ -8,11 +8,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class FakedMessageListener extends MessageListener {
-    private final MessageListener messageListener;
+public class FakeMessageListener extends com.google.android.gms.nearby.messages.MessageListener {
+    private final com.google.android.gms.nearby.messages.MessageListener messageListener;
     private final ScheduledExecutorService executor;
 
-    public FakedMessageListener(MessageListener realMessageListener, int frequency, String messageStr) {
+    public FakeMessageListener(com.google.android.gms.nearby.messages.MessageListener realMessageListener, int frequency, String messageStr) {
         this.messageListener = realMessageListener;
         this.executor = Executors.newSingleThreadScheduledExecutor();
 
