@@ -14,6 +14,10 @@ public interface StudentWithClassesDao {
     List<StudentWithClasses> getAllStudents();
 
     @Transaction
+    @Query("SELECT * FROM students WHERE NOT id=:id")
+    List<StudentWithClasses> getAllStudentsExceptFor(UUID id);
+
+    @Transaction
     @Query("SELECT * FROM students WHERE id=:id")
     StudentWithClasses getStudent(UUID id);
 
