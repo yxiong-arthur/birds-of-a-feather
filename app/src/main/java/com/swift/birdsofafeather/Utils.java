@@ -40,6 +40,10 @@ public class Utils {
         else return str.equals("");
     }
 
+    public static int getWriteFrequency() {
+        return 10;
+    }
+
     public static int toIntNullsafe(String str) {
         if (isEmpty(str)) {
             return 0;

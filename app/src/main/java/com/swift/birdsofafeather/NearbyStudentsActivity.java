@@ -1,6 +1,7 @@
 package com.swift.birdsofafeather;
 
 import android.app.Person;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,18 +29,16 @@ import java.util.UUID;
 
 public class NearbyStudentsActivity extends AppCompatActivity {
     private static final String TAG = "BluetoothActivity";
-    private MessageListener messageListener;
-    private Message myStudentData;
+    private MessageListener realListener;
     private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         db = AppDatabase.singleton(this);
 
-        MessageListener realListener = new MessageListener() {
+        this.realListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
                 String messageContent = new String(message.getContent());
@@ -72,37 +71,23 @@ public class NearbyStudentsActivity extends AppCompatActivity {
             }
         };
 
-        SharedPreferences preferences = Utils.getSharedPreferences(this.getApplicationContext());
-
-        String studentUUIDString = preferences.getString("student_id", "default");
-        String studentName = preferences.getString("first_name", "default");
-        String photoURL = preferences.getString("image_url", "default");
-
-        UUID studentUUID = UUID.fromString(studentUUIDString);
-        List<Class> classes = db.classesDao().getForStudent(studentUUID);
-
-        String encodedString = studentUUIDString + "," + studentName + "," + photoURL;
-
-        for(Class c : classes) {
-            encodedString += "," + c;
-        }
-
-        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
-        this.messageListener = new FakedMessageListener(realListener, 5, encodedString);
+        //this.messageListener = new FakedMessageListener(realListener, 5, encodedString);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Nearby.getMessagesClient(this).subscribe(messageListener);
-        Nearby.getMessagesClient(this).publish(myStudentData);
+        Nearby.getMessagesClient(this).subscribe(realListener);
+        Intent intent = new Intent(NearbyStudentsActivity.this, NotifyOtherDevicesService.class);
+        startService(intent);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Nearby.getMessagesClient(this).unsubscribe(messageListener);
-        Nearby.getMessagesClient(this).unpublish(myStudentData);
+        Nearby.getMessagesClient(this).unsubscribe(realListener);
+        Intent intent = new Intent(NearbyStudentsActivity.this, NotifyOtherDevicesService.class);
+        stopService(intent);
     }
 }
 
