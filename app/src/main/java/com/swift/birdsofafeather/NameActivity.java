@@ -34,9 +34,8 @@ public class NameActivity extends AppCompatActivity {
 
         saveName(enteredName);
 
-        // TODO: for dev branch to next activity
-        // Intent pictureIntent = new Intent(this, PictureActivity.class);
-        // startActivity(pictureIntent);
+        Intent photoIntent = new Intent(this, PhotoUpload.class);
+        startActivity(photoIntent);
     }
 
     protected void saveName(String enteredName){
@@ -86,7 +85,7 @@ public class NameActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 }

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
@@ -26,17 +28,22 @@ public class StudentProfileActivity extends AppCompatActivity {
     private AppDatabase db;
     private UUID studentId;
     private StudentWithClasses myself;
+    private StudentWithClasses classmate;
     private Set<Class> myClasses;
     private RecyclerView ClassesRecyclerView;
     private RecyclerView.LayoutManager classesLayoutManager;
     private ClassViewAdapter classesViewAdapter;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future future;
+    private ImageView portrait;
+    private TextView name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
+        portrait = findViewById(R.id.portrait);
+        name = findViewById(R.id.name);
 
         Intent intent = getIntent();
         UUID classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
@@ -50,8 +57,17 @@ public class StudentProfileActivity extends AppCompatActivity {
             myself = db.studentWithClassesDao().getStudent(studentId);
             myClasses = myself.getClasses();
 
+
+
             StudentWithClasses classmate = db.studentWithClassesDao().getStudent(classmateId);
             Set<Class> similarClasses = getSimilarClasses(classmate);
+
+            Student classmateStudent = classmate.getStudent();
+            this.portrait.setImageBitmap(classmateStudent.getPicture());
+            this.name.setText(classmateStudent.getName());
+
+
+
             List<Class> similarC = new ArrayList<Class>(similarClasses);
 
             runOnUiThread(() -> {
@@ -76,7 +92,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
 }

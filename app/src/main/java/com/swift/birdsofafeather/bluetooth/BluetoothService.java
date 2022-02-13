@@ -1,4 +1,4 @@
-package com.swift.birdsofafeather;
+package com.swift.birdsofafeather.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

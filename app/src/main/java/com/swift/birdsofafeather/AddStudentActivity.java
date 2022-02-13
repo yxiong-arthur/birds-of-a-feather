@@ -2,8 +2,11 @@ package com.swift.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,15 +44,20 @@ public class AddStudentActivity extends AppCompatActivity {
         UUID studentId = UUID.randomUUID();
         List<String> studentRows = Arrays.asList(studentInfo.split("\n"));
 
+        String studentName = "";
+
         for (int i = 0; i < studentRows.size(); i++) {
             List<String> studentRowData = Arrays.asList(studentRows.get(i).split("\\s*,\\s*"));
             if(i == 0){
-                String studentName = studentRowData.get(0);
-                Student student = new Student(studentId, studentName);
-                studentDao.insert(student);
+                studentName = studentRowData.get(0);
             }
             if(i == 1){
-                //handle picture url here
+                String pictureURL = studentRowData.get(0);
+                ImageView pictureView = findViewById(R.id.imageView);
+                Bitmap pictureBMap = Utils.urlToBitmap(this, pictureURL);
+
+                Student student = new Student(studentId, studentName, pictureBMap);
+                studentDao.insert(student);
             }
             if(i >= 2) {
                 String yearString = studentRowData.get(0).toString();
