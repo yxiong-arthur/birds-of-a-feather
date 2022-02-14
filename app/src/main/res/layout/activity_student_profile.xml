@@ -13,16 +13,15 @@
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.792"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/portrait"
-        app:layout_constraintVertical_bias="0.346" />
+        app:layout_constraintVertical_bias="0.405" />
 
     <Button
         android:id="@+id/backhome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="276dp"
+        android:layout_marginTop="296dp"
         android:onClick="onGoBackHome"
         android:text="Back"
         app:layout_constraintEnd_toEndOf="parent"
