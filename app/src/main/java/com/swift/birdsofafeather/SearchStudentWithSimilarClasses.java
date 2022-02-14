@@ -73,12 +73,15 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         backgroundThreadExecutor.submit(() -> {
             List<Student> myClassmates = findPriorClassmates();
 
+            /*
             for(Student classmate:myClassmates){
                 Set<Class> mateClasses = db.studentWithClassesDao().getStudent(classmate.studentId).getClasses();
                 mateClasses.retainAll(myClasses);
                 int count = mateClasses.size();
                 classmate.setCount(count);
             }
+            */
+
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -98,16 +101,19 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         List<Student> commonClassmates = new ArrayList<>();
 
-        PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(100, new StudentComparator());
+        PriorityQueue<Student> pq = new PriorityQueue<>(100, new StudentComparator());
 
         for (StudentWithClasses classmate : studentList) {
-            if (countSimilarClasses(classmate) > 0) {
-                pq.add(classmate);
+            int count = countSimilarClasses(classmate);
+
+            if (count > 0) {
+                Student student = classmate.getStudent();
+                student.setCount(count);
+                pq.add(student);
             }
         }
         while (!pq.isEmpty()) {
-            Student student = pq.poll().getStudent();
-            commonClassmates.add(student);
+            commonClassmates.add(pq.poll());
         }
 
         /*
@@ -138,9 +144,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return commonClassmates;
     }
 
-    class StudentComparator implements Comparator<StudentWithClasses> {
-        public int compare(StudentWithClasses s1, StudentWithClasses s2) {
-            if (countSimilarClasses(s1) > countSimilarClasses(s2)) {
+    class StudentComparator implements Comparator<Student> {
+        public int compare(Student s1, Student s2) {
+            if (s1.getCount() > s2.getCount()) {
                 return -1;
             }
             else {
