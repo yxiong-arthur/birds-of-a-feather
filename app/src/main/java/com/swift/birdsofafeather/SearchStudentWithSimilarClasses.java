@@ -195,11 +195,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
         myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         Nearby.getMessagesClient(this).subscribe(realListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
     }
