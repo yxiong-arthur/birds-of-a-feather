@@ -161,6 +161,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
 
+                if(db.studentDao().checkExists(studentUUID)) return;
+
                 Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
 
                 Student classmate = new Student(studentUUID, name, image);
