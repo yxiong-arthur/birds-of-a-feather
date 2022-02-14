@@ -85,48 +85,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             });
         });
 
-        this.realListener = new MessageListener() {
-            @Override
-            public void onFound(@NonNull Message message) {
-                String messageContent = new String(message.getContent());
-                String[] decodedMessage = messageContent.split(",");
-
-                UUID studentUUID = UUID.fromString(decodedMessage[0]);
-                String name = decodedMessage[1];
-                String pictureURL = decodedMessage[2];
-
-                Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
-
-                Student classmate = new Student(studentUUID, name, image);
-                db.studentDao().insert(classmate);
-
-                for(int i = 3; i < decodedMessage.length; i+=5) {
-                    UUID classId = UUID.fromString(decodedMessage[i]);
-                    int year = Integer.parseInt(decodedMessage[i + 1]);
-                    String quarter = decodedMessage[i + 2];
-                    String subject = decodedMessage[i + 3];
-                    String courseNumber = decodedMessage[i + 4];
-
-                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
-                    db.classesDao().insert(newClass);
-                }
-
-                int listPosition = calculatePosition(classmate);
-                studentsViewAdapter.addStudent(listPosition, classmate);
-            }
-
-            @Override
-            public void onLost(@NonNull Message message) {
-                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
-            }
-        };
-
-        String studentUUIDString = preferences.getString("student_id", "default");
-        UUID studentUUID = UUID.fromString(studentUUIDString);
-        List<Class> classes = db.classesDao().getForStudent(studentUUID);
-
-        String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
-        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
+        setUpNearby();
     }
 
     protected List<Student> findPriorClassmates() {
@@ -191,6 +150,53 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         searching = !searching;
     }
 
+    protected void setUpNearby(){
+        this.realListener = new MessageListener() {
+            @Override
+            public void onFound(@NonNull Message message) {
+                String messageContent = new String(message.getContent());
+                String[] decodedMessage = messageContent.split(",");
+
+                UUID studentUUID = UUID.fromString(decodedMessage[0]);
+                String name = decodedMessage[1];
+                String pictureURL = decodedMessage[2];
+
+                Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
+
+                Student classmate = new Student(studentUUID, name, image);
+                db.studentDao().insert(classmate);
+
+                for(int i = 3; i < decodedMessage.length; i+=5) {
+                    UUID classId = UUID.fromString(decodedMessage[i]);
+                    int year = Integer.parseInt(decodedMessage[i + 1]);
+                    String quarter = decodedMessage[i + 2];
+                    String subject = decodedMessage[i + 3];
+                    String courseNumber = decodedMessage[i + 4];
+
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    db.classesDao().insert(newClass);
+                }
+
+                int listPosition = calculatePosition(classmate);
+                studentsViewAdapter.addStudent(listPosition, classmate);
+            }
+
+            @Override
+            public void onLost(@NonNull Message message) {
+                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+            }
+        };
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+
+        String studentUUIDString = preferences.getString("student_id", "default");
+        UUID studentUUID = UUID.fromString(studentUUIDString);
+        List<Class> classes = db.classesDao().getForStudent(studentUUID);
+
+        String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
+        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -199,8 +205,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         Nearby.getMessagesClient(this).unsubscribe(realListener);
         Nearby.getMessagesClient(this).unpublish(myStudentData);
     }
