@@ -43,6 +43,9 @@ public class AddStudentActivity extends AppCompatActivity {
     public void onAddStudentClicked(View view) {
         TextView studentInfoTextView = findViewById(R.id.student_info);
         String studentInfo = studentInfoTextView.getText().toString();
+
+        if(Utils.isEmpty(studentInfo)) return;
+
         studentInfoTextView.setText("");
 
         UUID studentId = UUID.randomUUID();
