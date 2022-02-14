@@ -32,30 +32,15 @@ public class AddClassIntegrationTest {
     @Rule
     public ActivityScenarioRule<AddClassesActivity> scenarioRule = new ActivityScenarioRule<>(AddClassesActivity.class);
 
-    @Before
-    public void setup(){
-        Context context = ApplicationProvider.getApplicationContext();
-
-        SharedPreferences preferences = Utils.getSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        Bitmap picture = Utils.createImage(4, 4, 4);
-
-        editor.putString("first_name", "Bill");
-        editor.putString("image_data", Utils.bitmapToString(picture));
-
-        editor.apply();
-    }
-
     @Test
-    public void test_if_student_added() {
+    public void test_if_bad_initialization_fail() {
         ActivityScenario<AddClassesActivity> scenario = scenarioRule.getScenario();
         scenario.moveToState(Lifecycle.State.CREATED);
 
         scenario.onActivity(activity -> {
             AppDatabase db = AppDatabase.singleton(activity.getApplicationContext());
             int count = db.studentDao().count();
-            assertEquals(1, count);
+            assertEquals(0, count);
         });
     }
 }
