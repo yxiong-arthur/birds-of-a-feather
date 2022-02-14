@@ -38,17 +38,8 @@ public class DashboardActivityTest2 {
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
-                    //"android.permission.BLUETOOTH",
-                    //"android.permission.BLUETOOTH_ADMIN",
-                    //"android.permission.BLUETOOTH_ADVERTISE",
-                    //"android.permission.READ_CONTACTS",
-                    //"android.permission.INTERNET",
                     "android.permission.BLUETOOTH_SCAN",
                     "android.permission.BLUETOOTH_CONNECT");
-                    //"android.Manifest.permission.ACCESS_FINE_LOCATION");
-
-    //@Rule
-    //public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Test
     public void dashboardActivityTest2() {
