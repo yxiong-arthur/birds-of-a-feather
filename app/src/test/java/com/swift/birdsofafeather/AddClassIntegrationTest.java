@@ -41,10 +41,12 @@ public class AddClassIntegrationTest {
         SharedPreferences preferences = Utils.getSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
 
-        UUID currStudentId = UUID.randomUUID();
         Bitmap picture = Utils.createImage(4, 4, 4);
 
+        editor.putString("first_name", "Bill");
         editor.putString("image_data", Utils.bitmapToString(picture));
+
+        editor.apply();
 
         scenario.onActivity(activity -> {
             AppDatabase db = AppDatabase.singleton(activity.getApplicationContext());
