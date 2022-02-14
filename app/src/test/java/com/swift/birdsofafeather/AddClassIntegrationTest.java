@@ -1,5 +1,6 @@
 package com.swift.birdsofafeather;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,11 +32,8 @@ public class AddClassIntegrationTest {
     @Rule
     public ActivityScenarioRule<AddClassesActivity> scenarioRule = new ActivityScenarioRule<>(AddClassesActivity.class);
 
-    @Test
-    public void test_if_student_added() {
-        ActivityScenario<AddClassesActivity> scenario = scenarioRule.getScenario();
-        scenario.moveToState(Lifecycle.State.CREATED);
-
+    @Before
+    public void setup(){
         Context context = ApplicationProvider.getApplicationContext();
 
         SharedPreferences preferences = Utils.getSharedPreferences(context);
@@ -47,6 +45,12 @@ public class AddClassIntegrationTest {
         editor.putString("image_data", Utils.bitmapToString(picture));
 
         editor.apply();
+    }
+
+    @Test
+    public void test_if_student_added() {
+        ActivityScenario<AddClassesActivity> scenario = scenarioRule.getScenario();
+        scenario.moveToState(Lifecycle.State.CREATED);
 
         scenario.onActivity(activity -> {
             AppDatabase db = AppDatabase.singleton(activity.getApplicationContext());
