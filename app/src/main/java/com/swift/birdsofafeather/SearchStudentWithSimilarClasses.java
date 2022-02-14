@@ -24,7 +24,9 @@ import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -71,12 +73,15 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         backgroundThreadExecutor.submit(() -> {
             List<Student> myClassmates = findPriorClassmates();
 
+            /*
             for(Student classmate:myClassmates){
                 Set<Class> mateClasses = db.studentWithClassesDao().getStudent(classmate.studentId).getClasses();
                 mateClasses.retainAll(myClasses);
                 int count = mateClasses.size();
                 classmate.setCount(count);
             }
+            */
+
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -95,6 +100,23 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         List<StudentWithClasses> studentList = db.studentWithClassesDao().getAllStudentsExceptFor(studentId);
 
         List<Student> commonClassmates = new ArrayList<>();
+
+        PriorityQueue<Student> pq = new PriorityQueue<>(100, new StudentComparator());
+
+        for (StudentWithClasses classmate : studentList) {
+            int count = countSimilarClasses(classmate);
+
+            if (count > 0) {
+                Student student = classmate.getStudent();
+                student.setCount(count);
+                pq.add(student);
+            }
+        }
+        while (!pq.isEmpty()) {
+            commonClassmates.add(pq.poll());
+        }
+
+        /*
         List<StudentWithClasses> tempCommon = new ArrayList<>();
 
         for (StudentWithClasses classmate : studentList) {
@@ -117,8 +139,20 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 }
             }
         }
+         */
 
         return commonClassmates;
+    }
+
+    class StudentComparator implements Comparator<Student> {
+        public int compare(Student s1, Student s2) {
+            if (s1.getCount() > s2.getCount()) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){

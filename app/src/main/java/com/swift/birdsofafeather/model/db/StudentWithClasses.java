@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class StudentWithClasses {
+public class StudentWithClasses{
     @Embedded
     public Student student;
 
@@ -46,4 +46,5 @@ public class StudentWithClasses {
     public Set<Class> getClasses() {
         return new HashSet<>(this.classes);
     }
+
 }
