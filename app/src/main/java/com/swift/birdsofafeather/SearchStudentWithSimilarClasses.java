@@ -227,4 +227,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
         startActivity(addStudentsIntent);
     }
+
+    public void onRefresh(View view){
+        Intent a = new Intent(this,SearchStudentWithSimilarClasses.class );
+        startActivity(a);
+    }
 }
