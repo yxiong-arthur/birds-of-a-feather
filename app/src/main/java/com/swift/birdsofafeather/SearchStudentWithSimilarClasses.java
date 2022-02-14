@@ -24,7 +24,9 @@ import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -95,6 +97,20 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         List<StudentWithClasses> studentList = db.studentWithClassesDao().getAllStudentsExceptFor(studentId);
 
         List<Student> commonClassmates = new ArrayList<>();
+
+        PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(100, new StudentComparator());
+
+        for (StudentWithClasses classmate : studentList) {
+            if (countSimilarClasses(classmate) > 0) {
+                pq.add(classmate);
+            }
+        }
+        while (!pq.isEmpty()) {
+            Student student = pq.poll().getStudent();
+            commonClassmates.add(student);
+        }
+
+        /*
         List<StudentWithClasses> tempCommon = new ArrayList<>();
 
         for (StudentWithClasses classmate : studentList) {
@@ -117,8 +133,20 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 }
             }
         }
+         */
 
         return commonClassmates;
+    }
+
+    class StudentComparator implements Comparator<StudentWithClasses> {
+        public int compare(StudentWithClasses s1, StudentWithClasses s2) {
+            if (countSimilarClasses(s1) > countSimilarClasses(s2)) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){
