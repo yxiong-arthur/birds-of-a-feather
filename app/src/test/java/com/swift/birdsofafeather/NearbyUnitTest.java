@@ -68,6 +68,7 @@ public class NearbyUnitTest {
 
                 for(int i = 3; i < decodedMessage.length; i+=5) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
+
                     int year = Integer.parseInt(decodedMessage[i + 1]);
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
@@ -105,12 +106,12 @@ public class NearbyUnitTest {
         List<Class> classes = db.classesDao().getAllClasses();
 
         Student first = students.get(0);
-        Class c1 = classes.get(0).getQuarter().equals("winter") ? classes.get(0) : classes.get(1);
-        Class c2 = classes.get(0).getQuarter().equals("winter") ? classes.get(1) : classes.get(0);
+        Class c1 = classes.get(0).getQuarter().equals("wi") ? classes.get(0) : classes.get(1);
+        Class c2 = classes.get(0).getQuarter().equals("wi") ? classes.get(1) : classes.get(0);
 
         assertEquals(1, students.size());
         assertEquals("Travis", first.getName());
-        assertEquals("winter", c1.getQuarter());
+        assertEquals("wi", c1.getQuarter());
         assertEquals("130", c1.getCourseNumber());
         assertEquals(2, classes.size());
 
@@ -126,21 +127,21 @@ public class NearbyUnitTest {
         Student testStudent = new Student(randomUUID, testName, testImage);
 
         UUID id1 = UUID.randomUUID();
-        String quarter = "fall";
+        String quarter = "fa";
         int year = 2007;
         String courseNumber = "110";
         String subject = "cse";
         Class class1 = new Class(id1, randomUUID, year, quarter, subject, courseNumber);
 
         UUID id2 = UUID.randomUUID();
-        String quarter2 = "winter";
+        String quarter2 = "wi";
         int year2 = 2007;
         String courseNumber2 = "130";
         String subject2 = "cse";
         Class class2 = new Class(id2, randomUUID, year2, quarter2, subject2, courseNumber2);
 
         String encodeMessage = randomUUID.toString() + "," + testName + "," + pictureURL
-                + testStudent.toString() + "," + class1.toString() + "," + class2.toString();
+                + "," + class1.toString() + "," + class2.toString();
         return encodeMessage;
     }
 
