@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
@@ -139,12 +140,16 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     //for milestone2's turn-off button
-    public void onToggle(View view) {
+    public void onToggleClicked(View view) {
+        Button toggle_button = findViewById(R.id.toggle_search_button);
+
         if(searching) {
-            this.onStop();
+            this.stopNearby();
+            toggle_button.setText("Start Search");
         }
         else {
-            this.onStart();
+            this.startNearby();
+            toggle_button.setText("Stop Search");
         }
 
         searching = !searching;
@@ -198,15 +203,23 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
         myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
 
+        startNearby();
+    }
+
+    protected void startNearby(){
         Nearby.getMessagesClient(this).subscribe(realListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
+    }
+
+    protected void stopNearby(){
+        Nearby.getMessagesClient(this).unsubscribe(realListener);
+        Nearby.getMessagesClient(this).unpublish(myStudentData);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Nearby.getMessagesClient(this).unsubscribe(realListener);
-        Nearby.getMessagesClient(this).unpublish(myStudentData);
+        stopNearby();
     }
 
     //public void
