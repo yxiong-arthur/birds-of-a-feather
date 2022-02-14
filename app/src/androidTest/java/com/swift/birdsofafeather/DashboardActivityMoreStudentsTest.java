@@ -2,7 +2,6 @@ package com.swift.birdsofafeather;
 
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
@@ -35,7 +34,7 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class DashboardActivityAddStudentTest {
+public class DashboardActivityMoreStudentsTest {
 
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
@@ -47,7 +46,7 @@ public class DashboardActivityAddStudentTest {
                     "android.permission.BLUETOOTH_CONNECT");
 
     @Test
-    public void dashboardActivityAddStudentTest() {
+    public void dashboardActivityMoreStudentsTest() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.first_name_textview),
                         childAtPosition(
@@ -66,7 +65,7 @@ public class DashboardActivityAddStudentTest {
                                         0),
                                 0),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("Emily"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText("Darren"), closeSoftKeyboard());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.submit_name_button), withText("Confirm"),
@@ -88,16 +87,6 @@ public class DashboardActivityAddStudentTest {
                         isDisplayed()));
         appCompatEditText3.perform(longClick());
 
-        ViewInteraction linearLayout = onView(
-                allOf(withContentDescription("Paste"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.RelativeLayout")),
-                                        1),
-                                0),
-                        isDisplayed()));
-        linearLayout.perform(click());
-
         ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.photoUploadURL),
                         childAtPosition(
@@ -106,7 +95,7 @@ public class DashboardActivityAddStudentTest {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText4.perform(replaceText("https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("s"), closeSoftKeyboard());
 
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.loadPhotoButton), withText("Load"),
@@ -188,7 +177,37 @@ public class DashboardActivityAddStudentTest {
                         isDisplayed()));
         materialButton5.perform(click());
 
+        ViewInteraction appCompatEditText9 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("105"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText9.perform(replaceText("101"));
+
+        ViewInteraction appCompatEditText10 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("101"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText10.perform(closeSoftKeyboard());
+
         ViewInteraction materialButton6 = onView(
+                allOf(withId(R.id.enter_button), withText("Enter"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton6.perform(click());
+
+        ViewInteraction materialButton7 = onView(
                 allOf(withId(R.id.done_button), withText("done"),
                         childAtPosition(
                                 childAtPosition(
@@ -196,9 +215,9 @@ public class DashboardActivityAddStudentTest {
                                         0),
                                 3),
                         isDisplayed()));
-        materialButton6.perform(click());
+        materialButton7.perform(click());
 
-        ViewInteraction materialButton7 = onView(
+        ViewInteraction materialButton8 = onView(
                 allOf(withId(R.id.add_students_button), withText("Add Students"),
                         childAtPosition(
                                 childAtPosition(
@@ -206,9 +225,9 @@ public class DashboardActivityAddStudentTest {
                                         0),
                                 1),
                         isDisplayed()));
-        materialButton7.perform(click());
+        materialButton8.perform(click());
 
-        ViewInteraction appCompatEditText9 = onView(
+        ViewInteraction appCompatEditText11 = onView(
                 allOf(withId(R.id.student_info),
                         childAtPosition(
                                 allOf(withId(R.id.scrollView2),
@@ -216,17 +235,98 @@ public class DashboardActivityAddStudentTest {
                                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                                 1)),
                                 0)));
-        appCompatEditText9.perform(scrollTo(), replaceText("Mark,,,\n"), closeSoftKeyboard());
+        appCompatEditText11.perform(scrollTo(), replaceText("Arthur,,,\n"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText10 = onView(
-                allOf(withId(R.id.student_info), withText("Mark,,,\n"),
+        ViewInteraction appCompatEditText12 = onView(
+                allOf(withId(R.id.student_info), withText("Arthur,,,\n"),
                         childAtPosition(
                                 allOf(withId(R.id.scrollView2),
                                         childAtPosition(
                                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                                 1)),
                                 0)));
-        appCompatEditText10.perform(scrollTo(), longClick());
+        appCompatEditText12.perform(scrollTo(), longClick());
+
+        ViewInteraction linearLayout = onView(
+                allOf(withContentDescription("Paste"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.RelativeLayout")),
+                                        1),
+                                0),
+                        isDisplayed()));
+        linearLayout.perform(click());
+
+        ViewInteraction appCompatEditText13 = onView(
+                allOf(withId(R.id.student_info), withText("Arthur,,,\n"),
+                        childAtPosition(
+                                allOf(withId(R.id.scrollView2),
+                                        childAtPosition(
+                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                1)),
+                                0)));
+        appCompatEditText13.perform(scrollTo(), replaceText("Arthur,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,CSE,110"));
+
+        ViewInteraction appCompatEditText14 = onView(
+                allOf(withId(R.id.student_info), withText("Arthur,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,CSE,110"),
+                        childAtPosition(
+                                allOf(withId(R.id.scrollView2),
+                                        childAtPosition(
+                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        appCompatEditText14.perform(closeSoftKeyboard());
+
+        ViewInteraction materialButton9 = onView(
+                allOf(withId(R.id.add_student_button), withText("Add Student"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton9.perform(click());
+
+        ViewInteraction materialButton10 = onView(
+                allOf(withId(R.id.back_button), withText("Back"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton10.perform(click());
+
+        ViewInteraction materialButton11 = onView(
+                allOf(withId(R.id.add_students_button), withText("Add Students"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        materialButton11.perform(click());
+
+        ViewInteraction appCompatEditText15 = onView(
+                allOf(withId(R.id.student_info),
+                        childAtPosition(
+                                allOf(withId(R.id.scrollView2),
+                                        childAtPosition(
+                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                1)),
+                                0)));
+        appCompatEditText15.perform(scrollTo(), replaceText("Cecilia,,,\n"), closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText16 = onView(
+                allOf(withId(R.id.student_info), withText("Cecilia,,,\n"),
+                        childAtPosition(
+                                allOf(withId(R.id.scrollView2),
+                                        childAtPosition(
+                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                1)),
+                                0)));
+        appCompatEditText16.perform(scrollTo(), longClick());
 
         ViewInteraction linearLayout2 = onView(
                 allOf(withContentDescription("Paste"),
@@ -238,130 +338,18 @@ public class DashboardActivityAddStudentTest {
                         isDisplayed()));
         linearLayout2.perform(click());
 
-        ViewInteraction appCompatEditText11 = onView(
-                allOf(withId(R.id.student_info), withText("Mark,,,\n"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText11.perform(scrollTo(), replaceText("Mark,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,110"));
-
-        ViewInteraction appCompatEditText12 = onView(
-                allOf(withId(R.id.student_info), withText("Mark,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,110"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        appCompatEditText12.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText13 = onView(
-                allOf(withId(R.id.student_info), withText("Mark,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,110"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText13.perform(scrollTo(), click());
-
-        ViewInteraction appCompatEditText14 = onView(
-                allOf(withId(R.id.student_info), withText("Mark,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,110"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText14.perform(scrollTo(), replaceText("Mark,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,CSE,110"));
-
-        ViewInteraction appCompatEditText15 = onView(
-                allOf(withId(R.id.student_info), withText("Mark,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,CSE,110"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        appCompatEditText15.perform(closeSoftKeyboard());
-
-        ViewInteraction materialButton8 = onView(
-                allOf(withId(R.id.add_student_button), withText("Add Student"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        materialButton8.perform(click());
-
-        ViewInteraction materialButton9 = onView(
-                allOf(withId(R.id.back_button), withText("Back"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton9.perform(click());
-
-        ViewInteraction materialButton10 = onView(
-                allOf(withId(R.id.add_students_button), withText("Add Students"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        materialButton10.perform(click());
-
-        ViewInteraction appCompatEditText16 = onView(
-                allOf(withId(R.id.student_info),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText16.perform(scrollTo(), replaceText("Bill,,,\n"), closeSoftKeyboard());
-
         ViewInteraction appCompatEditText17 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\n"),
+                allOf(withId(R.id.student_info), withText("Cecilia,,,\n"),
                         childAtPosition(
                                 allOf(withId(R.id.scrollView2),
                                         childAtPosition(
                                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                                 1)),
                                 0)));
-        appCompatEditText17.perform(scrollTo(), longClick());
-
-        ViewInteraction linearLayout3 = onView(
-                allOf(withContentDescription("Paste"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.RelativeLayout")),
-                                        1),
-                                0),
-                        isDisplayed()));
-        linearLayout3.perform(click());
+        appCompatEditText17.perform(scrollTo(), replaceText("Cecilia,,,\nhttps://images.unsplash.com/photo-1604675223954-b1aabd668078?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80,,,\n2022,FA,CSE,110\n2022,FA,CSE,101"));
 
         ViewInteraction appCompatEditText18 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\n"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText18.perform(scrollTo(), replaceText("Bill,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,CSE,110\n2022,FA,CSE,105"));
-
-        ViewInteraction appCompatEditText19 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\nhttps://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Y3V0ZSUyMGNhdHxlbnwwfHwwfHw%3D&w=1000&q=80,,,\n2022,FA,CSE,110\n2022,FA,CSE,105"),
+                allOf(withId(R.id.student_info), withText("Cecilia,,,\nhttps://images.unsplash.com/photo-1604675223954-b1aabd668078?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80,,,\n2022,FA,CSE,110\n2022,FA,CSE,101"),
                         childAtPosition(
                                 allOf(withId(R.id.scrollView2),
                                         childAtPosition(
@@ -369,32 +357,20 @@ public class DashboardActivityAddStudentTest {
                                                 1)),
                                 0),
                         isDisplayed()));
-        appCompatEditText19.perform(closeSoftKeyboard());
+        appCompatEditText18.perform(closeSoftKeyboard());
 
-        ViewInteraction materialButton11 = onView(
+        ViewInteraction materialButton12 = onView(
                 allOf(withId(R.id.add_student_button), withText("Add Student"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 2),
-                        isDisplayed()));
-        materialButton11.perform(click());
-
-        ViewInteraction materialButton12 = onView(
-                allOf(withId(R.id.back_button), withText("Back"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
                         isDisplayed()));
         materialButton12.perform(click());
 
-        pressBack();
-
         ViewInteraction materialButton13 = onView(
-                allOf(withId(R.id.done_button), withText("done"),
+                allOf(withId(R.id.back_button), withText("Back"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
