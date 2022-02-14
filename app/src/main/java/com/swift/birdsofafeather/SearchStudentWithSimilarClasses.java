@@ -46,7 +46,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private RecyclerView.LayoutManager studentsLayoutManager;
     private StudentViewAdapter studentsViewAdapter;
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Future future;
 
     private boolean searching = false;
 
@@ -64,7 +63,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         myself = db.studentWithClassesDao().getStudent(studentId);
         myClasses = myself.getClasses();
 
-        this.future = backgroundThreadExecutor.submit(() -> {
+        backgroundThreadExecutor.submit(() -> {
             List<Student> myClassmates = findPriorClassmates();
 
             for(Student classmate:myClassmates){
@@ -87,6 +86,30 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         });
 
         setUpNearby();
+    }
+
+    protected void refreshRecycler(){
+        backgroundThreadExecutor.submit(() -> {
+            List<Student> myClassmates = findPriorClassmates();
+
+            for(Student classmate:myClassmates){
+                Set<Class> mateClasses = db.studentWithClassesDao().getStudent(classmate.studentId).getClasses();
+                mateClasses.retainAll(myClasses);
+                int count = mateClasses.size();
+                classmate.setCount(count);
+            }
+
+            runOnUiThread(() -> {
+                // Set up the recycler view to show our database contents
+                studentsRecyclerView = findViewById(R.id.persons_view);
+
+                studentsLayoutManager = new LinearLayoutManager(this);
+                studentsRecyclerView.setLayoutManager(studentsLayoutManager);
+
+                studentsViewAdapter = new StudentViewAdapter(myClassmates);
+                studentsRecyclerView.setAdapter(studentsViewAdapter);
+            });
+        });
     }
 
     protected List<Student> findPriorClassmates() {
@@ -202,8 +225,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
         myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
-
-        startNearby();
     }
 
     protected void startNearby(){
@@ -222,6 +243,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         stopNearby();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshRecycler();
+    }
+
     //public void
     public void onAddStudentsClicked(View view){
         Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
@@ -229,7 +256,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     public void onRefresh(View view){
-        Intent a = new Intent(this,SearchStudentWithSimilarClasses.class );
-        startActivity(a);
+        refreshRecycler();
     }
 }
