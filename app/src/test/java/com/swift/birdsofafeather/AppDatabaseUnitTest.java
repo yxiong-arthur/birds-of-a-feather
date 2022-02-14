@@ -48,19 +48,10 @@ public class AppDatabaseUnitTest {
         db.close();
     }
 
-    public static Bitmap createImage(int width, int height, int color) {
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        paint.setColor(color);
-        canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
-        return bitmap;
-    }
-
     @Test
     public void insertStudentCheckExistence() throws Exception {
         UUID currStudentId = UUID.randomUUID();
-        Bitmap picture = createImage(4, 4, 4);
+        Bitmap picture = Utils.createImage(4, 4, 4);
         Student student = new Student(currStudentId, "Test", picture);
 
         assertEquals(0, studentDao.count());
@@ -80,7 +71,7 @@ public class AppDatabaseUnitTest {
     public void insertStudentInsertClassCheckExistence() throws Exception {
         UUID currStudentId = UUID.randomUUID();
         UUID currClassId = UUID.randomUUID();
-        Bitmap picture = createImage(4, 4, 4);
+        Bitmap picture = Utils.createImage(4, 4, 4);
         Student student = new Student(currStudentId, "Test", picture);
         studentDao.insert(student);
 
