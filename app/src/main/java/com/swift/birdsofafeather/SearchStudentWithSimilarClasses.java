@@ -63,28 +63,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         myself = db.studentWithClassesDao().getStudent(studentId);
         myClasses = myself.getClasses();
 
-        backgroundThreadExecutor.submit(() -> {
-            List<Student> myClassmates = findPriorClassmates();
-
-            for(Student classmate:myClassmates){
-                Set<Class> mateClasses = db.studentWithClassesDao().getStudent(classmate.studentId).getClasses();
-                mateClasses.retainAll(myClasses);
-                int count = mateClasses.size();
-                classmate.setCount(count);
-            }
-
-            runOnUiThread(() -> {
-                // Set up the recycler view to show our database contents
-                studentsRecyclerView = findViewById(R.id.persons_view);
-
-                studentsLayoutManager = new LinearLayoutManager(this);
-                studentsRecyclerView.setLayoutManager(studentsLayoutManager);
-
-                studentsViewAdapter = new StudentViewAdapter(myClassmates);
-                studentsRecyclerView.setAdapter(studentsViewAdapter);
-            });
-        });
-
+        refreshRecycler();
         setUpNearby();
     }
 
