@@ -125,8 +125,7 @@ public class Utils {
     }
 
     public static String encodeStudent(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(
-                context.getApplicationContext().getString(R.string.preference_file_key), MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(context);
 
         String studentUUIDString = preferences.getString("student_id", "default");
         String studentName = preferences.getString("first_name", "default");
