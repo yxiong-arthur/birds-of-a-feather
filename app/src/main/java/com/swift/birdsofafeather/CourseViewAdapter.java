@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
+import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
@@ -20,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 
 public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.ViewHolder> {
-    private final List<Course> courses;
+    private final List<Session> courses;
 
-    public CourseViewAdapter(List<Course> courses) {
+    public CourseViewAdapter(List<Session> courses) {
         super();
         this.courses = courses;
     }
@@ -49,7 +50,7 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView courseNameView;
-        private Course course;
+        private Session course;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -58,7 +59,7 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
         }
 
 
-        public void setCourse(Course course) {
+        public void setCourse(Session course) {
             this.course = course;
             this.courseNameView.setText(course.getName());
         }

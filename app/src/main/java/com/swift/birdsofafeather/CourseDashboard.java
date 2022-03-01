@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
+import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
@@ -47,7 +48,7 @@ public class CourseDashboard  extends AppCompatActivity {
 
             //myself = db.studentWithClassesDao().getStudent(studentId);
             //myClasses = myself.getClasses();
-            List<Course> myCourses;
+            List<Session> myCourses = db.sessionDao().getAllSessions();
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -56,7 +57,7 @@ public class CourseDashboard  extends AppCompatActivity {
                 courseLayoutManager = new LinearLayoutManager(this);
                 courseRecyclerView.setLayoutManager(courseLayoutManager);
 
-                courseViewAdapter = new StudentViewAdapter(myCourses);
+                courseViewAdapter = new CourseViewAdapter(myCourses);
                 courseRecyclerView.setAdapter(courseViewAdapter);
             });
         });
