@@ -49,6 +49,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
 
     private boolean searching = false;
+    private boolean startSearch = false;
+    private boolean stopSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,20 +154,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     protected void onStartClicked(){
         Button toggle_button = findViewById(R.id.toggle_search_button);
-        this.startNearby();
-
-
-
         toggle_button.setText("Stop Search");
+        this.startSearch = true;
+
+        // put start page code here
     }
 
     protected void onStopClicked(){
         Button toggle_button = findViewById(R.id.toggle_search_button);
-        this.stopNearby();
-
-
-
         toggle_button.setText("Start Search");
+        this.stopSearch = true;
+
+        // put stop page code here
     }
 
     protected void setUpNearby(){
@@ -236,6 +236,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(this.startSearch){
+            this.startNearby();
+            this.startSearch = false;
+        }
+        if(this.stopSearch){
+            this.stopNearby();
+            this.stopSearch = false;
+        }
         refreshRecycler();
     }
 
