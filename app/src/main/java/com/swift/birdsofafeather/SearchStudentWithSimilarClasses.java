@@ -105,32 +105,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         while (!pq.isEmpty()) {
             commonClassmates.add(pq.poll());
         }
-
-        /*
-        List<StudentWithClasses> tempCommon = new ArrayList<>();
-
-        for (StudentWithClasses classmate : studentList) {
-
-            if(countSimilarClasses(classmate) > 0) {
-                if(commonClassmates.size() == 0) {
-                    commonClassmates.add(classmate.getStudent());
-                    tempCommon.add(classmate);
-                } else if (countSimilarClasses(classmate) < countSimilarClasses(tempCommon.get(tempCommon.size()-1))) {
-                    commonClassmates.add(classmate.getStudent());
-                    tempCommon.add(classmate);
-                } else{
-                    for(int i=0; i<commonClassmates.size(); i++) {
-                        if(countSimilarClasses(classmate) >= countSimilarClasses(tempCommon.get(i))) {
-                            commonClassmates.add(i,classmate.getStudent());
-                            tempCommon.add(i,classmate);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-         */
-
         return commonClassmates;
     }
 
