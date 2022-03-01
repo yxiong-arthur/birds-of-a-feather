@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@DatabaseView
 public class StudentWithClasses{
     @Embedded
     public Student student;
