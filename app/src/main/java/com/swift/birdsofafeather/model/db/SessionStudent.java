@@ -13,12 +13,8 @@ import java.util.UUID;
 @Entity(tableName = "sessions-students", foreignKeys = {
         @ForeignKey(entity = Student.class, parentColumns = "student_id",childColumns = "student_id"),
         @ForeignKey(entity = Session.class, parentColumns = "session_id",childColumns = "session_id")
-        })
+        }, primaryKeys = {"session_id", "student_id"})
 public class SessionStudent {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "row_id")
-    public long sessionStudentId;
-
     @NonNull
     @ColumnInfo(name = "session_id")
     public UUID sessionId;
