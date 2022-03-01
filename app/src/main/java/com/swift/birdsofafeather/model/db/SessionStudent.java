@@ -15,12 +15,10 @@ import java.util.UUID;
         @ForeignKey(entity = Session.class, parentColumns = "session_id",childColumns = "session_id")
         })
 public class SessionStudent {
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "session_id")
     public UUID sessionId;
 
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "student_id")
     public UUID studentId;
