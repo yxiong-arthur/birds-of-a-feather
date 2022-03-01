@@ -3,6 +3,7 @@ package com.swift.birdsofafeather.model.db;
 import android.graphics.Bitmap;
 import android.media.Image;
 
+import androidx.room.DatabaseView;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@DatabaseView
 public class StudentWithClasses{
     @Embedded
     public Student student;

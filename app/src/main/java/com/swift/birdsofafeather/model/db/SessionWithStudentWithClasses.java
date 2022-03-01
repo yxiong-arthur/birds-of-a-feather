@@ -12,8 +12,7 @@ public class SessionWithStudentWithClasses {
 
     @Relation(parentColumn="session_id",
                 entityColumn="session_id",
-                associateBy=@Junction(SessionStudent.class),
-                entity=Student.class)
+                associateBy=@Junction(SessionStudent.class))
     public List<StudentWithClasses> students;
 
     public Session getSession() {
