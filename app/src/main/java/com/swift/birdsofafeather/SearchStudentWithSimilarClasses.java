@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private static final String TAG = "BluetoothActivity";
@@ -97,7 +96,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             int count = countSimilarClasses(classmate);
 
             Student student = classmate.getStudent();
-            student.setCount(count);
+            student.setScore(count);
 
             if (count > 0) {
                 pq.add(student);
@@ -137,7 +136,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     class StudentComparator implements Comparator<Student> {
         public int compare(Student s1, Student s2) {
-            if (s1.getCount() > s2.getCount()) {
+            if (s1.getScore() > s2.getScore()) {
                 return -1;
             }
             else {

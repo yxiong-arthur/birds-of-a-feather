@@ -24,13 +24,13 @@ public class Student {
     public Bitmap picture;
 
     @Ignore
-    public int count;
+    public int score;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
-        this.count = 0;
+        this.score = 0;
     }
 
     @Override
@@ -61,11 +61,11 @@ public class Student {
         return studentId + "," + name;
     }
 
-    public int getCount() {
-        return count;
+    public int getScore() {
+        return score;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setScore(int score) {
+        this.score = score;
     }
 }
