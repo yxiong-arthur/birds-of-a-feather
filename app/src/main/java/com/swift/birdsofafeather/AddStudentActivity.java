@@ -1,5 +1,6 @@
 package com.swift.birdsofafeather;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
@@ -10,12 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.ClassesDao;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentDao;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,12 +43,17 @@ public class AddStudentActivity extends AppCompatActivity {
     public void onAddStudentClicked(View view) {
         TextView studentInfoTextView = findViewById(R.id.student_info);
         String studentInfo = studentInfoTextView.getText().toString();
+
+        if(Utils.isEmpty(studentInfo)) return;
+
         studentInfoTextView.setText("");
 
         UUID studentId = UUID.randomUUID();
         List<String> studentRows = Arrays.asList(studentInfo.split("\n"));
 
         String studentName = "";
+
+        String encodedString = "";
 
         for (int i = 0; i < studentRows.size(); i++) {
             List<String> studentRowData = Arrays.asList(studentRows.get(i).split("\\s*,\\s*"));
@@ -57,7 +66,8 @@ public class AddStudentActivity extends AppCompatActivity {
                 Bitmap pictureBMap = Utils.urlToBitmap(this, pictureURL);
 
                 Student student = new Student(studentId, studentName, pictureBMap);
-                studentDao.insert(student);
+                encodedString += student + "," + pictureURL;
+                // studentDao.insert(student);
             }
             if(i >= 2) {
                 String yearString = studentRowData.get(0).toString();
@@ -76,11 +86,46 @@ public class AddStudentActivity extends AppCompatActivity {
                     UUID newClassId = UUID.randomUUID();
 
                     Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
-                    db.classesDao().insert(newClass);
+                    encodedString += "," + newClass;
+                    //db.classesDao().insert(newClass);
                 }
             }
         }
 
+        MessageListener messageListener = new MessageListener() {
+            @Override
+            public void onFound(@NonNull Message message) {
+                String messageContent = new String(message.getContent());
+                String[] decodedMessage = messageContent.split(",");
+
+                UUID studentUUID = UUID.fromString(decodedMessage[0]);
+                String name = decodedMessage[1];
+                String pictureURL = decodedMessage[2];
+                Bitmap image = Utils.urlToBitmap(AddStudentActivity.this, pictureURL);
+
+
+                Student classmate = new Student(studentUUID, name, image);
+                db.studentDao().insert(classmate);
+
+                for(int i = 3; i < decodedMessage.length; i+=5) {
+                    UUID classId = UUID.fromString(decodedMessage[i]);
+                    int year = Integer.parseInt(decodedMessage[i + 1]);
+                    String quarter = decodedMessage[i + 2];
+                    String subject = decodedMessage[i + 3];
+                    String courseNumber = decodedMessage[i + 4];
+
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    db.classesDao().insert(newClass);
+                }
+            }
+
+            @Override
+            public void onLost(@NonNull Message message) {
+                //Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+            }
+        };
+
+        FakeMessageListener studentBeacon = new FakeMessageListener(messageListener, 3, encodedString);
         Toast.makeText(getApplicationContext(), "Added student with classes", Toast.LENGTH_SHORT).show();
     }
 

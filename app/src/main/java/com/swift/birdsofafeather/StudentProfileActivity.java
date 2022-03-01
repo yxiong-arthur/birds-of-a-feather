@@ -17,6 +17,7 @@ import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -66,9 +67,8 @@ public class StudentProfileActivity extends AppCompatActivity {
             this.portrait.setImageBitmap(classmateStudent.getPicture());
             this.name.setText(classmateStudent.getName());
 
-
-
             List<Class> similarC = new ArrayList<Class>(similarClasses);
+            Collections.sort(similarC);
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -92,7 +92,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
+        finish();
     }
 }

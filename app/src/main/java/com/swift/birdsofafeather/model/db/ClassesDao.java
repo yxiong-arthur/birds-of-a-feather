@@ -18,8 +18,8 @@ public interface ClassesDao {
     @Query("SELECT * FROM classes WHERE student_id=:studentId")
     List<Class> getForStudent(UUID studentId);
 
-    @Query("SELECT * FROM classes WHERE id=:id")
-    Class getClass(UUID id);
+    @Query("SELECT * FROM classes WHERE class_id=:classId")
+    Class getClass(UUID classId);
 
     @Query("SELECT COUNT(*) FROM classes")
     int count();
@@ -34,6 +34,9 @@ public interface ClassesDao {
 
     @Insert
     void insert(Class toInsert);
+
+    @Query("DELETE FROM classes WHERE NOT student_id=:studentId")
+    void deleteExceptStudent(UUID studentId);
 
     @Query("DELETE FROM classes")
     void nukeTable();
