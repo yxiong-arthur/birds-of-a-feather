@@ -30,12 +30,6 @@ public class Session {
         this.name = this.timeCreated.toString();
     }
 
-    public Session(UUID sessionId, String name){
-        this.sessionId = sessionId;
-        this.name = name;
-        this.timeCreated = new Date();
-    }
-
     public UUID getId() {
         return sessionId;
     }
