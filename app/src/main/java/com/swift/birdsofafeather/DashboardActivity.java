@@ -70,5 +70,10 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onFavStudentClicked(View view) {
+        Intent intent = new Intent(this, FavStudentListActivity.class);
+        startActivity(intent);
+    }
+
 }
 
