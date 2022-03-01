@@ -16,10 +16,7 @@ import java.util.UUID;
 
 @Entity(tableName = "classes", foreignKeys = {
         @ForeignKey(onDelete = CASCADE,entity = Student.class,
-                parentColumns = "id",childColumns = "student_id")
-        },
-        indices = {
-                @Index("student_id"),
+                parentColumns = "student_id",childColumns = "student_id")
         })
 public class Class implements Comparable{
     @PrimaryKey
