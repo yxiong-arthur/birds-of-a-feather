@@ -15,6 +15,10 @@ import java.util.UUID;
         @ForeignKey(entity = Session.class, parentColumns = "session_id",childColumns = "session_id")
         })
 public class SessionStudent {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "row_id")
+    public long sessionStudentId;
+
     @NonNull
     @ColumnInfo(name = "session_id")
     public UUID sessionId;
