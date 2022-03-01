@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.UUID;
@@ -15,7 +16,12 @@ import java.util.UUID;
             @ForeignKey(entity = Student.class, parentColumns = "student_id",childColumns = "student_id"),
             @ForeignKey(entity = Session.class, parentColumns = "session_id",childColumns = "session_id")
         },
-        primaryKeys = {"session_id", "student_id"})
+        primaryKeys = {
+            "session_id", "student_id"
+        },
+        indices = {
+            @Index("student_id")
+        })
 public class SessionStudent {
     @NonNull
     @ColumnInfo(name = "session_id")

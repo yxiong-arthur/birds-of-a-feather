@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Dao
-public interface SessionWithStudentWithClassesDao {
+public interface SessionWithStudentsDao {
     @Transaction
     @Query("SELECT * FROM sessions")
-    List<SessionWithStudentWithClasses> getAllSessions();
+    List<SessionWithStudents> getAllSessions();
 
     @Transaction
     @Query("SELECT * FROM sessions WHERE session_id=:sessionId")
-    SessionWithStudentWithClasses getSession(UUID sessionId);
+    SessionWithStudents getSession(UUID sessionId);
 
     @Query("SELECT COUNT(*) FROM sessions")
     int count();
