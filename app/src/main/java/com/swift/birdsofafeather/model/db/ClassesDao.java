@@ -35,6 +35,9 @@ public interface ClassesDao {
     @Insert
     void insert(Class toInsert);
 
+    @Query("DELETE FROM classes WHERE NOT student_id=:id")
+    void deleteExceptStudent(UUID id);
+
     @Query("DELETE FROM classes")
     void nukeTable();
 }

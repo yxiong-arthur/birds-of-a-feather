@@ -10,9 +10,9 @@ import android.graphics.Paint;
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
-import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.ClassesDao;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentDao;
@@ -28,15 +28,15 @@ import java.util.List;
 import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
-public class AppDatabaseUnitTest {
+public class PhotoUploadUnitTest {
     private AppDatabase db;
     private StudentDao studentDao;
     private ClassesDao classesDao;
     private StudentWithClassesDao studentWithClassesDao;
+    Context context = ApplicationProvider.getApplicationContext();
 
     @Before
     public void createDb() {
-        Context context = ApplicationProvider.getApplicationContext();
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase.class).allowMainThreadQueries().build();
         studentDao = db.studentDao();
         classesDao = db.classesDao();
@@ -49,43 +49,23 @@ public class AppDatabaseUnitTest {
     }
 
     @Test
-    public void insertStudentCheckExistence() throws Exception {
+    public void photoDatabaseTest() throws Exception {
         UUID currStudentId = UUID.randomUUID();
-        Bitmap picture = Utils.createImage(4, 4, 4);
+        Bitmap picture = Utils.urlToBitmap(context,"httpdfsklfjkldsj");
         Student student = new Student(currStudentId, "Test", picture);
-
-        assertEquals(0, studentDao.count());
-
-        studentDao.insert(student);
-
-        assertEquals(1, studentDao.count());
-
-        List<Student> allStudents = studentDao.getAllStudents();
-        Student byId = studentDao.getStudent(currStudentId);
-
-        assertEquals(student, allStudents.get(0));
-        assertEquals(student, byId);
+        String actual = Utils.bitmapToString(picture);
+        String expected = Utils.bitmapToString(student.getPicture());
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void insertStudentInsertClassCheckExistence() throws Exception {
+    public void photoLinkFailTest() throws Exception {
         UUID currStudentId = UUID.randomUUID();
-        UUID currClassId = UUID.randomUUID();
-        Bitmap picture = Utils.createImage(4, 4, 4);
+        Bitmap picture = Utils.urlToBitmap(context,"httpdfsklfjkldsj");
         Student student = new Student(currStudentId, "Test", picture);
-        studentDao.insert(student);
-
-        assertEquals(0, classesDao.count());
-
-        Class class1 = new Class(currClassId, currStudentId, 2022, "WI", "CSE", "110");
-        classesDao.insert(class1);
-
-        assertEquals(1, classesDao.count());
-
-        List<Class> allClasses = classesDao.getAllClasses();
-        Class byId = classesDao.getClass(currClassId);
-
-        assertEquals(class1, allClasses.get(0));
-        assertEquals(class1, byId);
+        String actual = Utils.bitmapToString(picture);
+        Bitmap expectedB = Utils.urlToBitmap(context,"https://m.psecn.photoshelter.com/img-get2/I00006StPFKIH8hs/fit=1000x750/android-logo-200x200.jpg");
+        String expected = Utils.bitmapToString(expectedB);
+        assertEquals(expected, actual);
     }
 }

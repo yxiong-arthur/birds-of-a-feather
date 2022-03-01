@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:layout_marginLeft="1sp"
-    android:layout_marginRight="1sp"
-    android:gravity="center_vertical">
+    android:layout_marginRight="1sp">
 
     <TextView
         android:id="@+id/student_class"
@@ -16,5 +16,5 @@
         android:lineHeight="32sp"
         android:textSize="24sp"
         android:textStyle="bold"
-        tools:text="@tools:sample/full_names"/>
+        tools:text="@tools:sample/full_names" />
 </FrameLayout>
