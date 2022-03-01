@@ -23,6 +23,9 @@ public interface SessionDao {
     @Insert
     void insert(Session session);
 
+    @Query("UPDATE sessions SET name=:name WHERE session_id= :sessionId")
+    void updateName(UUID sessionId, String name);
+
     @Query("DELETE FROM sessions")
     void nukeTable();
 }
