@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Set;
 
 public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStudentViewAdapter.ViewHolder> {
-    private final List<FavoriteStudent> favoriteStudents;
+    private final List<Student> favoriteStudents;
 
-    public FavoriteStudentViewAdapter(List<FavoriteStudent> favoriteStudents) {
+
+    public FavoriteStudentViewAdapter(List<Student> favoriteStudents) {
         super();
         this.favoriteStudents = favoriteStudents;
     }
@@ -48,7 +49,7 @@ public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStu
         return this.favoriteStudents.size();
     }
 
-    public void addStudent(int index,FavoriteStudent student) {
+    public void addStudent(int index, Student student) {
         this.favoriteStudents.add(index,student);
         this.notifyItemInserted(index);
     }
@@ -56,34 +57,29 @@ public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStu
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView studentNameView;
         private final ImageView thumbnail;
-        private final TextView number;
-        private FavoriteStudent favoriteStudent;
-        private Student student;
+        private Student favoriteStudent;
 
         ViewHolder(View itemView) {
             super(itemView);
             this.studentNameView = itemView.findViewById(R.id.student_row_name);
             this.thumbnail = itemView.findViewById(R.id.thumbnail);
-            this.number = itemView.findViewById(R.id.number_of_classes);
 
             itemView.setOnClickListener(this);
         }
 
 
-        public void setStudent(FavoriteStudent favoriteStudent) {
+        public void setStudent(Student favoriteStudent) {
             this.favoriteStudent = favoriteStudent;
-            this.studentNameView.setText(student.getName());
-            this.thumbnail.setImageBitmap(student.getPicture());
-            this.number.setText(String.valueOf(this.student.getCount()));
+            this.studentNameView.setText(favoriteStudent.getName());
+            this.thumbnail.setImageBitmap(favoriteStudent.getPicture());
 
-            //set the student
         }
 
         @Override
         public void onClick(View view) {
             Context context = view.getContext();
             Intent intent = new Intent(context, FavStudentListActivity.class);
-            intent.putExtra("session_id", this.favoriteStudent.getSessionId().toString());
+            //intent.putExtra("session_id", this.favoriteStudent.getSessionId().toString());
             context.startActivity(intent);
         }
     }
