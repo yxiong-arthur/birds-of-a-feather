@@ -45,11 +45,11 @@ public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStu
 
     @Override
     public int getItemCount() {
-        return this.students.size();
+        return this.favoriteStudents.size();
     }
 
-    public void addStudent(int index,Student student) {
-        this.students.add(index,student);
+    public void addStudent(int index,FavoriteStudent student) {
+        this.favoriteStudents.add(index,student);
         this.notifyItemInserted(index);
     }
 
@@ -82,8 +82,8 @@ public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStu
         @Override
         public void onClick(View view) {
             Context context = view.getContext();
-            Intent intent = new Intent(context, StudentProfileActivity.class);
-            intent.putExtra("classmate_id", this.student.getId().toString());
+            Intent intent = new Intent(context, FavStudentListActivity.class);
+            intent.putExtra("session_id", this.favoriteStudent.getSessionId().toString());
             context.startActivity(intent);
         }
     }
