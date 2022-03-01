@@ -14,8 +14,8 @@ public interface SessionDao {
     @Query("SELECT * FROM sessions")
     List<Session> getAllSessions();
 
-    @Query("SELECT * FROM sessions WHERE id=:id")
-    Student getSession(UUID id);
+    @Query("SELECT * FROM sessions WHERE session_id=:sessionId")
+    Student getSession(UUID sessionId);
 
     @Query("SELECT COUNT(*) FROM sessions")
     int count();

@@ -141,18 +141,31 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     //for milestone2's turn-off button
     public void onToggleClicked(View view) {
-        Button toggle_button = findViewById(R.id.toggle_search_button);
-
         if(searching) {
-            this.stopNearby();
-            toggle_button.setText("Start Search");
+            this.onStopClicked();
         }
         else {
-            this.startNearby();
-            toggle_button.setText("Stop Search");
+            this.onStartClicked();
         }
-
         searching = !searching;
+    }
+
+    protected void onStartClicked(){
+        Button toggle_button = findViewById(R.id.toggle_search_button);
+        this.startNearby();
+
+
+
+        toggle_button.setText("Stop Search");
+    }
+
+    protected void onStopClicked(){
+        Button toggle_button = findViewById(R.id.toggle_search_button);
+        this.stopNearby();
+
+
+
+        toggle_button.setText("Start Search");
     }
 
     protected void setUpNearby(){
