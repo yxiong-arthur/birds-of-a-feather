@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Session {
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "session_id")
     public UUID sessionId;
 
     @ColumnInfo(name = "name")
