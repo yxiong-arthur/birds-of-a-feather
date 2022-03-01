@@ -15,7 +15,7 @@ public class StudentWithClasses{
     @Embedded
     public Student student;
 
-    @Relation(parentColumn = "id",
+    @Relation(parentColumn = "student_id",
                 entityColumn = "student_id",
                 entity = Class.class)
     public List<Class> classes;

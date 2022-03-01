@@ -14,20 +14,20 @@ public interface StudentDao {
     @Query("SELECT * FROM students")
     List<Student> getAllStudents();
 
-    @Query("SELECT * FROM students WHERE id=:id")
-    Student getStudent(UUID id);
+    @Query("SELECT * FROM students WHERE student_id=:studentId")
+    Student getStudent(UUID studentId);
 
     @Query("SELECT COUNT(*) FROM students")
     int count();
 
-    @Query("SELECT EXISTS(SELECT * FROM students WHERE id=:id)")
-    boolean checkExists(UUID id);
+    @Query("SELECT EXISTS(SELECT * FROM students WHERE student_id=:studentId)")
+    boolean checkExists(UUID studentId);
 
     @Insert
     void insert(Student student);
 
-    @Query("DELETE FROM students WHERE NOT id=:id")
-    void deleteExcept(UUID id);
+    @Query("DELETE FROM students WHERE NOT student_id=:studentId")
+    void deleteExcept(UUID studentId);
 
     @Query("DELETE FROM students")
     void nukeTable();

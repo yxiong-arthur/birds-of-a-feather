@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Student {
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "student_id")
     public UUID studentId;
 
     @ColumnInfo(name = "name")
