@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private static final String TAG = "BluetoothActivity";
@@ -50,6 +49,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
 
     private boolean searching = false;
+    private boolean startSearch = false;
+    private boolean stopSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +98,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             int count = countSimilarClasses(classmate);
 
             Student student = classmate.getStudent();
-            student.setCount(count);
+            student.setScore(count);
 
             if (count > 0) {
                 pq.add(student);
@@ -106,38 +107,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         while (!pq.isEmpty()) {
             commonClassmates.add(pq.poll());
         }
-
-        /*
-        List<StudentWithClasses> tempCommon = new ArrayList<>();
-
-        for (StudentWithClasses classmate : studentList) {
-
-            if(countSimilarClasses(classmate) > 0) {
-                if(commonClassmates.size() == 0) {
-                    commonClassmates.add(classmate.getStudent());
-                    tempCommon.add(classmate);
-                } else if (countSimilarClasses(classmate) < countSimilarClasses(tempCommon.get(tempCommon.size()-1))) {
-                    commonClassmates.add(classmate.getStudent());
-                    tempCommon.add(classmate);
-                } else{
-                    for(int i=0; i<commonClassmates.size(); i++) {
-                        if(countSimilarClasses(classmate) >= countSimilarClasses(tempCommon.get(i))) {
-                            commonClassmates.add(i,classmate.getStudent());
-                            tempCommon.add(i,classmate);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-         */
-
         return commonClassmates;
     }
 
     class StudentComparator implements Comparator<Student> {
         public int compare(Student s1, Student s2) {
-            if (s1.getCount() > s2.getCount()) {
+            if (s1.getScore() > s2.getScore()) {
                 return -1;
             }
             else {
@@ -168,18 +143,29 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     //for milestone2's turn-off button
     public void onToggleClicked(View view) {
-        Button toggle_button = findViewById(R.id.toggle_search_button);
-
         if(searching) {
-            this.stopNearby();
-            toggle_button.setText("Start Search");
+            this.onStopClicked();
         }
         else {
-            this.startNearby();
-            toggle_button.setText("Stop Search");
+            this.onStartClicked();
         }
-
         searching = !searching;
+    }
+
+    protected void onStartClicked(){
+        Button toggle_button = findViewById(R.id.toggle_search_button);
+        toggle_button.setText("Stop Search");
+        this.startSearch = true;
+
+        // put start page code here
+    }
+
+    protected void onStopClicked(){
+        Button toggle_button = findViewById(R.id.toggle_search_button);
+        toggle_button.setText("Start Search");
+        this.stopSearch = true;
+
+        // put stop page code here
     }
 
     protected void setUpNearby(){
@@ -250,6 +236,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(this.startSearch){
+            this.startNearby();
+            this.startSearch = false;
+        }
+        if(this.stopSearch){
+            this.stopNearby();
+            this.stopSearch = false;
+        }
         refreshRecycler();
     }
 

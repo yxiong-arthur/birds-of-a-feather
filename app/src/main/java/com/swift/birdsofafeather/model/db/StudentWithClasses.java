@@ -3,6 +3,7 @@ package com.swift.birdsofafeather.model.db;
 import android.graphics.Bitmap;
 import android.media.Image;
 
+import androidx.room.DatabaseView;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
@@ -15,7 +16,7 @@ public class StudentWithClasses{
     @Embedded
     public Student student;
 
-    @Relation(parentColumn = "id",
+    @Relation(parentColumn = "student_id",
                 entityColumn = "student_id",
                 entity = Class.class)
     public List<Class> classes;

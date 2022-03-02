@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Session {
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "session_id")
     public UUID sessionId;
 
     @ColumnInfo(name = "name")
@@ -28,12 +28,6 @@ public class Session {
         this.sessionId = sessionId;
         this.timeCreated = new Date();
         this.name = this.timeCreated.toString();
-    }
-
-    public Session(UUID sessionId, String name){
-        this.sessionId = sessionId;
-        this.name = name;
-        this.timeCreated = new Date();
     }
 
     public UUID getId() {

@@ -15,16 +15,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(tableName = "classes", foreignKeys = {
-        @ForeignKey(onDelete = CASCADE,entity = Student.class,
-                parentColumns = "id",childColumns = "student_id")
+            @ForeignKey(onDelete = CASCADE, entity = Student.class,
+                    parentColumns = "student_id", childColumns = "student_id")
         },
         indices = {
-                @Index("student_id"),
+                @Index("student_id")
         })
 public class Class implements Comparable{
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "class_id")
     public UUID classId;
 
     @NonNull

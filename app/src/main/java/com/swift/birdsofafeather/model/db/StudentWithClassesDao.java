@@ -15,12 +15,12 @@ public interface StudentWithClassesDao {
     List<StudentWithClasses> getAllStudents();
 
     @Transaction
-    @Query("SELECT * FROM students WHERE NOT id=:id")
-    List<StudentWithClasses> getAllStudentsExceptFor(UUID id);
+    @Query("SELECT * FROM students WHERE NOT student_id=:studentId")
+    List<StudentWithClasses> getAllStudentsExceptFor(UUID studentId);
 
     @Transaction
-    @Query("SELECT * FROM students WHERE id=:id")
-    StudentWithClasses getStudent(UUID id);
+    @Query("SELECT * FROM students WHERE student_id=:studentId")
+    StudentWithClasses getStudent(UUID studentId);
 
     @Query("SELECT COUNT(*) FROM students")
     int count();

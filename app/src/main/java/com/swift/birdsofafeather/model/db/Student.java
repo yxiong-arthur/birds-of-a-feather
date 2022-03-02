@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Student {
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "student_id")
     public UUID studentId;
 
     @ColumnInfo(name = "name")
@@ -23,18 +23,14 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
-    @ColumnInfo(name = "favorite")
-    public boolean favorited;
-
     @Ignore
-    public int count;
+    public int score;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
-        this.count = 0;
-        favorited = false;
+        this.score = 0;
     }
 
     @Override
@@ -60,20 +56,16 @@ public class Student {
 
     public Bitmap getPicture() { return picture; }
 
-    public boolean isFavorited() { return favorited; }
-
     @Override
     public String toString() {
         return studentId + "," + name;
     }
 
-    public int getCount() {
-        return count;
+    public int getScore() {
+        return score;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setScore(int score) {
+        this.score = score;
     }
-
-    public void toggleFavorited() { favorited = !favorited; }
 }
