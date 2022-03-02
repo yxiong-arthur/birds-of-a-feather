@@ -23,6 +23,9 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
+    @ColumnInfo(name = "favorite")
+    public boolean favorited;
+
     @Ignore
     public int score;
 
@@ -31,6 +34,7 @@ public class Student {
         this.name = name;
         this.picture = picture;
         this.score = 0;
+        this.favorited = false;
     }
 
     @Override
@@ -56,6 +60,8 @@ public class Student {
 
     public Bitmap getPicture() { return picture; }
 
+    public boolean isFavorited() { return favorited; }
+
     @Override
     public String toString() {
         return studentId + "," + name;
@@ -67,5 +73,9 @@ public class Student {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public void toggleFavorited() {
+        this.favorited = !this.favorited;
     }
 }
