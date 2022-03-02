@@ -61,7 +61,7 @@
         android:id="@+id/favButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@drawable/ic_baseline_star_24"
+        android:background="@drawable/ic_baseline_star_gray_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

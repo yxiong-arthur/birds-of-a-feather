@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,7 +55,7 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
         private final TextView studentNameView;
         private final ImageView thumbnail;
         private final TextView number;
-        private final Button favButton;
+        private final ImageButton favButton;
         private Student student;
         private Context context;
         private AppDatabase db;
