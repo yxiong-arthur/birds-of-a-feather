@@ -8,6 +8,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity(tableName = "students")
@@ -26,8 +27,17 @@ public class Student {
     @ColumnInfo(name = "favorite")
     public boolean favorited;
 
+    @ColumnInfo(name = "waved_at")
+    public boolean wavedAt;
+
+    @ColumnInfo(name = "waved_back")
+    public boolean wavedBack;
+
     @Ignore
     public int score;
+
+    @Ignore
+    public List<Student> wavedBackList;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
@@ -77,5 +87,14 @@ public class Student {
 
     public void toggleFavorited() {
         this.favorited = !this.favorited;
+    }
+
+    public void waveTo(Student student) { student.wavedAt = true; }
+
+    public void waveBack(Student student) {
+        if (!wavedBackList.contains(student) && student.wavedAt == true) {
+            wavedBackList.add(student);
+            student.wavedBack = true;
+        }
     }
 }
