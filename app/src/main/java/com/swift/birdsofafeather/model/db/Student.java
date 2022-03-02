@@ -23,6 +23,9 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
+    @ColumnInfo(name = "favorite")
+    public boolean favorited;
+
     @Ignore
     public int count;
 
@@ -31,6 +34,7 @@ public class Student {
         this.name = name;
         this.picture = picture;
         this.count = 0;
+        favorited = false;
     }
 
     @Override
@@ -56,6 +60,8 @@ public class Student {
 
     public Bitmap getPicture() { return picture; }
 
+    public boolean isFavorited() { return favorited; }
+
     @Override
     public String toString() {
         return studentId + "," + name;
@@ -68,4 +74,6 @@ public class Student {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public void toggleFavorited() { favorited = !favorited; }
 }

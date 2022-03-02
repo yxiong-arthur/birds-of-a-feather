@@ -42,6 +42,9 @@
             android:name=".NameActivity"
             android:exported="false" />
         <activity
+            android:name=".FavStudentListActivity"
+            android:exported="false" />
+        <activity
             android:name=".BluetoothCheckActivity"
             android:exported="true">
             <intent-filter>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,15 +57,36 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
         private final TextView studentNameView;
         private final ImageView thumbnail;
         private final TextView number;
+        private final Button favButton;
         private Student student;
+        private Context context;
+        private AppDatabase db;
 
         ViewHolder(View itemView) {
             super(itemView);
             this.studentNameView = itemView.findViewById(R.id.student_row_name);
             this.thumbnail = itemView.findViewById(R.id.thumbnail);
             this.number = itemView.findViewById(R.id.number_of_classes);
+            this.favButton = itemView.findViewById(R.id.favButton);
+            this.context = itemView.getContext();
+            db = AppDatabase.singleton(context);
+
 
             itemView.setOnClickListener(this);
+            favButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    student.toggleFavorited();
+                    db.studentDao().updateFavorited(student.getId(), student.isFavorited());
+
+                    if(student.isFavorited()) {
+                        favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
+                    } else {
+                        favButton.setBackgroundResource(R.drawable.ic_baseline_star_gray_24);
+                    }
+                }
+            });
         }
 
 

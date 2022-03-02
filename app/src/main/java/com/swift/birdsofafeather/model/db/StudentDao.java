@@ -14,6 +14,10 @@ public interface StudentDao {
     @Query("SELECT * FROM students")
     List<Student> getAllStudents();
 
+    @Transaction
+    @Query("SELECT * FROM students WHERE favorite = 1")
+    List<Student> getAllFavoritedStudents();
+
     @Query("SELECT * FROM students WHERE id=:id")
     Student getStudent(UUID id);
 
@@ -22,6 +26,9 @@ public interface StudentDao {
 
     @Query("SELECT EXISTS(SELECT * FROM students WHERE id=:id)")
     boolean checkExists(UUID id);
+
+    @Query("UPDATE students SET favorite=:favorited WHERE id=:id")
+    void updateFavorited(UUID id, boolean favorited);
 
     @Insert
     void insert(Student student);

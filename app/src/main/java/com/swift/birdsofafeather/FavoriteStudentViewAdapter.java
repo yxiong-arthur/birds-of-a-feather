@@ -11,14 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.swift.birdsofafeather.model.db.AppDatabase;
-import com.swift.birdsofafeather.model.db.Class;
-import com.swift.birdsofafeather.model.db.FavoriteStudent;
 import com.swift.birdsofafeather.model.db.Student;
-import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.util.List;
-import java.util.Set;
 
 public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStudentViewAdapter.ViewHolder> {
     private final List<Student> favoriteStudents;
