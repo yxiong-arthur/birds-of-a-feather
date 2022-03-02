@@ -20,6 +20,9 @@ public interface SessionStudentDao {
     @Query("SELECT * FROM `sessions-students` WHERE session_id=:sessionId")
     List<SessionStudent> getStudentsBySession(UUID sessionId);
 
+    @Query("SELECT EXISTS(SELECT * FROM `sessions-students` WHERE student_id=:studentId AND session_id=:sessionId)")
+    boolean checkStudentInSession(UUID sessionId, UUID studentId);
+
     @Insert
     void insert(SessionStudent sessionStudent);
 
