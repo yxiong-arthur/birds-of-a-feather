@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -192,29 +193,38 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         // put stop page code here
 
-        /*
         dialogBuilder = new AlertDialog.Builder(this);
         final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
-        popup_year = (EditText)findViewById(R.id.save_class_year);
-        popup_quarter = (EditText)findViewById(R.id.save_class_quarter);
-        popup_subject = (EditText)findViewById(R.id.save_class_subject);
-        popup_number = (EditText)findViewById(R.id.save_class_number);
 
-        cancel_popup = (Button)findViewById(R.id.popup_cancel);
-        save_popup = (Button)findViewById(R.id.popup_save);
-
+        // set title
+        dialogBuilder.setTitle("Save your class");
         dialogBuilder.setView(saveNewClassView);
+
+        // set dialog message
+        dialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Save",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
         dialog = dialogBuilder.create();
+
+        // show it
         dialog.show();
 
-        cancel_popup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        */
     }
 
     protected void setUpNearby(){
