@@ -61,10 +61,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private boolean fromStartPage = false;
     private boolean stopSearch = false;
 
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
-    EditText popup_year, popup_quarter, popup_subject, popup_number;
-    Button save_popup, cancel_popup;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,28 +189,30 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        // put stop page code here
+        EditText classInfo = findViewById(R.id.save_class);
 
-        dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
         final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
-
         // set title
-        dialogBuilder.setTitle("Save your class");
-        dialogBuilder.setView(saveNewClassView);
+        alertDialogBuilder.setTitle("Your Title");
+        alertDialogBuilder.setView(saveNewClassView);
+
 
         // set dialog message
-        dialogBuilder
+        alertDialogBuilder
+                .setMessage("Click yes to exit!")
                 .setCancelable(false)
-                .setPositiveButton("Save",new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, close
                         // current activity
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing
                         dialog.cancel();
@@ -221,10 +220,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 });
 
         // create alert dialog
-        dialog = dialogBuilder.create();
+        AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
-        dialog.show();
+        alertDialog.show();
 
     }
 
