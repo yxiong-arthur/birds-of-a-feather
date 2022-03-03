@@ -15,6 +15,7 @@ import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
+import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
 import java.util.Set;
@@ -69,6 +70,10 @@ public class CourseDashboard  extends AppCompatActivity {
 
         SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
         db.sessionStudentDao().insert(studentInSession);
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("current_session_id", UUIDConverter.fromUUID(newSessionId));
 
         finish();
     }
