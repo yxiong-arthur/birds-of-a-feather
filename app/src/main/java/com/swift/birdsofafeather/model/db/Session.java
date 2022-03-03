@@ -24,10 +24,14 @@ public class Session {
     @ColumnInfo(name = "time_created")
     public Date timeCreated;
 
+    @ColumnInfo(name = "named")
+    public boolean named;
+
     public Session(UUID sessionId){
         this.sessionId = sessionId;
         this.timeCreated = new Date();
         this.name = this.timeCreated.toString();
+        this.named = false;
     }
 
     public UUID getId() {
