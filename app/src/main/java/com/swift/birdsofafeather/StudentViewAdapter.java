@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,9 +80,11 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
                     db.studentDao().updateFavorited(student.getId(), student.isFavorited());
 
                     if(student.isFavorited()) {
-                        favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
-                    } else {
                         favButton.setBackgroundResource(R.drawable.ic_baseline_star_gray_24);
+                        Toast.makeText(context, "Unfavorited " + student.getName(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
+                        Toast.makeText(context, "Favorited" + student.getName(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
