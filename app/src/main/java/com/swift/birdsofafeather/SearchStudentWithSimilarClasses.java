@@ -298,11 +298,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(this.fromStartPage){
-            SharedPreferences preferences = Utils.getSharedPreferences(this);
-            String sessionUUIDString = preferences.getString("session_id", "");
-            currentSessionId = UUID.fromString(sessionUUIDString);
 
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        String sessionUUIDString = preferences.getString("current_session_id", "");
+        currentSessionId = UUID.fromString(sessionUUIDString);
+
+        if(this.fromStartPage){
             this.startNearby();
             this.fromStartPage = false;
         }

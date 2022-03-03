@@ -67,10 +67,12 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
 
         @Override
         public void onClick(View view) {
-            Context context = view.getContext();
-            Intent intent = new Intent(context, SearchStudentWithSimilarClasses.class);
-            intent.putExtra("session_id", UUIDConverter.fromUUID(this.course.getId()));
-            context.startActivity(intent);
+            // set current_session_id in preferences to the new session_id
+            // finish back to search student with similar classes
+
+//            Context context = view.getContext();
+//            Intent intent = new Intent(context, SearchStudentWithSimilarClasses.class);
+//            context.startActivity(intent);
         }
     }
 }

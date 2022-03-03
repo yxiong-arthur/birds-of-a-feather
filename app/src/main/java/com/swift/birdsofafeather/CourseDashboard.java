@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Session;
+import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
@@ -42,13 +43,11 @@ public class CourseDashboard  extends AppCompatActivity {
         this.future = backgroundThreadExecutor.submit(() -> {
             db = AppDatabase.singleton(getApplicationContext());
 
-            //SharedPreferences preferences = Utils.getSharedPreferences(this);
-            //String UUIDString = preferences.getString("student_id", "");
-            //studentId = UUID.fromString(UUIDString);
+            SharedPreferences preferences = Utils.getSharedPreferences(this);
+            String UUIDString = preferences.getString("student_id", "");
+            studentId = UUID.fromString(UUIDString);
 
-            //myself = db.studentWithClassesDao().getStudent(studentId);
-            //myClasses = myself.getClasses();
-            List<Session> myCourses = db.sessionDao().getAllSessions();
+            List<Session> mySessions = db.sessionDao().getAllSessions();
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -57,15 +56,20 @@ public class CourseDashboard  extends AppCompatActivity {
                 courseLayoutManager = new LinearLayoutManager(this);
                 courseRecyclerView.setLayoutManager(courseLayoutManager);
 
-                courseViewAdapter = new CourseViewAdapter(myCourses);
+                courseViewAdapter = new CourseViewAdapter(mySessions);
                 courseRecyclerView.setAdapter(courseViewAdapter);
             });
         });
     }
 
     public void onNewSession(View view){
-        //Intent searchStudent = new Intent(this, SearchStudentWithSimilarClasses.class);
-        //startActivity(searchStudent);
+        UUID newSessionId = UUID.randomUUID();
+        Session newSession = new Session(newSessionId);
+        db.sessionDao().insert(newSession);
+
+        SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
+        db.sessionStudentDao().insert(studentInSession);
+
         finish();
     }
 }

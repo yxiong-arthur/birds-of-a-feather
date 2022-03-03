@@ -20,10 +20,16 @@ public interface SessionDao {
     @Query("SELECT COUNT(*) FROM sessions")
     int count();
 
+    @Query("SELECT EXISTS(SELECT * FROM sessions WHERE session_id=:sessionId)")
+    boolean checkExists(UUID sessionId);
+
+    @Query("SELECT named FROM sessions WHERE session_id=:sessionId")
+    boolean checkNamed(UUID sessionId);
+
     @Insert
     void insert(Session session);
 
-    @Query("UPDATE sessions SET name=:name WHERE session_id= :sessionId")
+    @Query("UPDATE sessions SET name=:name AND named='true' WHERE session_id= :sessionId")
     void updateName(UUID sessionId, String name);
 
     @Query("DELETE FROM sessions")
