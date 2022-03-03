@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
+import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
@@ -59,8 +61,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-    EditText popup_year, popup_quarter, popup_subject, popup_number;
-    Button save_popup, cancel_popup;
+    EditText popup_class;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,36 +190,66 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         this.stopSearch = true;
 
         // put stop page code here
+        popup_class = (EditText)findViewById(R.id.save_class);
 
-        /*
+
+
+        dialogBuilder = new AlertDialog.Builder(
+                this);
+
         dialogBuilder = new AlertDialog.Builder(this);
         final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
-        popup_year = (EditText)findViewById(R.id.save_class_year);
-        popup_quarter = (EditText)findViewById(R.id.save_class_quarter);
-        popup_subject = (EditText)findViewById(R.id.save_class_subject);
-        popup_number = (EditText)findViewById(R.id.save_class_number);
-
-        cancel_popup = (Button)findViewById(R.id.popup_cancel);
-        save_popup = (Button)findViewById(R.id.popup_save);
 
         dialogBuilder.setView(saveNewClassView);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        cancel_popup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        */
+        // set title
+        dialogBuilder.setTitle("Save this class");
 
 
+        // set dialog message
+        dialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Save",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        /*
+                        String className = popup_class.getText().toString();
+                        UUID sessionId = UUID.randomUUID();
+                        Session newS = new Session(sessionId);
+                        newS.setName(className);
+                        db.sessionDao().insert(newS);
 
 
+                        List<Student> myClassmates = findPriorClassmates();
+                        for (Student student : myClassmates) {
+                            db.sessionStudentDao().insert(new SessionStudent(sessionId, student.getId()));
+                        }
+
+                         */
+
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                })
+                .setView(saveNewClassView);
+
+
+        // create alert dialog
+        AlertDialog alertDialog = dialogBuilder.create();
+
+        // show it
+        alertDialog.show();
 
     }
+
 
     protected void setUpNearby(){
         this.realListener = new MessageListener() {
