@@ -31,7 +31,6 @@ public class FavStudentListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_favorite_students);
-
         Intent intent = getIntent();
 
         this.future = backgroundThreadExecutor.submit(() -> {

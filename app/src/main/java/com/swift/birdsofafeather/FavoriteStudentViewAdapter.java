@@ -74,7 +74,6 @@ public class FavoriteStudentViewAdapter extends RecyclerView.Adapter<FavoriteStu
         public void onClick(View view) {
             Context context = view.getContext();
             Intent intent = new Intent(context, FavStudentListActivity.class);
-            //intent.putExtra("session_id", this.favoriteStudent.getSessionId().toString());
             context.startActivity(intent);
         }
     }

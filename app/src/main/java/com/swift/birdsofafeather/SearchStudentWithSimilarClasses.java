@@ -247,10 +247,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         refreshRecycler();
     }
 
-    //public void
     public void onAddStudentsClicked(View view){
         Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
         startActivity(addStudentsIntent);
+    }
+
+    public void onViewFavClicked(View view){
+        Intent favStudentListIntent = new Intent(this, FavStudentListActivity.class);
+        startActivity(favStudentListIntent);
     }
 
     public void onRefresh(View view){

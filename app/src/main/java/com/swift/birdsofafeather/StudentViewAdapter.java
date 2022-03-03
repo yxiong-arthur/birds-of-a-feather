@@ -84,7 +84,7 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
                         Toast.makeText(context, "Unfavorited " + student.getName(), Toast.LENGTH_SHORT).show();
                     } else {
                         favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
-                        Toast.makeText(context, "Favorited" + student.getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Favorited " + student.getName(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
