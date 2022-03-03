@@ -64,7 +64,8 @@ public class CourseDashboard  extends AppCompatActivity {
     }
 
     public void onNewSession(View view){
-        Intent searchStudent = new Intent(this, SearchStudentWithSimilarClasses.class);
-        startActivity(searchStudent);
+        //Intent searchStudent = new Intent(this, SearchStudentWithSimilarClasses.class);
+        //startActivity(searchStudent);
+        finish();
     }
 }
