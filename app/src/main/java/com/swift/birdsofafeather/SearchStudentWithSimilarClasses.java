@@ -196,22 +196,26 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
         // set title
-        alertDialogBuilder.setTitle("Your Title");
+        alertDialogBuilder.setTitle("Save your class");
         alertDialogBuilder.setView(saveNewClassView);
 
 
         // set dialog message
         alertDialogBuilder
-                .setMessage("Click yes to exit!")
                 .setCancelable(false)
-                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                .setPositiveButton("Save",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, close
                         // current activity
+                        String className = classInfo.getText().toString();
+                        SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
+                        String sessionUUIDString = preferences.getString("current_session_id", "");
+                        currentSessionId = UUID.fromString(sessionUUIDString);
+                        db.sessionDao().updateName(currentSessionId, className);
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing
