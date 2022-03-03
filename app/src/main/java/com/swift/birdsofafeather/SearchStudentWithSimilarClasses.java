@@ -19,15 +19,14 @@ import android.widget.EditText;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Session;
-import com.swift.birdsofafeather.model.db.SessionDao;
 import com.swift.birdsofafeather.model.db.SessionStudent;
+import com.swift.birdsofafeather.model.db.SessionStudentDao;
+import com.swift.birdsofafeather.model.db.SessionWithStudents;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
-import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -46,9 +45,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     private AppDatabase db;
 
-    private UUID studentId;
-    private StudentWithClasses myself;
-    private Set<Class> myClasses;
+    private UUID currentSessionId;
+
+    private UUID userId;
+    private StudentWithClasses user;
+    private Set<Class> userClasses;
 
     private RecyclerView studentsRecyclerView;
     private RecyclerView.LayoutManager studentsLayoutManager;
@@ -56,7 +57,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
 
     private boolean searching = false;
-    private boolean startSearch = false;
+    private boolean fromStartPage = false;
     private boolean stopSearch = false;
 
     private AlertDialog.Builder dialogBuilder;
@@ -72,11 +73,16 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         db = AppDatabase.singleton(getApplicationContext());
 
         SharedPreferences preferences = Utils.getSharedPreferences(this);
-        String UUIDString = preferences.getString("student_id", "");
-        studentId = UUID.fromString(UUIDString);
 
-        myself = db.studentWithClassesDao().getStudent(studentId);
-        myClasses = myself.getClasses();
+        // get session and user id from preferences
+        String sessionUUIDString = preferences.getString("current_session_id", "");
+        currentSessionId = UUID.fromString(sessionUUIDString);
+
+        String UUIDString = preferences.getString("student_id", "");
+        userId = UUID.fromString(UUIDString);
+
+        user = db.studentWithClassesDao().getStudent(userId);
+        userClasses = user.getClasses();
 
         refreshRecycler();
         setUpNearby();
@@ -84,19 +90,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     protected void refreshRecycler(){
         backgroundThreadExecutor.submit(() -> {
-            //List<Student> myClassmates = findPriorClassmates();
-
-
-            //new
-            Intent intent = getIntent();
-            UUID sessionId = UUIDConverter.uuidFromString(intent.getStringExtra("Session_id"));
-            List<SessionStudent> mySession = db.sessionStudentDao().getStudentsBySession(sessionId);
-            List<Student> inputStudent = new ArrayList<>();
-            for(int i=0; i<mySession.size(); i++){
-                Student temp = db.studentDao().getStudent(mySession.get(i).getStudentId());
-                inputStudent.add(temp);
-            }
-
+            List<Student> userClassmates = findPriorClassmates();
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -105,14 +99,19 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsLayoutManager = new LinearLayoutManager(this);
                 studentsRecyclerView.setLayoutManager(studentsLayoutManager);
 
-                studentsViewAdapter = new StudentViewAdapter(inputStudent);
+                studentsViewAdapter = new StudentViewAdapter(userClassmates);
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
     }
 
     protected List<Student> findPriorClassmates() {
-        List<StudentWithClasses> studentList = db.studentWithClassesDao().getAllStudentsExceptFor(studentId);
+        SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
+        List<Student> sessionStudents = mySession.getStudents();
+        List<StudentWithClasses> studentList = new ArrayList<StudentWithClasses>();
+        for(Student student : sessionStudents) {
+            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
+        }
 
         List<Student> commonClassmates = new ArrayList<>();
 
@@ -148,17 +147,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
 
-        mateClasses.retainAll(myClasses);
+        mateClasses.retainAll(userClasses);
 
         return mateClasses.size();
     }
 
     public int calculatePosition (Student classmate) {
-        myself = db.studentWithClassesDao().getStudent(studentId);
-        myClasses = myself.getClasses();
-        List<Student> myClassmates = findPriorClassmates();
-        for(int i=0; i<myClassmates.size(); i++) {
-            if(myClassmates.get(i).getId().equals(classmate.getId())){
+        user = db.studentWithClassesDao().getStudent(userId);
+        userClasses = user.getClasses();
+        List<Student> userClassmates = findPriorClassmates();
+        for(int i=0; i<userClassmates.size(); i++) {
+            if(userClassmates.get(i).getId().equals(classmate.getId())){
                 return i;
             }
         }
@@ -179,7 +178,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void onStartClicked(){
         Button toggle_button = findViewById(R.id.toggle_search_button);
         toggle_button.setText("Stop Search");
-        this.startSearch = true;
+        this.fromStartPage = true;
         Intent intent3 = new Intent(this, CourseDashboard.class);
         startActivity(intent3);
         // put start page code here
@@ -228,6 +227,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
 
+                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+                db.sessionStudentDao().insert(studentInSession);
+
+                // if student exists in database
                 if(db.studentDao().checkExists(studentUUID)) return;
 
                 Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
@@ -285,9 +288,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(this.startSearch){
+        if(this.fromStartPage){
+            SharedPreferences preferences = Utils.getSharedPreferences(this);
+            String sessionUUIDString = preferences.getString("session_id", "");
+            currentSessionId = UUID.fromString(sessionUUIDString);
+
             this.startNearby();
-            this.startSearch = false;
+            this.fromStartPage = false;
         }
         if(this.stopSearch){
             this.stopNearby();
