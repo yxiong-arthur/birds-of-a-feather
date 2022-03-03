@@ -22,6 +22,8 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
+import com.swift.birdsofafeather.model.db.Session;
+import com.swift.birdsofafeather.model.db.SessionDao;
 import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
@@ -213,11 +215,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
         });
         */
-
-
-
-
-
     }
 
     protected void setUpNearby(){
@@ -307,5 +304,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     public void onRefresh(View view){
         refreshRecycler();
+    }
+
+
+    public void saveStudent(List<Student> s, String sessionName){
+        UUID sessionId = UUID.randomUUID();
+        Session newS = new Session(sessionId);
+        newS.setName(sessionName);
+        db.sessionDao().insert(newS);
+        for(Student eachStudent : s){
+            UUID studentId = eachStudent.getId();
+            db.sessionStudentDao().insert(new SessionStudent(studentId, sessionId));
+        }
     }
 }
