@@ -2,6 +2,7 @@ package com.swift.birdsofafeather;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,7 @@ public class FavStudentListActivity extends AppCompatActivity {
     private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private RecyclerView favoriteStudentRecyclerView;
     private RecyclerView.LayoutManager favoriteStudentLayoutManager;
-    private FavoriteStudentViewAdapter favStudentViewAdapter;
+    private StudentViewAdapter studentViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +44,13 @@ public class FavStudentListActivity extends AppCompatActivity {
                 favoriteStudentLayoutManager = new LinearLayoutManager(this);
                 favoriteStudentRecyclerView.setLayoutManager(favoriteStudentLayoutManager);
 
-                favStudentViewAdapter = new FavoriteStudentViewAdapter(favoriteStudentList);
-                favoriteStudentRecyclerView.setAdapter(favStudentViewAdapter);
+                studentViewAdapter = new StudentViewAdapter(favoriteStudentList);
+                favoriteStudentRecyclerView.setAdapter(studentViewAdapter);
             });
         });
+    }
+
+    public void onBackClicked(View view) {
+        finish();
     }
 }

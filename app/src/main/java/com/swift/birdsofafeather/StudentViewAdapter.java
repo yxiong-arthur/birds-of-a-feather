@@ -66,25 +66,23 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.studentNameView = itemView.findViewById(R.id.student_row_name);
             this.thumbnail = itemView.findViewById(R.id.thumbnail);
             this.number = itemView.findViewById(R.id.number_of_classes);
-            this.favButton = itemView.findViewById(R.id.favButton);
             this.context = itemView.getContext();
             db = AppDatabase.singleton(context);
-
+            this.favButton = itemView.findViewById(R.id.favButton);
 
             itemView.setOnClickListener(this);
             favButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = getAdapterPosition();
                     student.toggleFavorited();
                     db.studentDao().updateFavorited(student.getId(), student.isFavorited());
 
                     if(student.isFavorited()) {
-                        favButton.setBackgroundResource(R.drawable.ic_baseline_star_gray_24);
-                        Toast.makeText(context, "Unfavorited " + student.getName(), Toast.LENGTH_SHORT).show();
-                    } else {
                         favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
                         Toast.makeText(context, "Favorited " + student.getName(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        favButton.setBackgroundResource(R.drawable.ic_baseline_star_gray_24);
+                        Toast.makeText(context, "Unfavorited " + student.getName(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -96,6 +94,10 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.studentNameView.setText(student.getName());
             this.thumbnail.setImageBitmap(student.getPicture());
             this.number.setText(String.valueOf(this.student.getScore()));
+
+            if(student.isFavorited()) {
+                this.favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
+            }
         }
 
         @Override
