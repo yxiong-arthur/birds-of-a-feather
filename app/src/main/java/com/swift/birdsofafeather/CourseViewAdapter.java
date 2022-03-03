@@ -16,6 +16,7 @@ import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
+import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
 import java.util.Set;
@@ -68,7 +69,7 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
         public void onClick(View view) {
             Context context = view.getContext();
             Intent intent = new Intent(context, SearchStudentWithSimilarClasses.class);
-            intent.putExtra("course_id", this.course.getName().toString());
+            intent.putExtra("session_id", UUIDConverter.fromUUID(this.course.getId()));
             context.startActivity(intent);
         }
     }

@@ -19,8 +19,10 @@ import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
+import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
+import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -72,7 +74,19 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     protected void refreshRecycler(){
         backgroundThreadExecutor.submit(() -> {
-            List<Student> myClassmates = findPriorClassmates();
+            //List<Student> myClassmates = findPriorClassmates();
+
+
+            //new
+            Intent intent = getIntent();
+            UUID sessionId = UUIDConverter.uuidFromString(intent.getStringExtra("Session_id"));
+            List<SessionStudent> mySession = db.sessionStudentDao().getStudentsBySession(sessionId);
+            List<Student> inputStudent = new ArrayList<>();
+            for(int i=0; i<mySession.size(); i++){
+                Student temp = db.studentDao().getStudent(mySession.get(i).getStudentId());
+                inputStudent.add(temp);
+            }
+
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -81,7 +95,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsLayoutManager = new LinearLayoutManager(this);
                 studentsRecyclerView.setLayoutManager(studentsLayoutManager);
 
-                studentsViewAdapter = new StudentViewAdapter(myClassmates);
+                studentsViewAdapter = new StudentViewAdapter(inputStudent);
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
@@ -156,7 +170,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Button toggle_button = findViewById(R.id.toggle_search_button);
         toggle_button.setText("Stop Search");
         this.startSearch = true;
-
+        Intent intent3 = new Intent(this, CourseDashboard.class);
+        startActivity(intent3);
         // put start page code here
     }
 

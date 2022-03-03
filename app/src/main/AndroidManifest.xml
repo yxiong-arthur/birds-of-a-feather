@@ -51,6 +51,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".CourseDashboard"
+            android:exported="false"/>
+
+        <activity
             android:name=".DashboardActivity"
             android:exported="true" />
     </application>

@@ -37,12 +37,12 @@ public class CourseDashboard  extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_with_similar_classes);
+        setContentView(R.layout.activity_courses);
 
         this.future = backgroundThreadExecutor.submit(() -> {
             db = AppDatabase.singleton(getApplicationContext());
 
-            SharedPreferences preferences = Utils.getSharedPreferences(this);
+            //SharedPreferences preferences = Utils.getSharedPreferences(this);
             //String UUIDString = preferences.getString("student_id", "");
             //studentId = UUID.fromString(UUIDString);
 
