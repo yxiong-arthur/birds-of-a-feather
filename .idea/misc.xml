@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/layout/activity_bluetooth_check.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/activity_bluetooth_functionality.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/activity_count.xml" value="0.3333333333333333" />
+        <entry key="app/src/main/res/layout/activity_courses.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/activity_name.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/activity_photo_upload.xml" value="0.3333333333333333" />
@@ -34,7 +35,7 @@
         <entry key="app/src/main/res/layout/display_classmates.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/display_course_with_student.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/layout/display_student_commonclasses.xml" value="0.3333333333333333" />
-        <entry key="app/src/main/res/layout/popup_save_class.xml" value="0.307518115942029" />
+        <entry key="app/src/main/res/layout/popup_save_class.xml" value="0.24644622802734378" />
       </map>
     </option>
   </component>

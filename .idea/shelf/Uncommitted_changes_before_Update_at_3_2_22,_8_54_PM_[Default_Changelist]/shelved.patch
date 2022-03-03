@@ -1,0 +1,128 @@
+Index: app/src/main/res/layout/popup_save_class.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\">\n\n\n    <EditText\n        android:id=\"@+id/save_class\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginHorizontal=\"80sp\"\n        android:hint=\"enter class\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintHorizontal_bias=\"0.668\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\"\n        app:layout_constraintEnd_toEndOf=\"parent\"\n        tools:layout_editor_absoluteY=\"232dp\" />\n\n\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/popup_save_class.xml b/app/src/main/res/layout/popup_save_class.xml
+--- a/app/src/main/res/layout/popup_save_class.xml	(revision 3c5c1204a582e9ca3858299bec0a094c5b958153)
++++ b/app/src/main/res/layout/popup_save_class.xml	(date 1646281387348)
+@@ -5,7 +5,6 @@
+     android:layout_width="match_parent"
+     android:layout_height="match_parent">
+ 
+-
+     <EditText
+         android:id="@+id/save_class"
+         android:layout_width="match_parent"
+Index: app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swift.birdsofafeather;\n\n\nimport androidx.annotation.NonNull;\nimport androidx.appcompat.app.AppCompatActivity;\nimport androidx.recyclerview.widget.LinearLayoutManager;\nimport androidx.recyclerview.widget.RecyclerView;\n\nimport android.app.AlertDialog;\nimport android.content.DialogInterface;\nimport android.content.Intent;\nimport android.content.SharedPreferences;\nimport android.graphics.Bitmap;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.view.View;\nimport android.widget.Button;\nimport android.widget.EditText;\n\nimport com.google.android.gms.nearby.Nearby;\nimport com.google.android.gms.nearby.messages.Message;\nimport com.google.android.gms.nearby.messages.MessageListener;\nimport com.swift.birdsofafeather.model.db.AppDatabase;\nimport com.swift.birdsofafeather.model.db.Class;\nimport com.swift.birdsofafeather.model.db.Session;\nimport com.swift.birdsofafeather.model.db.SessionStudent;\nimport com.swift.birdsofafeather.model.db.SessionStudentDao;\nimport com.swift.birdsofafeather.model.db.SessionWithStudents;\nimport com.swift.birdsofafeather.model.db.Student;\nimport com.swift.birdsofafeather.model.db.StudentWithClasses;\n\nimport java.nio.charset.StandardCharsets;\nimport java.util.ArrayList;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.PriorityQueue;\nimport java.util.Set;\nimport java.util.UUID;\nimport java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\n\npublic class SearchStudentWithSimilarClasses extends AppCompatActivity {\n    private static final String TAG = \"BluetoothActivity\";\n    private MessageListener realListener;\n    private Message myStudentData;\n\n    private AppDatabase db;\n\n    private UUID currentSessionId;\n\n    private UUID userId;\n    private StudentWithClasses user;\n    private Set<Class> userClasses;\n\n    private RecyclerView studentsRecyclerView;\n    private RecyclerView.LayoutManager studentsLayoutManager;\n    private StudentViewAdapter studentsViewAdapter;\n    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();\n\n    private boolean searching = false;\n    private boolean fromStartPage = false;\n    private boolean stopSearch = false;\n\n    private AlertDialog.Builder dialogBuilder;\n    private AlertDialog dialog;\n    EditText popup_year, popup_quarter, popup_subject, popup_number;\n    Button save_popup, cancel_popup;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_student_with_similar_classes);\n\n        db = AppDatabase.singleton(getApplicationContext());\n\n        SharedPreferences preferences = Utils.getSharedPreferences(this);\n\n        // get session and user id from preferences\n        String sessionUUIDString = preferences.getString(\"current_session_id\", \"\");\n        currentSessionId = UUID.fromString(sessionUUIDString);\n\n        String UUIDString = preferences.getString(\"student_id\", \"\");\n        userId = UUID.fromString(UUIDString);\n\n        user = db.studentWithClassesDao().getStudent(userId);\n        userClasses = user.getClasses();\n\n        refreshRecycler();\n        setUpNearby();\n    }\n\n    protected void refreshRecycler(){\n        backgroundThreadExecutor.submit(() -> {\n            List<Student> userClassmates = findPriorClassmates();\n\n            runOnUiThread(() -> {\n                // Set up the recycler view to show our database contents\n                studentsRecyclerView = findViewById(R.id.persons_view);\n\n                studentsLayoutManager = new LinearLayoutManager(this);\n                studentsRecyclerView.setLayoutManager(studentsLayoutManager);\n\n                studentsViewAdapter = new StudentViewAdapter(userClassmates);\n                studentsRecyclerView.setAdapter(studentsViewAdapter);\n            });\n        });\n    }\n\n    protected List<Student> findPriorClassmates() {\n        SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);\n        List<Student> sessionStudents = mySession.getStudents();\n        List<StudentWithClasses> studentList = new ArrayList<StudentWithClasses>();\n        for(Student student : sessionStudents) {\n            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));\n        }\n\n        List<Student> commonClassmates = new ArrayList<>();\n\n        PriorityQueue<Student> pq = new PriorityQueue<>(100, new StudentComparator());\n\n        for (StudentWithClasses classmate : studentList) {\n            int count = countSimilarClasses(classmate);\n\n            Student student = classmate.getStudent();\n            student.setScore(count);\n\n            if (count > 0) {\n                pq.add(student);\n            }\n        }\n        while (!pq.isEmpty()) {\n            commonClassmates.add(pq.poll());\n        }\n        return commonClassmates;\n    }\n\n    class StudentComparator implements Comparator<Student> {\n        public int compare(Student s1, Student s2) {\n            if (s1.getScore() > s2.getScore()) {\n                return -1;\n            }\n            else {\n                return 1;\n            }\n        }\n    }\n\n    protected int countSimilarClasses(StudentWithClasses classmate){\n        Set<Class> mateClasses = classmate.getClasses();\n\n        mateClasses.retainAll(userClasses);\n\n        return mateClasses.size();\n    }\n\n    public int calculatePosition (Student classmate) {\n        user = db.studentWithClassesDao().getStudent(userId);\n        userClasses = user.getClasses();\n        List<Student> userClassmates = findPriorClassmates();\n        for(int i=0; i<userClassmates.size(); i++) {\n            if(userClassmates.get(i).getId().equals(classmate.getId())){\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    //for milestone2's turn-off button\n    public void onToggleClicked(View view) {\n        if(searching) {\n            this.onStopClicked();\n        }\n        else {\n            this.onStartClicked();\n        }\n        searching = !searching;\n    }\n\n    protected void onStartClicked(){\n        Button toggle_button = findViewById(R.id.toggle_search_button);\n        toggle_button.setText(\"Stop Search\");\n        this.fromStartPage = true;\n        Intent intent3 = new Intent(this, CourseDashboard.class);\n        startActivity(intent3);\n        // put start page code here\n    }\n\n    protected void onStopClicked(){\n        Button toggle_button = findViewById(R.id.toggle_search_button);\n        toggle_button.setText(\"Start Search\");\n        this.stopSearch = true;\n\n        // put stop page code here\n\n        dialogBuilder = new AlertDialog.Builder(this);\n        final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);\n\n\n        // set title\n        dialogBuilder.setTitle(\"Save your class\");\n        dialogBuilder.setView(saveNewClassView);\n\n        // set dialog message\n        dialogBuilder\n                .setCancelable(false)\n                .setPositiveButton(\"Save\",new DialogInterface.OnClickListener() {\n                    public void onClick(DialogInterface dialog,int id) {\n                        // if this button is clicked, close\n                        // current activity\n                        dialog.dismiss();\n                    }\n                })\n                .setNegativeButton(\"Cancel\",new DialogInterface.OnClickListener() {\n                    public void onClick(DialogInterface dialog, int id) {\n                        // if this button is clicked, just close\n                        // the dialog box and do nothing\n                        dialog.cancel();\n                    }\n                });\n\n        // create alert dialog\n        dialog = dialogBuilder.create();\n\n        // show it\n        dialog.show();\n\n    }\n\n    protected void setUpNearby(){\n        this.realListener = new MessageListener() {\n            @Override\n            public void onFound(@NonNull Message message) {\n                String messageContent = new String(message.getContent());\n                String[] decodedMessage = messageContent.split(\",\");\n\n                UUID studentUUID = UUID.fromString(decodedMessage[0]);\n                String name = decodedMessage[1];\n                String pictureURL = decodedMessage[2];\n\n                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);\n                db.sessionStudentDao().insert(studentInSession);\n\n                // if student exists in database\n                if(db.studentDao().checkExists(studentUUID)) return;\n\n                Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);\n\n                Student classmate = new Student(studentUUID, name, image);\n                db.studentDao().insert(classmate);\n\n                for(int i = 3; i < decodedMessage.length; i+=5) {\n                    UUID classId = UUID.fromString(decodedMessage[i]);\n                    int year = Integer.parseInt(decodedMessage[i + 1]);\n                    String quarter = decodedMessage[i + 2];\n                    String subject = decodedMessage[i + 3];\n                    String courseNumber = decodedMessage[i + 4];\n\n                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);\n                    db.classesDao().insert(newClass);\n                }\n\n                int listPosition = calculatePosition(classmate);\n                studentsViewAdapter.addStudent(listPosition, classmate);\n            }\n\n            @Override\n            public void onLost(@NonNull Message message) {\n                Log.d(TAG, \"Lost sight of message: \" + new String(message.getContent()));\n            }\n        };\n\n        SharedPreferences preferences = Utils.getSharedPreferences(this);\n\n        String studentUUIDString = preferences.getString(\"student_id\", \"default\");\n        UUID studentUUID = UUID.fromString(studentUUIDString);\n        List<Class> classes = db.classesDao().getForStudent(studentUUID);\n\n        String encodedString = Utils.encodeStudent(this) + \",\" + Utils.encodeClasses(classes);\n        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));\n    }\n\n    protected void startNearby(){\n        Nearby.getMessagesClient(this).subscribe(realListener);\n        Nearby.getMessagesClient(this).publish(myStudentData);\n    }\n\n    protected void stopNearby(){\n        Nearby.getMessagesClient(this).unsubscribe(realListener);\n        Nearby.getMessagesClient(this).unpublish(myStudentData);\n    }\n\n    @Override\n    protected void onDestroy() {\n        super.onDestroy();\n        stopNearby();\n    }\n\n    @Override\n    protected void onResume() {\n        super.onResume();\n        if(this.fromStartPage){\n            SharedPreferences preferences = Utils.getSharedPreferences(this);\n            String sessionUUIDString = preferences.getString(\"session_id\", \"\");\n            currentSessionId = UUID.fromString(sessionUUIDString);\n\n            this.startNearby();\n            this.fromStartPage = false;\n        }\n        if(this.stopSearch){\n            this.stopNearby();\n            this.stopSearch = false;\n        }\n        refreshRecycler();\n    }\n\n    //public void\n    public void onAddStudentsClicked(View view){\n        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);\n        startActivity(addStudentsIntent);\n    }\n\n    public void onRefresh(View view){\n        refreshRecycler();\n    }\n\n\n    public void saveStudent(List<Student> s, String sessionName){\n        UUID sessionId = UUID.randomUUID();\n        Session newS = new Session(sessionId);\n        newS.setName(sessionName);\n        db.sessionDao().insert(newS);\n        for(Student eachStudent : s){\n            UUID studentId = eachStudent.getId();\n            db.sessionStudentDao().insert(new SessionStudent(studentId, sessionId));\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java b/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java
+--- a/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java	(revision 3c5c1204a582e9ca3858299bec0a094c5b958153)
++++ b/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java	(date 1646283217563)
+@@ -61,10 +61,7 @@
+     private boolean fromStartPage = false;
+     private boolean stopSearch = false;
+ 
+-    private AlertDialog.Builder dialogBuilder;
+-    private AlertDialog dialog;
+-    EditText popup_year, popup_quarter, popup_subject, popup_number;
+-    Button save_popup, cancel_popup;
++
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -191,17 +188,16 @@
+         this.stopSearch = true;
+ 
+         // put stop page code here
++        /*
+ 
+         dialogBuilder = new AlertDialog.Builder(this);
+         final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
+-
+-
+-        // set title
+-        dialogBuilder.setTitle("Save your class");
+-        dialogBuilder.setView(saveNewClassView);
++        classInfo = findViewById(R.id.save_class);
+ 
+         // set dialog message
+         dialogBuilder
++                .setTitle("Save your class")
++                //.setView(saveNewClassView)
+                 .setCancelable(false)
+                 .setPositiveButton("Save",new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog,int id) {
+@@ -218,11 +214,45 @@
+                     }
+                 });
+ 
++        dialog = dialogBuilder.create();
++        dialog.show();
++
++         */
++        EditText classInfo = findViewById(R.id.save_class);
++
++        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
++                this);
++        final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
++
++        // set title
++        alertDialogBuilder.setTitle("Your Title");
++        alertDialogBuilder.setView(saveNewClassView);
++
++
++        // set dialog message
++        alertDialogBuilder
++                .setMessage("Click yes to exit!")
++                .setCancelable(false)
++                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
++                    public void onClick(DialogInterface dialog,int id) {
++                        // if this button is clicked, close
++                        // current activity
++                        dialog.dismiss();
++                    }
++                })
++                .setNegativeButton("No",new DialogInterface.OnClickListener() {
++                    public void onClick(DialogInterface dialog,int id) {
++                        // if this button is clicked, just close
++                        // the dialog box and do nothing
++                        dialog.cancel();
++                    }
++                });
++
+         // create alert dialog
+-        dialog = dialogBuilder.create();
++        AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+         // show it
+-        dialog.show();
++        alertDialog.show();
+ 
+     }
+ 
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"DesignSurface\">\n    <option name=\"filePathToZoomLevelMap\">\n      <map>\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/activity_add_classes.xml\" value=\"0.17552083333333332\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/activity_count.xml\" value=\"0.109375\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/activity_main.xml\" value=\"0.109375\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/activity_name.xml\" value=\"0.17552083333333332\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/activity_student_profile.xml\" value=\"0.17552083333333332\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/activity_student_with_similar_classes.xml\" value=\"0.17552083333333332\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/display_classmates.xml\" value=\"0.11875\" />\n        <entry key=\"..\\:/A UCSD/2022winter/cse110/birds-of-a-feather-swift/app/src/main/res/layout/display_student_commonclasses.xml\" value=\"0.12916666666666668\" />\n        <entry key=\"..\\:/Users/User/AndroidStudioProjects/birdsofafeather/app/src/main/res/layout/activity_add_student.xml\" value=\"0.15081521739130435\" />\n        <entry key=\"..\\:/Users/User/AndroidStudioProjects/birdsofafeather/app/src/main/res/layout/activity_bluetooth_check.xml\" value=\"0.3578125\" />\n        <entry key=\"..\\:/Users/User/AndroidStudioProjects/birdsofafeather/app/src/main/res/layout/activity_count.xml\" value=\"0.371875\" />\n        <entry key=\"..\\:/Users/User/AndroidStudioProjects/birdsofafeather/app/src/main/res/layout/activity_name.xml\" value=\"0.371875\" />\n        <entry key=\"..\\:/Users/User/AndroidStudioProjects/birdsofafeather/app/src/main/res/layout/activity_photo_upload.xml\" value=\"0.371875\" />\n        <entry key=\"..\\:/Users/User/AndroidStudioProjects/birdsofafeather/app/src/main/res/layout/activity_picture.xml\" value=\"0.371875\" />\n        <entry key=\"..\\:/Users/wudar/StudioProjects/birds-of-a-feather-swift/app/src/main/res/layout/activity_add_classes.xml\" value=\"0.1408514492753623\" />\n        <entry key=\"..\\:/Users/wudar/StudioProjects/birds-of-a-feather-swift/app/src/main/res/layout/activity_main.xml\" value=\"0.24547101449275363\" />\n        <entry key=\"..\\:/Users/wudar/StudioProjects/birds-of-a-feather-swift/app/src/main/res/layout/activity_name.xml\" value=\"0.1\" />\n        <entry key=\"..\\:/Users/wudar/StudioProjects/birds-of-a-feather-swift/app/src/main/res/layout/activity_student_with_similar_classes.xml\" value=\"0.11302083333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_add_classes.xml\" value=\"0.18432971014492755\" />\n        <entry key=\"app/src/main/res/layout/activity_add_student.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_bluetooth_check.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_bluetooth_functionality.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_count.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_main.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_name.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_photo_upload.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/activity_student_profile.xml\" value=\"0.18432971014492755\" />\n        <entry key=\"app/src/main/res/layout/activity_student_with_similar_classes.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/display_classmates.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/display_course_with_student.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/display_student_commonclasses.xml\" value=\"0.3333333333333333\" />\n        <entry key=\"app/src/main/res/layout/popup_save_class.xml\" value=\"0.24644622802734378\" />\n      </map>\n    </option>\n  </component>\n  <component name=\"EntryPointsManager\">\n    <list size=\"1\">\n      <item index=\"0\" class=\"java.lang.String\" itemvalue=\"androidx.room.Transaction\" />\n    </list>\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_11\" default=\"true\" project-jdk-name=\"Android Studio default JDK\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\n  </component>\n  <component name=\"ProjectType\">\n    <option name=\"id\" value=\"Android\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 3c5c1204a582e9ca3858299bec0a094c5b958153)
++++ b/.idea/misc.xml	(date 1646281311824)
+@@ -26,6 +26,7 @@
+         <entry key="app/src/main/res/layout/activity_bluetooth_check.xml" value="0.3333333333333333" />
+         <entry key="app/src/main/res/layout/activity_bluetooth_functionality.xml" value="0.3333333333333333" />
+         <entry key="app/src/main/res/layout/activity_count.xml" value="0.3333333333333333" />
++        <entry key="app/src/main/res/layout/activity_courses.xml" value="0.3333333333333333" />
+         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3333333333333333" />
+         <entry key="app/src/main/res/layout/activity_name.xml" value="0.3333333333333333" />
+         <entry key="app/src/main/res/layout/activity_photo_upload.xml" value="0.3333333333333333" />

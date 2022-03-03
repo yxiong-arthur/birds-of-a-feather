@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -60,10 +61,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private boolean fromStartPage = false;
     private boolean stopSearch = false;
 
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
-    EditText popup_year, popup_quarter, popup_subject, popup_number;
-    Button save_popup, cancel_popup;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,31 +189,46 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        // put stop page code here
+        EditText classInfo = findViewById(R.id.save_class);
 
-        /*
-        dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
         final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
-        popup_year = (EditText)findViewById(R.id.save_class_year);
-        popup_quarter = (EditText)findViewById(R.id.save_class_quarter);
-        popup_subject = (EditText)findViewById(R.id.save_class_subject);
-        popup_number = (EditText)findViewById(R.id.save_class_number);
+        // set title
+        alertDialogBuilder.setTitle("Save your class");
+        alertDialogBuilder.setView(saveNewClassView);
 
-        cancel_popup = (Button)findViewById(R.id.popup_cancel);
-        save_popup = (Button)findViewById(R.id.popup_save);
 
-        dialogBuilder.setView(saveNewClassView);
-        dialog = dialogBuilder.create();
-        dialog.show();
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Save",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        String className = classInfo.getText().toString();
+                        SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
+                        String sessionUUIDString = preferences.getString("current_session_id", "");
+                        currentSessionId = UUID.fromString(sessionUUIDString);
+                        db.sessionDao().updateName(currentSessionId, className);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
 
-        cancel_popup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        */
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
     }
 
     protected void setUpNearby(){
