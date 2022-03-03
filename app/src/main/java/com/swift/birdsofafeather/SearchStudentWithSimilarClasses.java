@@ -76,8 +76,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         SharedPreferences preferences = Utils.getSharedPreferences(this);
 
         // get session and user id from preferences
-        String sessionUUIDString = preferences.getString("current_session_id", "");
-        currentSessionId = UUID.fromString(sessionUUIDString);
+        if(preferences.contains("current_session_id")) {
+            String sessionUUIDString = preferences.getString("current_session_id", "");
+            currentSessionId = UUID.fromString(sessionUUIDString);
+        }
 
         String UUIDString = preferences.getString("student_id", "");
         userId = UUID.fromString(UUIDString);
@@ -300,8 +302,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         super.onResume();
 
         SharedPreferences preferences = Utils.getSharedPreferences(this);
-        String sessionUUIDString = preferences.getString("current_session_id", "");
-        currentSessionId = UUID.fromString(sessionUUIDString);
+        if(preferences.contains("current_session_id")) {
+            String sessionUUIDString = preferences.getString("current_session_id", "");
+            currentSessionId = UUID.fromString(sessionUUIDString);
+        }
 
         if(this.fromStartPage){
             this.startNearby();
