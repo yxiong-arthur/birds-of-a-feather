@@ -3,6 +3,7 @@ package com.swift.birdsofafeather;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -16,6 +17,7 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.ClassesDao;
+import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentDao;
 
@@ -101,8 +103,15 @@ public class AddStudentActivity extends AppCompatActivity {
                 UUID studentUUID = UUID.fromString(decodedMessage[0]);
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
-                Bitmap image = Utils.urlToBitmap(AddStudentActivity.this, pictureURL);
 
+                SharedPreferences preferences = Utils.getSharedPreferences(AddStudentActivity.this);
+                String sessionUUIDString = preferences.getString("current_session_id", "");
+                UUID currentSessionId = UUID.fromString(sessionUUIDString);
+
+                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+                db.sessionStudentDao().insert(studentInSession);
+
+                Bitmap image = Utils.urlToBitmap(AddStudentActivity.this, pictureURL);
 
                 Student classmate = new Student(studentUUID, name, image);
                 db.studentDao().insert(classmate);
