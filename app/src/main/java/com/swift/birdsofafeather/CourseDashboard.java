@@ -74,6 +74,7 @@ public class CourseDashboard  extends AppCompatActivity {
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("current_session_id", UUIDConverter.fromUUID(newSessionId));
+        editor.apply();
 
         finish();
     }

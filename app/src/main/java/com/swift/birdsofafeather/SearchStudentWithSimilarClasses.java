@@ -189,7 +189,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        EditText classInfo = findViewById(R.id.save_class);
+        final View contactPopupView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
+        EditText classInfo = (EditText)contactPopupView.findViewById(R.id.save_class);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
@@ -207,12 +208,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, close
                         // current activity
+
+
                         String className = classInfo.getText().toString();
-                        SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
-                        String sessionUUIDString = preferences.getString("current_session_id", "");
-                        currentSessionId = UUID.fromString(sessionUUIDString);
-                        db.sessionDao().updateName(currentSessionId, className);
+                        // SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
+                        // String sessionUUIDString = preferences.getString("current_session_id", "");
+                        // currentSessionId = UUID.fromString(sessionUUIDString);
+                        db.sessionDao().updateName(currentSessionId, "Actual Name");
+
+
                         dialog.dismiss();
+                        // finish();
                     }
                 })
                 .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
