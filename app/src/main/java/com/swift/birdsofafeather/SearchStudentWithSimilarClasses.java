@@ -12,7 +12,9 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
@@ -38,6 +40,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private MessageListener realListener;
     private Message myStudentData;
 
+    private  Spinner filterSpinner;
     private AppDatabase db;
 
     private UUID studentId;
@@ -55,6 +58,15 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_with_similar_classes);
+
+
+        filterSpinner = (Spinner) findViewById(R.id.filter_select);
+        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this,
+                R.array.filters_array, android.R.layout.simple_spinner_item);
+        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(filterAdapter);
+
+
 
         db = AppDatabase.singleton(getApplicationContext());
 
