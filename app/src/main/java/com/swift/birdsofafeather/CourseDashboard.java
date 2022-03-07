@@ -78,7 +78,7 @@ public class CourseDashboard  extends AppCompatActivity {
                 .setMessage("Do you want to continue from your existing session or start a new session?")
                 .setCancelable(false)
                 .setPositiveButton("New Session", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                    public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, close
                         // current activity
                         UUID newSessionId = UUID.randomUUID();
@@ -100,23 +100,26 @@ public class CourseDashboard  extends AppCompatActivity {
 
                         finish();
                     }
-                }).setNegativeButton("Continue from existing session", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,int id) {
-                                // if this button is clicked, just close
-                                // the dialog box and do nothing
-                            if (db.sessionDao().getAllSessions().size() == 0) {
-                                Toast.makeText(getApplicationContext(), "You have no existing sessions!", Toast.LENGTH_SHORT).show();
-                                AlertDialog alertDialog = alertDialogBuilder.create();
-                                alertDialog.show();
-                            }
-                            dialog.dismiss();
-                        }
-                });
+                }).setNegativeButton("Continue from existing session", null);
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
         alertDialog.show();
+
+        Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        negativeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (db.sessionDao().getAllSessions().size() == 0) {
+                    Toast.makeText(getApplicationContext(), "You have no existing sessions!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
     }
 }
