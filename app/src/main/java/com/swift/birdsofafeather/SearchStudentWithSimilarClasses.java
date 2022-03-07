@@ -175,7 +175,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        if (!db.sessionDao().getSession(currentSessionId).named) {
+        if (!db.sessionDao().checkNamed(currentSessionId)) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
             final EditText editText = new EditText(this);
