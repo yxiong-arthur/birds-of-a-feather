@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
@@ -175,7 +176,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        if (!db.sessionDao().checkNamed(currentSessionId)) {
+        if (!(db.sessionDao().checkNamed(currentSessionId))) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
             final EditText editText = new EditText(this);
@@ -203,6 +204,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
             // show it
             alertDialog.show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "save to existing sessions", Toast.LENGTH_SHORT).show();
         }
     }
 
