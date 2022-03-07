@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,7 +72,6 @@ public class CourseDashboard  extends AppCompatActivity {
         // set title
         alertDialogBuilder.setTitle("Choose your session");
 
-
         // set dialog message
         alertDialogBuilder
                 .setMessage("Do you want to continue from your existing session or start a new session?")
@@ -106,13 +106,9 @@ public class CourseDashboard  extends AppCompatActivity {
                                 AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
                             }
-                            else {
-                                dialog.cancel();
-                            }
+                            dialog.dismiss();
                         }
                 });
-
-
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
