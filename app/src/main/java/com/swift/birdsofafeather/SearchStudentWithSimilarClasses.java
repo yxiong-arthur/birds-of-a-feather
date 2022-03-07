@@ -178,15 +178,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         this.stopSearch = true;
 
         if (this.isNewClass) {
-            final View contactPopupView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
-            EditText classInfo = (EditText)contactPopupView.findViewById(R.id.save_class);
-
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
+            final EditText editText = new EditText(this);
             // set title
             alertDialogBuilder.setTitle("Save your class");
-            alertDialogBuilder.setView(saveNewClassView);
+            alertDialogBuilder.setView(editText);
 
             // set dialog message
             alertDialogBuilder
@@ -195,8 +192,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, close
                             // current activity
-                            String className = classInfo.getText().toString();
-                            db.sessionDao().updateName(currentSessionId, "Actual Name");
+                            String className = editText.getText().toString();
+                            db.sessionDao().updateName(currentSessionId, className);
                             Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
 
                             dialog.dismiss();
