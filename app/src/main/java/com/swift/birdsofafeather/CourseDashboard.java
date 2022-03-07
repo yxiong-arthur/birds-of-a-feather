@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -96,14 +97,22 @@ public class CourseDashboard  extends AppCompatActivity {
 
                         finish();
                     }
-                })
-                .setNegativeButton("Continue from existing session", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        dialog.cancel();
-                    }
+                }).setNegativeButton("Continue from existing session", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                            if (db.sessionDao().getAllSessions().size() == 0) {
+                                Toast.makeText(getApplicationContext(), "You have no existing sessions!", Toast.LENGTH_SHORT).show();
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                            }
+                            else {
+                                dialog.cancel();
+                            }
+                        }
                 });
+
+
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
