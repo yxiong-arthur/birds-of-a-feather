@@ -79,7 +79,6 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
             editor.putString("current_session_id", UUIDConverter.fromUUID(course.getId()));
             editor.putBoolean("new_class", false);
             editor.apply();
-            //context.startActivity(intent);
             ((Activity)context).finish();
         }
     }
