@@ -94,7 +94,6 @@ public class CourseDashboard  extends AppCompatActivity {
                         SharedPreferences preferences = Utils.getSharedPreferences(getApplicationContext());
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString("current_session_id", newSessionId.toString());
-                        editor.putBoolean("new_class", true);
                         editor.apply();
 
                         dialog.dismiss();
@@ -120,22 +119,4 @@ public class CourseDashboard  extends AppCompatActivity {
         // show it
         alertDialog.show();
     }
-
-    /*
-    public void onNewSession(View view){
-        UUID newSessionId = UUID.randomUUID();
-        Session newSession = new Session(newSessionId);
-        db.sessionDao().insert(newSession);
-
-        SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
-        db.sessionStudentDao().insert(studentInSession);
-
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("current_session_id", UUIDConverter.fromUUID(newSessionId));
-        editor.apply();
-
-        finish();
-    }
-     */
 }

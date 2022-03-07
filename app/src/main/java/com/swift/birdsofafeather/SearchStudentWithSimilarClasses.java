@@ -47,7 +47,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private AppDatabase db;
 
     private UUID currentSessionId;
-    private boolean isNewClass;
 
     private UUID userId;
     private StudentWithClasses user;
@@ -81,7 +80,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         String UUIDString = preferences.getString("student_id", "");
         userId = UUID.fromString(UUIDString);
-        this.isNewClass = true;
 
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
@@ -177,7 +175,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        if (this.isNewClass) {
+        if (!db.sessionDao().getSession(currentSessionId).named) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
             final EditText editText = new EditText(this);
@@ -290,10 +288,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         if(preferences.contains("current_session_id")) {
             String sessionUUIDString = preferences.getString("current_session_id", "");
             currentSessionId = UUID.fromString(sessionUUIDString);
-        }
-
-        if (preferences.contains("new_class")) {
-            this.isNewClass = preferences.getBoolean("new_class", true);
         }
 
         if(this.fromStartPage){
