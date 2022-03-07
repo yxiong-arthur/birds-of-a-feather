@@ -117,30 +117,33 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         List<Student> commonClassmates = new ArrayList<>();
 
-        PriorityQueue<Student> pq = new PriorityQueue<>(100, new StudentComparator());
+        PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(1000, new StudentComparator());
 
         for (StudentWithClasses classmate : studentList) {
-            int count = countSimilarClasses(classmate);
 
-            Student student = classmate.getStudent();
-            student.setScore(count);
-
-            if (count > 0) {
-                pq.add(student);
+            if (countSimilarClasses(classmate) > 0) {
+                pq.add(classmate);
             }
         }
         while (!pq.isEmpty()) {
-            commonClassmates.add(pq.poll());
+            StudentWithClasses studentWithClasses = pq.poll();
+            Student student = studentWithClasses.getStudent();
+            student.setScore(countSimilarClasses(studentWithClasses));
+            commonClassmates.add(student);
         }
         return commonClassmates;
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
-
         mateClasses.retainAll(userClasses);
-
         return mateClasses.size();
+    }
+
+    protected Set<Class> getSimilarClasses(StudentWithClasses classmate) {
+        Set<Class> mateClasses = classmate.getClasses();
+        mateClasses.retainAll(userClasses);
+        return mateClasses;
     }
 
     public int calculatePosition (Student classmate) {
@@ -189,12 +192,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                     .setCancelable(false)
                     .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // if this button is clicked, close
-                            // current activity
                             String className = editText.getText().toString();
                             db.sessionDao().updateName(currentSessionId, className);
                             Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
-
                             dialog.dismiss();
                         }
                     });
@@ -320,15 +320,107 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             db.sessionStudentDao().insert(new SessionStudent(studentId, sessionId));
         }
     }
-}
 
-class StudentComparator implements Comparator<Student> {
-    public int compare(Student s1, Student s2) {
-        if (s1.getScore() > s2.getScore()) {
-            return -1;
+    class StudentComparator implements Comparator<StudentWithClasses> {
+        @Override
+        public int compare(StudentWithClasses student1, StudentWithClasses student2) {
+            if (countSimilarClasses(student1) > countSimilarClasses(student2)) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
         }
-        else {
-            return 1;
+    }
+
+    /*
+    class StudentClassSizeComparator implements Comparator<StudentWithClasses> {
+        public int compare (StudentWithClasses student1, StudentWithClasses student2) {
+            Set<Class> s1_classes = student1.getClasses();
+            Set<Class> s2_classes = student2.getClasses();
+
+            int s1_max = 0;
+            for (Class course : s1_classes) {
+                if (course.getSize() > s1_max) {
+                    s1_max = course.getSize();
+                }
+            }
+
+            int s2_max = 0;
+            for (Class course : s2_classes) {
+                if (course.getSize() > s2_max) {
+                    s2_max = course.getSize();
+                }
+            }
+
+            if (s1_max < s2_max) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+     */
+
+    class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
+        @Override
+        public int compare(StudentWithClasses student1, StudentWithClasses student2) {
+            Set<Class> s1_classes = getSimilarClasses(student1);
+            Set<Class> s2_classes = getSimilarClasses(student2);
+
+            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassComparator());
+
+            ArrayList<Class> s1_classes_sorted = new ArrayList<>();
+            for (Class course : s1_classes) {
+                pq.add(course);
+            }
+            while (!pq.isEmpty()) {
+                s1_classes_sorted.add(pq.poll());
+            }
+
+            ArrayList<Class> s2_classes_sorted = new ArrayList<>();
+            for (Class course : s2_classes) {
+                pq.add(course);
+            }
+            while (!pq.isEmpty()) {
+                s2_classes_sorted.add(pq.poll());
+            }
+
+            int index = 0;
+            int s1_num_classes = s1_classes_sorted.size();
+            int s2_num_classes = s2_classes_sorted.size();
+
+            while (index < s1_num_classes && index < s2_num_classes) {
+                int compareIndicator = (s1_classes_sorted.get(index)).compareTo(s2_classes_sorted.get(index));
+
+                if (compareIndicator > 0) {
+                    return -1;
+                }
+                else if (compareIndicator < 0) {
+                    return 1;
+                }
+                index++;
+            }
+
+            if (s1_num_classes > s2_num_classes) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+
+    class ClassComparator implements Comparator<Class> {
+        @Override
+        public int compare(Class class1, Class class2) {
+            if (class1.compareTo(class2) > 0) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
         }
     }
 }
