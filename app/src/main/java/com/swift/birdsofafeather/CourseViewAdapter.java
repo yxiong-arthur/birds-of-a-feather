@@ -1,7 +1,9 @@
 package com.swift.birdsofafeather;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.ViewHolder> {
     private final List<Session> courses;
@@ -70,9 +73,14 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
             // set current_session_id in preferences to the new session_id
             // finish back to search student with similar classes
 
-//            Context context = view.getContext();
-//            Intent intent = new Intent(context, SearchStudentWithSimilarClasses.class);
-//            context.startActivity(intent);
+            Context context = view.getContext();
+            SharedPreferences preferences = Utils.getSharedPreferences(context.getApplicationContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("current_session_id", UUIDConverter.fromUUID(course.getId()));
+            editor.putBoolean("new_class", false);
+            editor.apply();
+            //context.startActivity(intent);
+            ((Activity)context).finish();
         }
     }
 }

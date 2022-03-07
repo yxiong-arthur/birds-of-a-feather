@@ -47,6 +47,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private AppDatabase db;
 
     private UUID currentSessionId;
+    private boolean isNewClass;
 
     private UUID userId;
     private StudentWithClasses user;
@@ -80,6 +81,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         String UUIDString = preferences.getString("student_id", "");
         userId = UUID.fromString(UUIDString);
+        this.isNewClass = true;
 
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
@@ -133,17 +135,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return commonClassmates;
     }
 
-    class StudentComparator implements Comparator<Student> {
-        public int compare(Student s1, Student s2) {
-            if (s1.getScore() > s2.getScore()) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
     protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
 
@@ -189,52 +180,44 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         toggle_button.setText("Start Search");
         this.stopSearch = true;
 
-        final View contactPopupView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
-        EditText classInfo = (EditText)contactPopupView.findViewById(R.id.save_class);
+        if (this.isNewClass) {
+            final View contactPopupView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
+            EditText classInfo = (EditText)contactPopupView.findViewById(R.id.save_class);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
-        final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);
 
-        // set title
-        alertDialogBuilder.setTitle("Save your class");
-        alertDialogBuilder.setView(saveNewClassView);
+            // set title
+            alertDialogBuilder.setTitle("Save your class");
+            alertDialogBuilder.setView(saveNewClassView);
 
-
-        // set dialog message
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton("Save",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, close
-                        // current activity
-
-
-                        String className = classInfo.getText().toString();
-                        // SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
-                        // String sessionUUIDString = preferences.getString("current_session_id", "");
-                        // currentSessionId = UUID.fromString(sessionUUIDString);
-                        db.sessionDao().updateName(currentSessionId, "Actual Name");
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, close
+                            // current activity
 
 
-                        dialog.dismiss();
-                        // finish();
-                    }
-                })
-                .setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        dialog.cancel();
-                    }
-                });
+                            String className = classInfo.getText().toString();
+                            // SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
+                            // String sessionUUIDString = preferences.getString("current_session_id", "");
+                            // currentSessionId = UUID.fromString(sessionUUIDString);
+                            db.sessionDao().updateName(currentSessionId, "Actual Name");
 
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
 
-        // show it
-        alertDialog.show();
+                            dialog.dismiss();
+                            // finish();
+                        }
+                    });
 
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+        }
     }
 
     protected void setUpNearby(){
@@ -316,6 +299,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             currentSessionId = UUID.fromString(sessionUUIDString);
         }
 
+        if (preferences.contains("new_class")) {
+            this.isNewClass = preferences.getBoolean("new_class", true);
+        }
+
         if(this.fromStartPage){
             this.startNearby();
             this.fromStartPage = false;
@@ -346,6 +333,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         for(Student eachStudent : s){
             UUID studentId = eachStudent.getId();
             db.sessionStudentDao().insert(new SessionStudent(studentId, sessionId));
+        }
+    }
+}
+
+class StudentComparator implements Comparator<Student> {
+    public int compare(Student s1, Student s2) {
+        if (s1.getScore() > s2.getScore()) {
+            return -1;
+        }
+        else {
+            return 1;
         }
     }
 }

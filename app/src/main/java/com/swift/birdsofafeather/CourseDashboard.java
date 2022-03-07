@@ -1,5 +1,7 @@
 package com.swift.birdsofafeather;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -61,8 +63,56 @@ public class CourseDashboard  extends AppCompatActivity {
                 courseRecyclerView.setAdapter(courseViewAdapter);
             });
         });
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Choose your session");
+
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Do you want to continue from your existing session or start a new session?")
+                .setCancelable(false)
+                .setPositiveButton("New Session", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        UUID newSessionId = UUID.randomUUID();
+                        Session newSession = new Session(newSessionId);
+                        db.sessionDao().insert(newSession);
+
+                        SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
+                        db.sessionStudentDao().insert(studentInSession);
+
+                        SharedPreferences preferences = Utils.getSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("current_session_id", UUIDConverter.fromUUID(newSessionId));
+                        editor.putBoolean("new_class", true);
+                        editor.apply();
+
+                        dialog.dismiss();
+
+                        finish();
+                    }
+                })
+                .setNegativeButton("Continue from existing session", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
+    /*
     public void onNewSession(View view){
         UUID newSessionId = UUID.randomUUID();
         Session newSession = new Session(newSessionId);
@@ -78,4 +128,5 @@ public class CourseDashboard  extends AppCompatActivity {
 
         finish();
     }
+     */
 }
