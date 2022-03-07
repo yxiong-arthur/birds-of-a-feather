@@ -17,6 +17,9 @@ public interface SessionDao {
     @Query("SELECT * FROM sessions WHERE session_id=:sessionId")
     Session getSession(UUID sessionId);
 
+    @Query("SELECT name FROM sessions WHERE session_id=:sessionId")
+    String getName(UUID sessionId);
+
     @Query("SELECT COUNT(*) FROM sessions")
     int count();
 
@@ -29,7 +32,7 @@ public interface SessionDao {
     @Insert
     void insert(Session session);
 
-    @Query("UPDATE sessions SET name=:name AND named='true' WHERE session_id= :sessionId")
+    @Query("UPDATE sessions SET name=:name, named='true' WHERE session_id= :sessionId")
     void updateName(UUID sessionId, String name);
 
     @Query("DELETE FROM sessions")

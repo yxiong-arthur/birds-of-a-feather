@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class AddStudentActivity extends AppCompatActivity {
+    private static final String TAG = "AddStudentActivity";
     private AppDatabase db;
     private ClassesDao classesDao;
     private StudentDao studentDao;
@@ -98,6 +100,7 @@ public class AddStudentActivity extends AppCompatActivity {
             @Override
             public void onFound(@NonNull Message message) {
                 String messageContent = new String(message.getContent());
+                Log.d(TAG, messageContent);
                 String[] decodedMessage = messageContent.split(",");
 
                 UUID studentUUID = UUID.fromString(decodedMessage[0]);
@@ -106,15 +109,16 @@ public class AddStudentActivity extends AppCompatActivity {
 
                 SharedPreferences preferences = Utils.getSharedPreferences(AddStudentActivity.this);
                 String sessionUUIDString = preferences.getString("current_session_id", "");
+                Log.d(TAG, sessionUUIDString);
                 UUID currentSessionId = UUID.fromString(sessionUUIDString);
-
-                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
-                db.sessionStudentDao().insert(studentInSession);
 
                 Bitmap image = Utils.urlToBitmap(AddStudentActivity.this, pictureURL);
 
                 Student classmate = new Student(studentUUID, name, image);
                 db.studentDao().insert(classmate);
+
+                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+                db.sessionStudentDao().insert(studentInSession);
 
                 for(int i = 3; i < decodedMessage.length; i+=5) {
                     UUID classId = UUID.fromString(decodedMessage[i]);

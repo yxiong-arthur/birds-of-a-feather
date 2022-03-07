@@ -26,9 +26,6 @@ public interface StudentDao {
     @Insert
     void insert(Student student);
 
-    @Query("DELETE FROM students WHERE NOT student_id=:studentId")
-    void deleteExcept(UUID studentId);
-
     @Query("DELETE FROM students")
     void nukeTable();
 }

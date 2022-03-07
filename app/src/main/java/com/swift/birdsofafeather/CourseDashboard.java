@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class CourseDashboard  extends AppCompatActivity {
-
+    private static final String TAG = "CourseDashboard";
     private AppDatabase db;
     private UUID studentId;
     private StudentWithClasses myself;
@@ -84,12 +85,15 @@ public class CourseDashboard  extends AppCompatActivity {
                         Session newSession = new Session(newSessionId);
                         db.sessionDao().insert(newSession);
 
+                        Log.d(TAG, "Session object name: " + newSession.getName());
+                        Log.d(TAG, "Session database name: " + db.sessionDao().getName(newSessionId));
+
                         SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
                         db.sessionStudentDao().insert(studentInSession);
 
                         SharedPreferences preferences = Utils.getSharedPreferences(getApplicationContext());
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("current_session_id", UUIDConverter.fromUUID(newSessionId));
+                        editor.putString("current_session_id", newSessionId.toString());
                         editor.putBoolean("new_class", true);
                         editor.apply();
 

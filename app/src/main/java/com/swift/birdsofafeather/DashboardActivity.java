@@ -46,9 +46,9 @@ public class DashboardActivity extends AppCompatActivity {
     public void onClearDatabaseClicked(View view) {
         Utils.showAlert(this, "Cleared Database");
         db.classesDao().nukeTable();
+        db.sessionStudentDao().nukeTable();
         db.sessionDao().nukeTable();
         db.studentDao().nukeTable();
-        db.sessionStudentDao().nukeTable();
     }
 
     public void onDatabaseSizeClicked(View view) {

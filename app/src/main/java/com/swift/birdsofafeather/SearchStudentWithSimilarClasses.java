@@ -110,6 +110,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected List<Student> findPriorClassmates() {
         SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
         List<Student> sessionStudents = mySession.getStudents();
+        sessionStudents.remove(user.getStudent());
         List<StudentWithClasses> studentList = new ArrayList<StudentWithClasses>();
         for(Student student : sessionStudents) {
             studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
@@ -155,14 +156,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return -1;
     }
 
-    //for milestone2's turn-off button
     public void onToggleClicked(View view) {
-        if(searching) {
+        if(searching)
             this.onStopClicked();
-        }
-        else {
+        else
             this.onStartClicked();
-        }
         searching = !searching;
     }
 
@@ -172,7 +170,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         this.fromStartPage = true;
         Intent intent3 = new Intent(this, CourseDashboard.class);
         startActivity(intent3);
-        // put start page code here
     }
 
     protected void onStopClicked(){
@@ -198,17 +195,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, close
                             // current activity
-
-
                             String className = classInfo.getText().toString();
-                            // SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);
-                            // String sessionUUIDString = preferences.getString("current_session_id", "");
-                            // currentSessionId = UUID.fromString(sessionUUIDString);
                             db.sessionDao().updateName(currentSessionId, "Actual Name");
-
+                            Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
 
                             dialog.dismiss();
-                            // finish();
                         }
                     });
 
@@ -225,22 +216,27 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             @Override
             public void onFound(@NonNull Message message) {
                 String messageContent = new String(message.getContent());
+                Log.d(TAG, messageContent);
                 String[] decodedMessage = messageContent.split(",");
 
                 UUID studentUUID = UUID.fromString(decodedMessage[0]);
                 String name = decodedMessage[1];
                 String pictureURL = decodedMessage[2];
 
-                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
-                db.sessionStudentDao().insert(studentInSession);
-
                 // if student exists in database
-                if(db.studentDao().checkExists(studentUUID)) return;
+                if(db.studentDao().checkExists(studentUUID)){
+                    SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+                    db.sessionStudentDao().insert(studentInSession);
+                    return;
+                }
 
                 Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
 
                 Student classmate = new Student(studentUUID, name, image);
                 db.studentDao().insert(classmate);
+
+                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+                db.sessionStudentDao().insert(studentInSession);
 
                 for(int i = 3; i < decodedMessage.length; i+=5) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
@@ -314,16 +310,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         refreshRecycler();
     }
 
-    //public void
     public void onAddStudentsClicked(View view){
         Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
         startActivity(addStudentsIntent);
     }
-
-    public void onRefresh(View view){
-        refreshRecycler();
-    }
-
 
     public void saveStudent(List<Student> s, String sessionName){
         UUID sessionId = UUID.randomUUID();
