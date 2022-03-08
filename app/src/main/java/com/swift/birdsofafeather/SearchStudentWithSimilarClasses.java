@@ -32,6 +32,7 @@ import com.swift.birdsofafeather.model.db.SessionWithStudents;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -64,7 +65,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private boolean searching = false;
     private boolean fromStartPage = false;
     private boolean stopSearch = false;
-
 
 
     @Override
@@ -139,6 +139,24 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
         else if (filterString.equals("this quarter only")) {
             pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
+            for (StudentWithClasses classmate : studentList) {
+                if (countSimilarClasses(classmate) > 0) {
+                    Set<Class> classList = getSimilarClasses(classmate);
+                    for (Class course : classList) {
+                        if (course.getYear() == 2022 && course.getQuarter().equals("wi")) {
+                            pq.add(classmate);
+                            break;
+                        }
+                    }
+                }
+            }
+            while (!pq.isEmpty()) {
+                StudentWithClasses studentWithClasses = pq.poll();
+                Student student = studentWithClasses.getStudent();
+                student.setScore(countSimilarClasses(studentWithClasses));
+                commonClassmates.add(student);
+            }
+            return commonClassmates;
         }
 
         for (StudentWithClasses classmate : studentList) {
@@ -154,6 +172,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
         return commonClassmates;
     }
+
+
 
     protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
@@ -410,7 +430,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
      */
-
 
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
