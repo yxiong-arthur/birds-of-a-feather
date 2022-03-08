@@ -85,7 +85,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
 
-        refreshRecycler();
+        clearRecycler();
         setUpNearby();
     }
 
@@ -101,6 +101,21 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsRecyclerView.setLayoutManager(studentsLayoutManager);
 
                 studentsViewAdapter = new StudentViewAdapter(userClassmates);
+                studentsRecyclerView.setAdapter(studentsViewAdapter);
+            });
+        });
+    }
+
+    protected void clearRecycler(){
+        backgroundThreadExecutor.submit(() -> {
+            runOnUiThread(() -> {
+                // Set up the recycler view to show our database contents
+                studentsRecyclerView = findViewById(R.id.persons_view);
+
+                studentsLayoutManager = new LinearLayoutManager(this);
+                studentsRecyclerView.setLayoutManager(studentsLayoutManager);
+
+                studentsViewAdapter = new StudentViewAdapter(new ArrayList<>());
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
@@ -208,6 +223,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         else {
             Toast.makeText(getApplicationContext(), "save to existing sessions", Toast.LENGTH_SHORT).show();
         }
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        preferences.edit().remove("current_session_id").commit();
+        clearRecycler();
     }
 
     protected void setUpNearby(){
