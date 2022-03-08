@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.Nearby;
@@ -49,6 +50,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private Message myStudentData;
 
     private Spinner filterSpinner;
+    private Spinner thisYearSpinner;
+    private Spinner thisQuarterSpinner;
     private AppDatabase db;
 
     private UUID currentSessionId;
@@ -77,6 +80,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 R.array.filters_array, android.R.layout.simple_spinner_item);
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
+
+        thisYearSpinner = (Spinner) findViewById(R.id.year_select);
+        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
+                R.array.years_array, android.R.layout.simple_spinner_item);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        thisYearSpinner.setAdapter(yearAdapter);
+
+        thisQuarterSpinner = (Spinner) findViewById(R.id.quarter_select);
+        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
+                R.array.quarters_array, android.R.layout.simple_spinner_item);
+        quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        thisQuarterSpinner.setAdapter(quarterAdapter);
 
         db = AppDatabase.singleton(getApplicationContext());
 
@@ -129,6 +144,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(1000, new StudentComparator());
         String filterString = filterSpinner.getSelectedItem().toString();
+        String thisYearString = thisYearSpinner.getSelectedItem().toString();
+        String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
 
         if (filterString.equals("prioritize recent")) {
             pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
@@ -142,7 +159,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 if (countSimilarClasses(classmate) > 0) {
                     Set<Class> classList = getSimilarClasses(classmate);
                     for (Class course : classList) {
-                        if (course.getYear() == 2022 && course.getQuarter().equals("wi")) {
+                        if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
                             pq.add(classmate);
                             break;
                         }
@@ -326,6 +343,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         if(preferences.contains("current_session_id")) {
             String sessionUUIDString = preferences.getString("current_session_id", "");
@@ -480,10 +499,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             Set<Class> s1_classes = getSimilarClasses(student1);
             Set<Class> s2_classes = getSimilarClasses(student2);
 
+            String thisYearString = thisYearSpinner.getSelectedItem().toString();
+            String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
+
             int s1_count = 0;
 
             for (Class course : s1_classes) {
-                if (course.getYear() == 2022 && course.getQuarter().equals("wi")) {
+                if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
                     s1_count++;
                 }
             }
@@ -491,7 +513,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             int s2_count = 0;
 
             for (Class course : s2_classes) {
-                if (course.getYear() == 2022 && course.getQuarter().equals("wi")) {
+                if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
                     s2_count++;
                 }
             }
