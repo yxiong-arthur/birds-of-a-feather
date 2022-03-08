@@ -24,10 +24,15 @@ public class PhotoUpload extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_upload);
-
-        submitButton = findViewById(R.id.submitPhotoButton);
-        submitButton.setVisibility(View.INVISIBLE);
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        if(preferences.contains("image_data")){
+            Intent intent = new Intent(this, SearchStudentWithSimilarClasses.class);
+            startActivity(intent);
+        }else{
+            setContentView(R.layout.activity_photo_upload);
+            submitButton = findViewById(R.id.submitPhotoButton);
+            submitButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void onLoadClicked(View view) {
