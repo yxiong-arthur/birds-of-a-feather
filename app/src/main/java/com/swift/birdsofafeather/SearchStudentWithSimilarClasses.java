@@ -342,6 +342,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
+    public ArrayList<Class> sortClasses(Set<Class> list, PriorityQueue<Class> pq) {
+        ArrayList<Class> classList = new ArrayList<>();
+        for (Class course : list) {
+            pq.add(course);
+        }
+        while (!pq.isEmpty()) {
+            classList.add(pq.poll());
+        }
+        return classList;
+    }
+
     class StudentComparator implements Comparator<StudentWithClasses> {
         @Override
         public int compare(StudentWithClasses student1, StudentWithClasses student2) {
@@ -354,7 +365,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
-
+    /*
     class StudentClassSizeComparator implements Comparator<StudentWithClasses> {
         public int compare (StudentWithClasses student1, StudentWithClasses student2) {
             Set<Class> s1_classes = getSimilarClasses(student1);
@@ -362,22 +373,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
             PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassSizeComparator());
 
-            ArrayList<Class> s1_classes_sorted = new ArrayList<>();
-            for (Class course : s1_classes) {
-                pq.add(course);
-            }
-            while (!pq.isEmpty()) {
-                s1_classes_sorted.add(pq.poll());
-            }
-
-            ArrayList<Class> s2_classes_sorted = new ArrayList<>();
-            for (Class course : s2_classes) {
-                pq.add(course);
-            }
-            while (!pq.isEmpty()) {
-                s2_classes_sorted.add(pq.poll());
-            }
-
+            ArrayList<Class> s1_classes_sorted = sortClasses(s1_classes, pq);
+            ArrayList<Class> s2_classes_sorted = sortClasses(s2_classes, pq);
 
             int index = 0;
             int s1_num_classes = s1_classes_sorted.size();
@@ -405,6 +402,19 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
+    class ClassSizeComparator implements Comparator<Class> {
+        @Override
+        public int compare(Class class1, Class class2) {
+            if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+     */
+
 
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
@@ -412,23 +422,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             Set<Class> s1_classes = getSimilarClasses(student1);
             Set<Class> s2_classes = getSimilarClasses(student2);
 
-            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassComparator());
+            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
 
-            ArrayList<Class> s1_classes_sorted = new ArrayList<>();
-            for (Class course : s1_classes) {
-                pq.add(course);
-            }
-            while (!pq.isEmpty()) {
-                s1_classes_sorted.add(pq.poll());
-            }
-
-            ArrayList<Class> s2_classes_sorted = new ArrayList<>();
-            for (Class course : s2_classes) {
-                pq.add(course);
-            }
-            while (!pq.isEmpty()) {
-                s2_classes_sorted.add(pq.poll());
-            }
+            ArrayList<Class> s1_classes_sorted = sortClasses(s1_classes, pq);
+            ArrayList<Class> s2_classes_sorted = sortClasses(s2_classes, pq);
 
             int index = 0;
             int s1_num_classes = s1_classes_sorted.size();
@@ -447,6 +444,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
 
             if (s1_num_classes > s2_num_classes) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+
+    class ClassRecencyComparator implements Comparator<Class> {
+        @Override
+        public int compare(Class class1, Class class2) {
+            if (class1.compareTo(class2) > 0) {
                 return -1;
             }
             else {
@@ -478,30 +487,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
 
             if (s1_count > s2_count) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
-    class ClassComparator implements Comparator<Class> {
-        @Override
-        public int compare(Class class1, Class class2) {
-            if (class1.compareTo(class2) > 0) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
-    class ClassSizeComparator implements Comparator<Class> {
-        @Override
-        public int compare(Class class1, Class class2) {
-            if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
                 return -1;
             }
             else {
