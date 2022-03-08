@@ -154,4 +154,26 @@ public class Utils {
         canvas.drawRect(0F, 0F, (float) width, (float) height, paint);
         return bitmap;
     }
+
+    public static int getClassSize(String classSize) {
+        if (classSize.equals("Tiny")) {
+            return 20;
+        }
+        else if (classSize.equals("Small")) {
+            return 60;
+        }
+        else if (classSize.equals("Medium")) {
+            return 100;
+        }
+        else if (classSize.equals("Large")) {
+            return 200;
+        }
+        else if (classSize.equals("Huge")) {
+            return 300;
+        }
+        else if (classSize.equals("Gigantic")) {
+            return 500;
+        }
+        return 0;
+    }
 }

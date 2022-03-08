@@ -354,27 +354,49 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
-    /*
+
     class StudentClassSizeComparator implements Comparator<StudentWithClasses> {
         public int compare (StudentWithClasses student1, StudentWithClasses student2) {
-            Set<Class> s1_classes = student1.getClasses();
-            Set<Class> s2_classes = student2.getClasses();
+            Set<Class> s1_classes = getSimilarClasses(student1);
+            Set<Class> s2_classes = getSimilarClasses(student2);
 
-            int s1_max = 0;
+            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassSizeComparator());
+
+            ArrayList<Class> s1_classes_sorted = new ArrayList<>();
             for (Class course : s1_classes) {
-                if (course.getSize() > s1_max) {
-                    s1_max = course.getSize();
-                }
+                pq.add(course);
+            }
+            while (!pq.isEmpty()) {
+                s1_classes_sorted.add(pq.poll());
             }
 
-            int s2_max = 0;
+            ArrayList<Class> s2_classes_sorted = new ArrayList<>();
             for (Class course : s2_classes) {
-                if (course.getSize() > s2_max) {
-                    s2_max = course.getSize();
-                }
+                pq.add(course);
+            }
+            while (!pq.isEmpty()) {
+                s2_classes_sorted.add(pq.poll());
             }
 
-            if (s1_max < s2_max) {
+
+            int index = 0;
+            int s1_num_classes = s1_classes_sorted.size();
+            int s2_num_classes = s2_classes_sorted.size();
+
+            while (index < s1_num_classes && index < s2_num_classes) {
+                Class class1 = s1_classes_sorted.get(index);
+                Class class2 = s2_classes_sorted.get(index);
+
+                if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
+                    return -1;
+                }
+                else if (Utils.getClassSize(class1.getSize()) > Utils.getClassSize(class2.getSize())) {
+                    return 1;
+                }
+                index++;
+            }
+
+            if (s1_num_classes > s2_num_classes) {
                 return -1;
             }
             else {
@@ -382,7 +404,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
         }
     }
-     */
+
 
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
@@ -468,6 +490,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         @Override
         public int compare(Class class1, Class class2) {
             if (class1.compareTo(class2) > 0) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+
+    class ClassSizeComparator implements Comparator<Class> {
+        @Override
+        public int compare(Class class1, Class class2) {
+            if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
                 return -1;
             }
             else {
