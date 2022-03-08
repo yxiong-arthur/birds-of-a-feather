@@ -310,8 +310,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
                             // show it
                             alertDialog.show();
-
-                            dialog.dismiss();
                         }
                     })
                     .setNegativeButton("Give it a name", new DialogInterface.OnClickListener() {
@@ -337,8 +335,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                                     .setCancelable(false)
                                     .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            // if this button is clicked, close
-                                            // current activity
                                             String subjectString = editTextSubject.getText().toString().toLowerCase();
                                             String courseNumberString = editTextCourseNumber.getText().toString().toLowerCase();
 
@@ -365,38 +361,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
             // show it
             alertDialog.show();
-
-
-            /*
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
-                final EditText editText = new EditText(this);
-                // set title
-                alertDialogBuilder.setTitle("Save your class");
-                alertDialogBuilder.setView(editText);
-
-                // set dialog message
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // if this button is clicked, close
-                                // current activity
-                                String className = editText.getText().toString();
-                                db.sessionDao().updateName(currentSessionId, className);
-                                Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
-                alertDialog.show();
-
-             */
         }
         else {
             Toast.makeText(SearchStudentWithSimilarClasses.this, "save to existing session", Toast.LENGTH_SHORT).show();
