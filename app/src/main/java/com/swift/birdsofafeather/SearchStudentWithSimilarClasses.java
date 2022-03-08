@@ -262,56 +262,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             alertDialogBuilder
                     .setMessage("Name it as a class you take this quarter or give it a new name")
                     .setCancelable(false)
-                    .setPositiveButton("Choose a class", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchStudentWithSimilarClasses.this);
-
-                            final Spinner classSpinner = new Spinner(SearchStudentWithSimilarClasses.this);
-
-                            List<String> spinnerArray = new ArrayList<>();
-
-                            String thisYearString = thisYearSpinner.getSelectedItem().toString();
-                            String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
-
-                            userClasses = user.getClasses();
-                            for (Class course : userClasses) {
-
-                                if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
-                                    String courseString = course.getSubject() + " " + course.getCourseNumber();
-                                    spinnerArray.add(courseString);
-                                }
-                            }
-
-                            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
-                                    (SearchStudentWithSimilarClasses.this, android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
-                            spinnerArrayAdapter.setDropDownViewResource(android.R.layout
-                                    .simple_spinner_dropdown_item);
-                            classSpinner.setAdapter(spinnerArrayAdapter);
-
-                            // set title
-                            alertDialogBuilder.setTitle("Choose a class");
-                            alertDialogBuilder.setView(classSpinner);
-
-                            alertDialogBuilder
-                                    .setCancelable(false)
-                                    .setPositiveButton("Enter", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            String className = classSpinner.getSelectedItem().toString().toLowerCase();
-                                            db.sessionDao().updateName(currentSessionId, className);
-                                            Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
-                                            Toast.makeText(SearchStudentWithSimilarClasses.this, "save as a this quarter's session", Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                        }
-                                    });
-
-                            // create alert dialog
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-
-                            // show it
-                            alertDialog.show();
-                        }
-                    })
+                    .setPositiveButton("Choose a class", null)
                     .setNegativeButton("Give it a name", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchStudentWithSimilarClasses.this);
@@ -333,18 +284,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                             // set dialog message
                             alertDialogBuilder
                                     .setCancelable(false)
-                                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            String subjectString = editTextSubject.getText().toString().toLowerCase();
-                                            String courseNumberString = editTextCourseNumber.getText().toString().toLowerCase();
-
-                                            String className = subjectString + " " + courseNumberString;
-                                            db.sessionDao().updateName(currentSessionId, className);
-                                            Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
-                                            Toast.makeText(SearchStudentWithSimilarClasses.this, "save as new session", Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                        }
-                                    });
+                                    .setPositiveButton("Save", null);
 
                             // create alert dialog
                             AlertDialog alertDialog = alertDialogBuilder.create();
@@ -352,7 +292,25 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                             // show it
                             alertDialog.show();
 
-                            dialog.dismiss();
+                            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                            positiveButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    String subjectString = editTextSubject.getText().toString().toLowerCase();
+                                    String courseNumberString = editTextCourseNumber.getText().toString().toLowerCase();
+                                    if (subjectString.length() > 0 && courseNumberString.length() > 0) {
+                                        String className = subjectString + " " + courseNumberString;
+                                        db.sessionDao().updateName(currentSessionId, className);
+                                        Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
+                                        Toast.makeText(SearchStudentWithSimilarClasses.this, "save as new session", Toast.LENGTH_SHORT).show();
+                                        alertDialog.dismiss();
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Please enter subject and course number!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                         }
                     });
 
@@ -361,6 +319,66 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
             // show it
             alertDialog.show();
+
+            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchStudentWithSimilarClasses.this);
+
+                    final Spinner classSpinner = new Spinner(SearchStudentWithSimilarClasses.this);
+
+                    List<String> spinnerArray = new ArrayList<>();
+
+                    String thisYearString = thisYearSpinner.getSelectedItem().toString();
+                    String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
+
+                    userClasses = user.getClasses();
+                    for (Class course : userClasses) {
+
+                        if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
+                            String courseString = course.getSubject() + " " + course.getCourseNumber();
+                            spinnerArray.add(courseString);
+                        }
+                    }
+
+                    if (!spinnerArray.isEmpty()) {
+                        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
+                                (SearchStudentWithSimilarClasses.this, android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
+                        spinnerArrayAdapter.setDropDownViewResource(android.R.layout
+                                .simple_spinner_dropdown_item);
+                        classSpinner.setAdapter(spinnerArrayAdapter);
+
+                        // set title
+                        alertDialogBuilder.setTitle("Choose a class");
+                        alertDialogBuilder.setView(classSpinner);
+
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String className = classSpinner.getSelectedItem().toString().toLowerCase();
+                                        db.sessionDao().updateName(currentSessionId, className);
+                                        Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
+                                        Toast.makeText(SearchStudentWithSimilarClasses.this, "save as a this quarter's session", Toast.LENGTH_SHORT).show();
+                                        alertDialog.dismiss();
+                                    }
+                                });
+
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+
+                        // show it
+                        alertDialog.show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "You don't have class in this quarter!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
         else {
             Toast.makeText(SearchStudentWithSimilarClasses.this, "save to existing session", Toast.LENGTH_SHORT).show();
