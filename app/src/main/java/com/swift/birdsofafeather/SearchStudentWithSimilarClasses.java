@@ -173,8 +173,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return commonClassmates;
     }
 
-
-
     protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
         mateClasses.retainAll(userClasses);
@@ -485,7 +483,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             int s1_count = 0;
 
             for (Class course : s1_classes) {
-                if (course.getYear() == 2022 && course.getQuarter() == "wi") {
+                if (course.getYear() == 2022 && course.getQuarter().equals("wi")) {
                     s1_count++;
                 }
             }
@@ -493,7 +491,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             int s2_count = 0;
 
             for (Class course : s2_classes) {
-                if (course.getYear() == 2022 && course.getQuarter() == "wi") {
+                if (course.getYear() == 2022 && course.getQuarter().equals("wi")) {
                     s2_count++;
                 }
             }
