@@ -368,13 +368,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     /*
     class StudentClassSizeComparator implements Comparator<StudentWithClasses> {
         public int compare (StudentWithClasses student1, StudentWithClasses student2) {
-            Set<Class> s1_classes = getSimilarClasses(student1);
-            Set<Class> s2_classes = getSimilarClasses(student2);
-
             PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassSizeComparator());
-
-            ArrayList<Class> s1_classes_sorted = sortClasses(s1_classes, pq);
-            ArrayList<Class> s2_classes_sorted = sortClasses(s2_classes, pq);
+            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
+            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
 
             int index = 0;
             int s1_num_classes = s1_classes_sorted.size();
@@ -419,13 +415,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
         public int compare(StudentWithClasses student1, StudentWithClasses student2) {
-            Set<Class> s1_classes = getSimilarClasses(student1);
-            Set<Class> s2_classes = getSimilarClasses(student2);
 
             PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
-
-            ArrayList<Class> s1_classes_sorted = sortClasses(s1_classes, pq);
-            ArrayList<Class> s2_classes_sorted = sortClasses(s2_classes, pq);
+            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
+            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
 
             int index = 0;
             int s1_num_classes = s1_classes_sorted.size();
