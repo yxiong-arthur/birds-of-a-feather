@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.Nearby;
@@ -70,6 +69,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private boolean stopSearch = false;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +109,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
 
+        clearRecycler();
         setUpNearby();
     }
 
@@ -129,7 +130,20 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         });
     }
 
+    protected void clearRecycler(){
+        backgroundThreadExecutor.submit(() -> {
+            runOnUiThread(() -> {
+                // Set up the recycler view to show our database contents
+                studentsRecyclerView = findViewById(R.id.persons_view);
 
+                studentsLayoutManager = new LinearLayoutManager(this);
+                studentsRecyclerView.setLayoutManager(studentsLayoutManager);
+
+                studentsViewAdapter = new StudentViewAdapter(new ArrayList<>());
+                studentsRecyclerView.setAdapter(studentsViewAdapter);
+            });
+        });
+    }
 
     protected List<Student> findPriorClassmates() {
         SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
@@ -191,7 +205,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     protected int countSimilarClasses(StudentWithClasses classmate){
         Set<Class> mateClasses = classmate.getClasses();
+
         mateClasses.retainAll(userClasses);
+
         return mateClasses.size();
     }
 
@@ -237,11 +253,117 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         if (!(db.sessionDao().checkNamed(currentSessionId))) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-            final EditText editText = new EditText(this);
             // set title
             alertDialogBuilder.setTitle("Save your class");
-            alertDialogBuilder.setView(editText);
 
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("Name it as a class you take this quarter or give it a new name")
+                    .setCancelable(false)
+                    .setPositiveButton("Choose a class", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchStudentWithSimilarClasses.this);
+
+                            final Spinner classSpinner = new Spinner(SearchStudentWithSimilarClasses.this);
+
+                            List<String> spinnerArray = new ArrayList<>();
+
+                            Spinner spinner = new Spinner(SearchStudentWithSimilarClasses.this);
+                            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
+                                    (SearchStudentWithSimilarClasses.this, android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
+                            spinnerArrayAdapter.setDropDownViewResource(android.R.layout
+                                    .simple_spinner_dropdown_item);
+                            spinner.setAdapter(spinnerArrayAdapter);
+
+                            // set title
+                            alertDialogBuilder.setTitle("Choose a class");
+                            alertDialogBuilder.setView(classSpinner);
+
+                            alertDialogBuilder
+                                    .setCancelable(false)
+                                    .setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            String className = classSpinner.getSelectedItem().toString().toLowerCase();
+                                            db.sessionDao().updateName(currentSessionId, className);
+                                            Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
+                                            Toast.makeText(SearchStudentWithSimilarClasses.this, "save as a this quarter's session", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+
+                            // show it
+                            alertDialog.show();
+
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Give it a name", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchStudentWithSimilarClasses.this);
+
+                            final EditText editText = new EditText(SearchStudentWithSimilarClasses.this);
+                            // set title
+                            alertDialogBuilder.setTitle("Save your class");
+                            alertDialogBuilder.setView(editText);
+
+                            // set dialog message
+                            alertDialogBuilder
+                                    .setCancelable(false)
+                                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            // if this button is clicked, close
+                                            // current activity
+                                            String className = editText.getText().toString();
+                                            db.sessionDao().updateName(currentSessionId, className);
+                                            Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
+                                            Toast.makeText(SearchStudentWithSimilarClasses.this, "save as new session", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+
+                            // show it
+                            alertDialog.show();
+
+                            dialog.dismiss();
+                        }
+                    });
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+
+            /*
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+                final EditText editText = new EditText(this);
+                // set title
+                alertDialogBuilder.setTitle("Save your class");
+                alertDialogBuilder.setView(editText);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                String className = editText.getText().toString();
+                                db.sessionDao().updateName(currentSessionId, className);
+                                Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
+
+                                dialog.dismiss();
+                            }
+                        });
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
@@ -254,15 +376,21 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                         }
                     });
 
-            // create alert dialog
-            AlertDialog alertDialog = alertDialogBuilder.create();
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
 
-            // show it
-            alertDialog.show();
+                // show it
+                alertDialog.show();
+
+             */
         }
         else {
-            Toast.makeText(getApplicationContext(), "save to existing sessions", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SearchStudentWithSimilarClasses.this, "save to existing session", Toast.LENGTH_SHORT).show();
         }
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        preferences.edit().remove("current_session_id").commit();
+        clearRecycler();
     }
 
     protected void setUpNearby(){
@@ -343,8 +471,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-
-
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         if(preferences.contains("current_session_id")) {
             String sessionUUIDString = preferences.getString("current_session_id", "");
@@ -359,7 +485,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             this.stopNearby();
             this.stopSearch = false;
         }
-
         refreshRecycler();
     }
 
