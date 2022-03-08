@@ -12,10 +12,17 @@ import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 public class NameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         if(preferences.contains("first_name")){
             Intent intent = new Intent(this, PhotoUpload.class);
