@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.UUID;
@@ -316,10 +318,19 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SearchStudentWithSimilarClasses.this);
 
-                            final EditText editText = new EditText(SearchStudentWithSimilarClasses.this);
+                            LinearLayout layout = new LinearLayout(SearchStudentWithSimilarClasses.this);
+                            layout.setOrientation(LinearLayout.VERTICAL);
+
+                            final EditText editTextSubject = new EditText(SearchStudentWithSimilarClasses.this);
+                            editTextSubject.setHint("Subject");
+                            layout.addView(editTextSubject);
+
+                            final EditText editTextCourseNumber = new EditText(SearchStudentWithSimilarClasses.this);
+                            editTextCourseNumber.setHint("Number");
+                            layout.addView(editTextCourseNumber);
                             // set title
                             alertDialogBuilder.setTitle("Save your class");
-                            alertDialogBuilder.setView(editText);
+                            alertDialogBuilder.setView(layout);
 
                             // set dialog message
                             alertDialogBuilder
@@ -328,7 +339,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                                         public void onClick(DialogInterface dialog, int id) {
                                             // if this button is clicked, close
                                             // current activity
-                                            String className = editText.getText().toString();
+                                            String subjectString = editTextSubject.getText().toString().toLowerCase();
+                                            String courseNumberString = editTextCourseNumber.getText().toString().toLowerCase();
+
+                                            String className = subjectString + " " + courseNumberString;
                                             db.sessionDao().updateName(currentSessionId, className);
                                             Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
                                             Toast.makeText(SearchStudentWithSimilarClasses.this, "save as new session", Toast.LENGTH_SHORT).show();
