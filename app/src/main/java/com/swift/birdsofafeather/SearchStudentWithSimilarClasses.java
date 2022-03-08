@@ -268,12 +268,23 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
                             List<String> spinnerArray = new ArrayList<>();
 
-                            Spinner spinner = new Spinner(SearchStudentWithSimilarClasses.this);
+                            String thisYearString = thisYearSpinner.getSelectedItem().toString();
+                            String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
+
+                            userClasses = user.getClasses();
+                            for (Class course : userClasses) {
+
+                                if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
+                                    String courseString = course.getSubject() + " " + course.getCourseNumber();
+                                    spinnerArray.add(courseString);
+                                }
+                            }
+
                             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
                                     (SearchStudentWithSimilarClasses.this, android.R.layout.simple_spinner_item, spinnerArray); //selected item will look like a spinner set from XML
                             spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                                     .simple_spinner_dropdown_item);
-                            spinner.setAdapter(spinnerArrayAdapter);
+                            classSpinner.setAdapter(spinnerArrayAdapter);
 
                             // set title
                             alertDialogBuilder.setTitle("Choose a class");
@@ -364,17 +375,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                                 dialog.dismiss();
                             }
                         });
-            // set dialog message
-            alertDialogBuilder
-                    .setCancelable(false)
-                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            String className = editText.getText().toString();
-                            db.sessionDao().updateName(currentSessionId, className);
-                            Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
-                            dialog.dismiss();
-                        }
-                    });
 
                 // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
