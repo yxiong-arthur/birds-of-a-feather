@@ -128,24 +128,20 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         List<Student> commonClassmates = new ArrayList<>();
 
-        PriorityQueue<StudentWithClasses> pq;
+        PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(1000, new StudentComparator());
         String filterString = filterSpinner.getSelectedItem().toString();
 
-        if (filterString.equals("default")) {
-            pq = new PriorityQueue<>(1000, new StudentComparator());
-        }
-        else if (filterString.equals("prioritize recent")) {
+        if (filterString.equals("prioritize recent")) {
             pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
         }
         else if (filterString.equals("prioritize small classes")) {
             // pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
         }
         else if (filterString.equals("this quarter only")) {
-
+            pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
         }
 
         for (StudentWithClasses classmate : studentList) {
-
             if (countSimilarClasses(classmate) > 0) {
                 pq.add(classmate);
             }
@@ -429,6 +425,37 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
 
             if (s1_num_classes > s2_num_classes) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+
+    class StudentThisQuarterComparator implements Comparator<StudentWithClasses> {
+        @Override
+        public int compare(StudentWithClasses student1, StudentWithClasses student2) {
+            Set<Class> s1_classes = getSimilarClasses(student1);
+            Set<Class> s2_classes = getSimilarClasses(student2);
+
+            int s1_count = 0;
+
+            for (Class course : s1_classes) {
+                if (course.getYear() == 2022 && course.getQuarter() == "wi") {
+                    s1_count++;
+                }
+            }
+
+            int s2_count = 0;
+
+            for (Class course : s2_classes) {
+                if (course.getYear() == 2022 && course.getQuarter() == "wi") {
+                    s2_count++;
+                }
+            }
+
+            if (s1_count > s2_count) {
                 return -1;
             }
             else {
