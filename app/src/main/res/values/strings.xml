@@ -21,4 +21,11 @@
         <item>SS2</item>
         <item>SSS</item>
     </string-array>
+
+    <string-array name="filters_array">
+        <item>default</item>
+        <item>prioritize recent</item>
+        <item>prioritize small classes</item>
+        <item>this quarter only</item>
+    </string-array>
 </resources>

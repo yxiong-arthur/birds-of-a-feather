@@ -14,8 +14,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.Nearby;
@@ -45,6 +47,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private MessageListener realListener;
     private Message myStudentData;
 
+    private Spinner filterSpinner;
     private AppDatabase db;
 
     private UUID currentSessionId;
@@ -68,6 +71,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_with_similar_classes);
+
+
+
+        filterSpinner = (Spinner) findViewById(R.id.filter_select);
+        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(this,
+                R.array.filters_array, android.R.layout.simple_spinner_item);
+        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(filterAdapter);
 
         db = AppDatabase.singleton(getApplicationContext());
 
@@ -117,7 +128,21 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         List<Student> commonClassmates = new ArrayList<>();
 
-        PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(1000, new StudentComparator());
+        PriorityQueue<StudentWithClasses> pq;
+        String filterString = filterSpinner.getSelectedItem().toString();
+
+        if (filterString.equals("default")) {
+            pq = new PriorityQueue<>(1000, new StudentComparator());
+        }
+        else if (filterString.equals("prioritize recent")) {
+            pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
+        }
+        else if (filterString.equals("prioritize small classes")) {
+            // pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
+        }
+        else if (filterString.equals("this quarter only")) {
+
+        }
 
         for (StudentWithClasses classmate : studentList) {
 
