@@ -12,6 +12,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity(tableName = "classes", foreignKeys = {
@@ -42,9 +43,6 @@ public class Class implements Comparable{
 
     @ColumnInfo(name = "course_number")
     public String courseNumber;
-
-    @Ignore
-    List<String> quarterOrder = Arrays.asList("wi", "sp", "ss1", "ss2", "sss", "fa");
 
     public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber){
         this.classId = classId;
@@ -105,9 +103,8 @@ public class Class implements Comparable{
     @Override
     public int compareTo(Object o) {
         Class other = (Class) o;
+        Map<String, Integer> quarterOrder = Quarters.getQuarterOrder();
 
-        if(this.year != other.year)
-            return this.year - other.year;
-        return Integer.compare(quarterOrder.indexOf(this.quarter), quarterOrder.indexOf(other.quarter));
+        return this.year*4+quarterOrder.get(this.quarter) - other.year*4+quarterOrder.get(other.quarter);
     }
 }
