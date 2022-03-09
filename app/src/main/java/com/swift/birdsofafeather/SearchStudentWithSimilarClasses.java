@@ -248,7 +248,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void onStopClicked(){
         Button toggle_button = findViewById(R.id.toggle_search_button);
         toggle_button.setText("Start Search");
-        this.stopSearch = true;
+        this.stopNearby();
 
         if (!(db.sessionDao().checkNamed(currentSessionId))) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -473,10 +473,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             this.startNearby();
             this.fromStartPage = false;
         }
-        if(this.stopSearch){
-            this.stopNearby();
-            this.stopSearch = false;
-        }
+
         refreshRecycler();
     }
 
