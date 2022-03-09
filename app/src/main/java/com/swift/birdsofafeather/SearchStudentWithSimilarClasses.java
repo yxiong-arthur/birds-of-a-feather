@@ -405,6 +405,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 }
 
                 int listPosition = calculatePosition(classmate);
+
+                StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
+                setAllScore(studentWithClasses);
                 studentsViewAdapter.addStudent(listPosition, classmate);
             }
 
