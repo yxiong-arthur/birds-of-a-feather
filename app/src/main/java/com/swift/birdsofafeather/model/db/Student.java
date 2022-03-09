@@ -79,4 +79,6 @@ public class Student {
     public void setRecencyScore(int score) { this.recencyScore = score; }
 
     public void setSizeScore(double score) { this.sizeScore = score; }
+
+    public void setQuarterScore(int score) {this.quarterScore = score; }
 }

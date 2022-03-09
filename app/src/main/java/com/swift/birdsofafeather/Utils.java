@@ -138,7 +138,7 @@ public class Utils {
         return bitmap;
     }
 
-    public static double getClassSize(String classSize) {
+    public static double getClassSizeScore(String classSize) {
         switch (classSize) {
             case "tiny":
                 return 1;
@@ -154,6 +154,25 @@ public class Utils {
                 return 0.03;
             default:
                 return 0;
+        }
+    }
+
+    public static int getRecencyScore(String quarter) {
+        switch (quarter) {
+            case "wi":
+                return 0;
+            case "sp":
+                return 1;
+            case "ss1":
+                return 2;
+            case "ss2":
+                return 2;
+            case "sss":
+                return 2;
+            case "fa":
+                return 3;
+            default:
+                return -1;
         }
     }
 }

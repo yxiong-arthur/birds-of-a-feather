@@ -616,8 +616,43 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Set<Class> classes = getSimilarClasses(student);
         double score = 0;
         for (Class course : classes) {
-            score += Utils.getClassSize(course.getCourseSize());
+            score += Utils.getClassSizeScore(course.getCourseSize());
         }
         student.getStudent().setSizeScore(score);
+    }
+
+    public void setRecencyScore(StudentWithClasses student) {
+        int thisYear = Integer.parseInt(currentYear);
+        int thisQuarterScore = Utils.getRecencyScore(currentQuarter);
+
+        Set<Class> classes = getSimilarClasses(student);
+        int totalScore = 0;
+        for (Class course : classes) {
+            int year = course.getYear();
+            int quarter = Utils.getRecencyScore(course.getQuarter());
+            int score = (thisYear - year) * 4 + (thisQuarterScore - quarter);
+            switch(score) {
+                case 0:
+                    totalScore += 5;
+                    break;
+                case 1:
+                    totalScore += 4;
+                    break;
+                case 2:
+                    totalScore += 3;
+                    break;
+                case 3:
+                    totalScore += 2;
+                    break;
+                case 4:
+                    totalScore += 1;
+                    break;
+                default:
+                    totalScore += 1;
+                    break;
+            }
+
+        }
+        student.getStudent().setRecencyScore(totalScore);
     }
 }
