@@ -23,14 +23,22 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
-    @Ignore
-    public int score;
+    @ColumnInfo(name = "class_score")
+    public int classScore;
+
+    @ColumnInfo(name = "recency_score")
+    public int recencyScore;
+
+    @ColumnInfo(name = "size_score")
+    public double sizeScore;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
-        this.score = 0;
+        this.classScore = 0;
+        this.recencyScore = 0;
+        this.sizeScore = 0.0;
     }
 
     @Override
@@ -46,26 +54,18 @@ public class Student {
                 this.name.equals(other.name);
      }
 
-    public UUID getId() {
-        return studentId;
-    }
+    public UUID getId() { return studentId; }
 
-    public String getName() {
-        return name;
-      }
+    public String getName() { return name; }
 
     public Bitmap getPicture() { return picture; }
 
     @Override
-    public String toString() {
-        return studentId + "," + name;
-    }
+    public String toString() { return studentId + "," + name; }
 
-    public int getScore() {
-        return score;
-    }
+    public int getClassScore() { return classScore; }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
+    public int getRecencyScore() { return recencyScore; }
+
+    public double getSizeScore() { return sizeScore; }
 }
