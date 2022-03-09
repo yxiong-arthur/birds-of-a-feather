@@ -497,33 +497,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             else {
                 return 1;
             }
-//
-//            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
-//            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
-//            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
-//
-//            int index = 0;
-//            int s1_num_classes = s1_classes_sorted.size();
-//            int s2_num_classes = s2_classes_sorted.size();
-//
-//            while (index < s1_num_classes && index < s2_num_classes) {
-//                int compareIndicator = (s1_classes_sorted.get(index)).compareTo(s2_classes_sorted.get(index));
-//
-//                if (compareIndicator > 0) {
-//                    return -1;
-//                }
-//                else if (compareIndicator < 0) {
-//                    return 1;
-//                }
-//                index++;
-//            }
-//
-//            if (s1_num_classes > s2_num_classes) {
-//                return -1;
-//            }
-//            else {
-//                return 1;
-//            }
         }
     }
 
@@ -536,38 +509,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             else {
                 return 1;
             }
-
-            /*
-            Set<Class> s1_classes = getSimilarClasses(student1);
-            Set<Class> s2_classes = getSimilarClasses(student2);
-
-            String thisYearString = thisYearSpinner.getSelectedItem().toString();
-            String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
-
-            int s1_count = 0;
-
-            for (Class course : s1_classes) {
-                if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
-                    s1_count++;
-                }
-            }
-
-            int s2_count = 0;
-
-            for (Class course : s2_classes) {
-                if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
-                    s2_count++;
-                }
-            }
-
-            if (s1_count > s2_count) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-
-             */
         }
     }
 
