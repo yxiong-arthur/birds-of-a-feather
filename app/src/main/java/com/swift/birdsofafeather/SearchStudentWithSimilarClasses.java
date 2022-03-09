@@ -458,64 +458,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         startActivity(addStudentsIntent);
     }
 
-    public ArrayList<Class> sortClasses(Set<Class> list, PriorityQueue<Class> pq) {
-        ArrayList<Class> classList = new ArrayList<>();
-        pq.addAll(list);
-        while (!pq.isEmpty()) {
-            classList.add(pq.poll());
-        }
-        return classList;
-    }
-
-    class StudentClassComparator implements Comparator<Student> {
-        @Override
-        public int compare(Student student1, Student student2) {
-            if (student1.getClassScore() > student2.getClassScore()) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
-
-    class StudentClassSizeComparator implements Comparator<Student> {
-        public int compare (Student student1, Student student2) {
-            if (student1.getSizeScore() > student2.getSizeScore()) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
-
-    class StudentClassRecencyComparator implements Comparator<Student> {
-        @Override
-        public int compare(Student student1, Student student2) {
-            if (student1.getRecencyScore() > student2.getRecencyScore()) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
-    class StudentThisQuarterComparator implements Comparator<Student> {
-        @Override
-        public int compare(Student student1, Student student2) {
-            if (student1.getQuarterScore() > student2.getQuarterScore()) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
     public void onAddClassesClicked(View view){
         Intent addClassesIntent = new Intent(this, AddClassesActivity.class);
         startActivity(addClassesIntent);
@@ -586,5 +528,54 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
         }
         student.getStudent().setQuarterScore(score);
+    }
+}
+
+class StudentClassComparator implements Comparator<Student> {
+    @Override
+    public int compare(Student student1, Student student2) {
+        if (student1.getClassScore() > student2.getClassScore()) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
+    }
+}
+
+
+class StudentClassSizeComparator implements Comparator<Student> {
+    public int compare (Student student1, Student student2) {
+        if (student1.getSizeScore() > student2.getSizeScore()) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
+    }
+}
+
+
+class StudentClassRecencyComparator implements Comparator<Student> {
+    @Override
+    public int compare(Student student1, Student student2) {
+        if (student1.getRecencyScore() > student2.getRecencyScore()) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
+    }
+}
+
+class StudentThisQuarterComparator implements Comparator<Student> {
+    @Override
+    public int compare(Student student1, Student student2) {
+        if (student1.getQuarterScore() > student2.getQuarterScore()) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
     }
 }
