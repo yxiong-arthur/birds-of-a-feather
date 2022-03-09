@@ -68,7 +68,7 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.student = student;
             this.studentNameView.setText(student.getName());
             this.thumbnail.setImageBitmap(student.getPicture());
-            this.number.setText(String.valueOf(this.student.getScore()));
+            this.number.setText(String.valueOf(this.student.getClassScore()));
         }
 
         @Override
