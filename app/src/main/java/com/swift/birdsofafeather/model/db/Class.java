@@ -105,6 +105,6 @@ public class Class implements Comparable{
         Class other = (Class) o;
         Map<String, Integer> quarterOrder = Quarters.getQuarterOrder();
 
-        return this.year*4+quarterOrder.get(this.quarter) - other.year*4+quarterOrder.get(other.quarter);
+        return (this.year*4+quarterOrder.get(this.quarter)) - (other.year*4+quarterOrder.get(other.quarter));
     }
 }
