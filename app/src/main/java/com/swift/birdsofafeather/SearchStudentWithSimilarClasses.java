@@ -444,11 +444,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void startNearby(){
         Nearby.getMessagesClient(this).subscribe(realListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
+        Log.d(TAG, "Started Nearby Searching");
     }
 
     protected void stopNearby(){
         Nearby.getMessagesClient(this).unsubscribe(realListener);
         Nearby.getMessagesClient(this).unpublish(myStudentData);
+        Log.d(TAG, "Stopped Nearby Searching");
     }
 
     @Override
