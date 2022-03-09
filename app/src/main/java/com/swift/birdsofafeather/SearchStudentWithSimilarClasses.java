@@ -440,15 +440,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         PriorityQueue<Student> pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
 
         for(StudentWithClasses student : studentList) {
-            Set<Class> classes = getSimilarClasses(student);
-            for (Class course : classes) {
-                if (course.getYear() == currentYear && course.getQuarter().equals(currentQuarter)) {
-                    pq.add(student.getStudent());
-                    break;
-                }
+            if (student.getStudent().getQuarterScore() > 0) {
+                pq.add(student.getStudent());
             }
         }
-
         while (!pq.isEmpty()) {
             commonClassmates.add(Objects.requireNonNull(pq.poll()));
         }
