@@ -2,7 +2,6 @@ package com.swift.birdsofafeather;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +17,7 @@ import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.SessionStudent;
-import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
-import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
 import java.util.Set;

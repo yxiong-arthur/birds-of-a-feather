@@ -6,12 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,11 +21,9 @@ import java.util.UUID;
         })
 public class Class implements Comparable{
     @PrimaryKey
-    @NonNull
     @ColumnInfo(name = "class_id")
     public UUID classId;
 
-    @NonNull
     @ColumnInfo(name = "student_id")
     public UUID studentId;
 
@@ -103,6 +98,7 @@ public class Class implements Comparable{
         return toHash.hashCode();
     }
 
+    @NonNull
     @Override
     public String toString(){
         return this.classId + "," + this.year + "," + this.quarter + "," + this.subject

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.UUID;
@@ -13,7 +12,6 @@ import java.util.UUID;
 @Entity(tableName = "students")
 public class Student {
     @PrimaryKey
-    @NonNull
     @ColumnInfo(name = "student_id")
     public UUID studentId;
 
@@ -60,6 +58,7 @@ public class Student {
 
     public Bitmap getPicture() { return picture; }
 
+    @NonNull
     @Override
     public String toString() { return studentId + "," + name; }
 

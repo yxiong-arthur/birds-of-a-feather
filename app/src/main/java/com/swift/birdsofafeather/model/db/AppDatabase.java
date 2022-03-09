@@ -7,8 +7,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import java.sql.Date;
-
 @Database(entities = {Student.class, Class.class, Session.class, SessionStudent.class}, version = 2)
 @TypeConverters({UUIDConverter.class, BitmapConverter.class, DateConverter.class})
 public abstract class AppDatabase extends RoomDatabase {

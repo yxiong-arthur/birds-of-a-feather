@@ -1,11 +1,8 @@
 package com.swift.birdsofafeather.model.db;
 
-import android.graphics.Bitmap;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -14,7 +11,6 @@ import java.util.UUID;
 @Entity(tableName = "sessions")
 public class Session {
     @PrimaryKey
-    @NonNull
     @ColumnInfo(name = "session_id")
     public UUID sessionId;
 

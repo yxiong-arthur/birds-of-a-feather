@@ -1,23 +1,21 @@
 package com.swift.birdsofafeather;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 
-import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,14 +24,14 @@ import java.util.concurrent.Future;
 public class AddClassesActivity extends AppCompatActivity {
     private AppDatabase db;
     private UUID studentId;
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future future;
 
     private Spinner yearSpinner;
     private Spinner quarterSpinner;
     private Spinner courseSizeSpinner;
 
-    private String[] courseSizes = getResources().getStringArray(R.array.courseSize_array_actual);
+    private final String[] courseSizes = getResources().getStringArray(R.array.courseSize_array_actual);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +39,19 @@ public class AddClassesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_classes);
 
         this.future = backgroundThreadExecutor.submit(() -> {
-            yearSpinner = (Spinner) findViewById(R.id.year_select);
+            yearSpinner = findViewById(R.id.year_select);
             ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
                     R.array.years_array, android.R.layout.simple_spinner_item);
             yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             yearSpinner.setAdapter(yearAdapter);
 
-            quarterSpinner = (Spinner) findViewById(R.id.quarter_select);
+            quarterSpinner = findViewById(R.id.quarter_select);
             ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
                     R.array.quarters_array, android.R.layout.simple_spinner_item);
             quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             quarterSpinner.setAdapter(quarterAdapter);
 
-            courseSizeSpinner = (Spinner) findViewById(R.id.courseSize_select);
+            courseSizeSpinner = findViewById(R.id.courseSize_select);
             ArrayAdapter<CharSequence> courseSizeAdapter = ArrayAdapter.createFromResource(this,
                     R.array.courseSize_array_display, android.R.layout.simple_spinner_item);
             quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -64,8 +62,8 @@ public class AddClassesActivity extends AppCompatActivity {
     }
 
     public void onEnterClicked(View view){
-        TextView subjectTextView = (TextView) findViewById(R.id.subject_textview);
-        TextView courseNumberTextView = (TextView) findViewById(R.id.courseNumber_textview);
+        TextView subjectTextView = findViewById(R.id.subject_textview);
+        TextView courseNumberTextView = findViewById(R.id.courseNumber_textview);
 
         String yearString = yearSpinner.getSelectedItem().toString();
         String quarter = quarterSpinner.getSelectedItem().toString().toLowerCase();
@@ -91,6 +89,8 @@ public class AddClassesActivity extends AppCompatActivity {
     }
 
     public void onDoneClicked(View view){
+        this.future.cancel(true);
+
         Intent searchStudentIntent = new Intent(this, SearchStudentWithSimilarClasses.class);
         startActivity(searchStudentIntent);
     }
@@ -137,6 +137,8 @@ public class AddClassesActivity extends AppCompatActivity {
     }
 
     public void onGoBackHome(View view) {
+        this.future.cancel(true);
+
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }
