@@ -25,9 +25,9 @@ public class StartSearchPage extends AppCompatActivity {
     private static final String TAG = "CourseDashboard";
     private AppDatabase db;
     private UUID studentId;
-    private RecyclerView courseRecyclerView;
-    private RecyclerView.LayoutManager courseLayoutManager;
-    private CourseViewAdapter courseViewAdapter;
+    private RecyclerView sessionRecyclerView;
+    private RecyclerView.LayoutManager sessionLayoutManager;
+    private SessionViewAdapter sessionViewAdapter;
     private final ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future future;
 
@@ -46,13 +46,13 @@ public class StartSearchPage extends AppCompatActivity {
 
         this.future = backgroundThreadExecutor.submit(() -> runOnUiThread(() -> {
             // Set up the recycler view to show our database contents
-            courseRecyclerView = findViewById(R.id.persons_view);
+            sessionRecyclerView = findViewById(R.id.persons_view);
 
-            courseLayoutManager = new LinearLayoutManager(this);
-            courseRecyclerView.setLayoutManager(courseLayoutManager);
+            sessionLayoutManager = new LinearLayoutManager(this);
+            sessionRecyclerView.setLayoutManager(sessionLayoutManager);
 
-            courseViewAdapter = new CourseViewAdapter(mySessions);
-            courseRecyclerView.setAdapter(courseViewAdapter);
+            sessionViewAdapter = new SessionViewAdapter(mySessions);
+            sessionRecyclerView.setAdapter(sessionViewAdapter);
         }));
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(

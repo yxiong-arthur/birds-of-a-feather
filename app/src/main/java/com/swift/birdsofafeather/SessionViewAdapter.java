@@ -16,17 +16,17 @@ import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
 
-public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.ViewHolder> {
-    private final List<Session> courses;
+public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.ViewHolder> {
+    private final List<Session> sessions;
 
-    public CourseViewAdapter(List<Session> courses) {
+    public SessionViewAdapter(List<Session> sessions) {
         super();
-        this.courses = courses;
+        this.sessions = sessions;
     }
 
     @NonNull
     @Override
-    public CourseViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SessionViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.display_course_with_student, parent, false);
@@ -35,13 +35,13 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CourseViewAdapter.ViewHolder holder, int position) {
-        holder.setCourse(courses.get(position));
+    public void onBindViewHolder(@NonNull SessionViewAdapter.ViewHolder holder, int position) {
+        holder.setCourse(sessions.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return this.courses.size();
+        return this.sessions.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
