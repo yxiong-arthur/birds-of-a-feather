@@ -407,14 +407,15 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
                 db.sessionStudentDao().insert(studentInSession);
 
-                for(int i = 3; i < decodedMessage.length; i+=5) {
+                for(int i = 3; i < decodedMessage.length; i+=6) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
                     int year = Integer.parseInt(decodedMessage[i + 1]);
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
                     String courseNumber = decodedMessage[i + 4];
+                    String courseSize = decodedMessage[i + 5];
 
-                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
                     db.classesDao().insert(newClass);
                 }
 
