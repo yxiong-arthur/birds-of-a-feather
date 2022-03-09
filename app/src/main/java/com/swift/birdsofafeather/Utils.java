@@ -164,9 +164,7 @@ public class Utils {
             case "sp":
                 return 1;
             case "ss1":
-                return 2;
             case "ss2":
-                return 2;
             case "sss":
                 return 2;
             case "fa":
