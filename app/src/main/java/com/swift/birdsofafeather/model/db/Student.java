@@ -12,6 +12,7 @@ import java.util.UUID;
 @Entity(tableName = "students")
 public class Student {
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "student_id")
     public UUID studentId;
 

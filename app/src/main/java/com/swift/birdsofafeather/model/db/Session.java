@@ -11,6 +11,7 @@ import java.util.UUID;
 @Entity(tableName = "sessions")
 public class Session {
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "session_id")
     public UUID sessionId;
 

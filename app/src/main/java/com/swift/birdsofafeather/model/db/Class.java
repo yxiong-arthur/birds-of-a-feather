@@ -21,6 +21,7 @@ import java.util.UUID;
         })
 public class Class implements Comparable{
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "class_id")
     public UUID classId;
 
