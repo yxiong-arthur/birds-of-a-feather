@@ -1,31 +1,17 @@
 package com.swift.birdsofafeather;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import static org.junit.Assert.assertEquals;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 
-import java.util.UUID;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class AddClassIntegrationTest {
