@@ -70,8 +70,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private boolean fromStartPage = false;
     private boolean stopSearch = false;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -270,13 +268,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                             LinearLayout layout = new LinearLayout(SearchStudentWithSimilarClasses.this);
                             layout.setOrientation(LinearLayout.VERTICAL);
 
-                            final EditText editTextSubject = new EditText(SearchStudentWithSimilarClasses.this);
-                            editTextSubject.setHint("Subject");
-                            layout.addView(editTextSubject);
+                            final EditText editTextCourse = new EditText(SearchStudentWithSimilarClasses.this);
+                            editTextCourse.setHint("Subject + Course Number");
+                            layout.addView(editTextCourse);
 
-                            final EditText editTextCourseNumber = new EditText(SearchStudentWithSimilarClasses.this);
-                            editTextCourseNumber.setHint("Number");
-                            layout.addView(editTextCourseNumber);
+
                             // set title
                             alertDialogBuilder.setTitle("Save your class");
                             alertDialogBuilder.setView(layout);
@@ -297,10 +293,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
 
-                                    String subjectString = editTextSubject.getText().toString().toLowerCase();
-                                    String courseNumberString = editTextCourseNumber.getText().toString().toLowerCase();
-                                    if (subjectString.length() > 0 && courseNumberString.length() > 0) {
-                                        String className = subjectString + " " + courseNumberString;
+                                    String className = editTextCourse.getText().toString().toLowerCase();
+                                    if (className.length() > 0) {
                                         db.sessionDao().updateName(currentSessionId, className);
                                         Log.d(TAG, "Named session to " + db.sessionDao().getName(currentSessionId));
                                         Toast.makeText(SearchStudentWithSimilarClasses.this, "save as new session", Toast.LENGTH_SHORT).show();
