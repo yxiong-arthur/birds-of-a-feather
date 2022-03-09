@@ -159,27 +159,50 @@ public class Utils {
         return bitmap;
     }
 
-    public static int getClassSize(String classSize) {
-        if (classSize.equals("Tiny")) {
-            return 1;
+    public static double getClassSizeWeight(String classSize) {
+        if (classSize.equals("Tiny (<40)")) {
+            return 1.00;
         }
-        else if (classSize.equals("Small")) {
-            return 2;
+        else if (classSize.equals("Small (40-75)")) {
+            return 0.33;
         }
-        else if (classSize.equals("Medium")) {
-            return 3;
+        else if (classSize.equals("Medium (75-150)")) {
+            return 0.18;
         }
-        else if (classSize.equals("Large")) {
-            return 4;
+        else if (classSize.equals("Large (150-250)")) {
+            return 0.10;
         }
-        else if (classSize.equals("Huge")) {
-            return 5;
+        else if (classSize.equals("Huge (250-400)")) {
+            return 0.06;
         }
-        else if (classSize.equals("Gigantic")) {
-            return 6;
+        else if (classSize.equals("Gigantic (400+)")) {
+            return 0.03;
         } else {
             return 0;
         }
     }
 
+    public static int getQuarterRecencyWeight(String quarter) {
+        if (quarter.equals("wi")) {
+            return 0;
+        }
+        else if (quarter.equals("sp")) {
+            return 1;
+        }
+        else if (quarter.equals("ss1")) {
+            return 2;
+        }
+        else if (quarter.equals("ss2")) {
+            return 2;
+        }
+        else if (quarter.equals("sss")) {
+            return 2;
+        }
+        else if (quarter.equals("fa")) {
+            return 3;
+        }
+        else {
+            return -1;
+        }
+    }
 }

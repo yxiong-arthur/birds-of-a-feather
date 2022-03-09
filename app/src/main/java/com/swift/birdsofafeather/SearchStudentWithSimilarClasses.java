@@ -519,40 +519,22 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     /*
     class StudentClassSizeComparator implements Comparator<StudentWithClasses> {
         public int compare (StudentWithClasses student1, StudentWithClasses student2) {
-            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassSizeComparator());
-            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
-            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
+            Set<Class> s1_classes = getSimilarClasses(student1);
+            Set<Class> s2_classes = getSimilarClasses(student2);
 
-            int index = 0;
-            int s1_num_classes = s1_classes_sorted.size();
-            int s2_num_classes = s2_classes_sorted.size();
 
-            while (index < s1_num_classes && index < s2_num_classes) {
-                Class class1 = s1_classes_sorted.get(index);
-                Class class2 = s2_classes_sorted.get(index);
-
-                if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
-                    return -1;
-                }
-                else if (Utils.getClassSize(class1.getSize()) > Utils.getClassSize(class2.getSize())) {
-                    return 1;
-                }
-                index++;
+            int s1_weight = 0;
+            for (Class course : s1_classes) {
+                s1_weight += Utils.getClassSizeWeight(course.getSize());
             }
 
-            if (s1_num_classes > s2_num_classes) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
 
-    class ClassSizeComparator implements Comparator<Class> {
-        @Override
-        public int compare(Class class1, Class class2) {
-            if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
+            int s2_weight = 0;
+            for (Class course : s2_classes) {
+                s2_weight += Utils.getClassSizeWeight(course.getSize());
+            }
+
+            if (s1_weight > s2_weight) {
                 return -1;
             }
             else {
@@ -565,40 +547,32 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
         public int compare(StudentWithClasses student1, StudentWithClasses student2) {
+            String thisYearString = thisYearSpinner.getSelectedItem().toString();
+            String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
 
-            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
-            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
-            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
+            int myYear = Integer.parseInt(thisYearString);
+            int myQuarterWeight = Utils.getQuarterRecencyWeight(thisQuarterString);
 
-            int index = 0;
-            int s1_num_classes = s1_classes_sorted.size();
-            int s2_num_classes = s2_classes_sorted.size();
 
-            while (index < s1_num_classes && index < s2_num_classes) {
-                int compareIndicator = (s1_classes_sorted.get(index)).compareTo(s2_classes_sorted.get(index));
+            Set<Class> s1_classes = getSimilarClasses(student1);
+            Set<Class> s2_classes = getSimilarClasses(student2);
 
-                if (compareIndicator > 0) {
-                    return -1;
-                }
-                else if (compareIndicator < 0) {
-                    return 1;
-                }
-                index++;
+            int s1_weight = 0;
+            for (Class course : s1_classes) {
+                int yearWeight = course.getYear();
+                int quarterWeight = Utils.getQuarterRecencyWeight(course.getQuarter());
+                int totalWeight = (myYear - yearWeight) * 4 + (myQuarterWeight - quarterWeight);
+                s1_weight += totalWeight;
             }
 
-            if (s1_num_classes > s2_num_classes) {
-                return -1;
+            int s2_weight = 0;
+            for (Class course : s2_classes) {
+                int yearWeight = course.getYear();
+                int quarterWeight = Utils.getQuarterRecencyWeight(course.getQuarter());
+                int totalWeight = (myYear - yearWeight) * 4 + (myQuarterWeight - quarterWeight);
+                s2_weight += totalWeight;
             }
-            else {
-                return 1;
-            }
-        }
-    }
-
-    class ClassRecencyComparator implements Comparator<Class> {
-        @Override
-        public int compare(Class class1, Class class2) {
-            if (class1.compareTo(class2) > 0) {
+            if (s1_weight < s2_weight) {
                 return -1;
             }
             else {
