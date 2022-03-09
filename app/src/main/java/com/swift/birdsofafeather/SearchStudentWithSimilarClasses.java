@@ -141,81 +141,58 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }));
     }
 
-    protected List<Student> findPriorClassmates() {
-        SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
-        List<Student> sessionStudents = mySession.getStudents();
-        sessionStudents.remove(user.getStudent());
-
-
-        List<StudentWithClasses> studentList = new ArrayList<>();
-        for(Student student : sessionStudents) {
-            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
-        }
-        List<Student> commonClassmates = new ArrayList<>();
-
-        PriorityQueue<Student> pq;
-        String filterString = filterSpinner.getSelectedItem().toString();
-        String thisYearString = thisYearSpinner.getSelectedItem().toString();
-        String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
-
-        switch (filterString) {
-            case "prioritize recent":
-                pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
-                break;
-            case "prioritize small classes":
-                pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
-                break;
-            case "this quarter only":
-                pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
-                break;
-            default:
-                pq = new PriorityQueue<>(1000, new StudentClassComparator());
-        }
-
-        for (StudentWithClasses classmate : studentList) {
-
-            if (countSimilarClasses(classmate) > 0) {
-                pq.add(classmate.getStudent());
-            }
-        }
-        while (!pq.isEmpty()) {
-            commonClassmates.add(Objects.requireNonNull(pq.poll()));
-        }
-        return commonClassmates;
-    }
-
-    protected int countSimilarClasses(StudentWithClasses classmate){
-        Set<Class> mateClasses = classmate.getClasses();
-
-        mateClasses.retainAll(userClasses);
-
-        return mateClasses.size();
-    }
-
-    protected Set<Class> getSimilarClasses(StudentWithClasses classmate) {
-        Set<Class> mateClasses = classmate.getClasses();
-        mateClasses.retainAll(userClasses);
-        return mateClasses;
-    }
-
-    public int calculatePosition (Student classmate) {
-        user = db.studentWithClassesDao().getStudent(userId);
-        userClasses = user.getClasses();
-        List<Student> userClassmates = findPriorClassmates();
-        for(int i=0; i<userClassmates.size(); i++) {
-            if(userClassmates.get(i).getId().equals(classmate.getId())){
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public void onToggleClicked(View view) {
         if(searching)
             this.onStopClicked();
         else
             this.onStartClicked();
         searching = !searching;
+    }
+
+    protected void startNearby(){
+        Nearby.getMessagesClient(this).subscribe(realListener);
+        Nearby.getMessagesClient(this).publish(myStudentData);
+        Log.d(TAG, "Started Nearby Searching");
+    }
+
+    protected void stopNearby(){
+        Nearby.getMessagesClient(this).unsubscribe(realListener);
+        Nearby.getMessagesClient(this).unpublish(myStudentData);
+        Log.d(TAG, "Stopped Nearby Searching");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopNearby();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        if(preferences.contains("current_session_id")) {
+            String sessionUUIDString = preferences.getString("current_session_id", "");
+            currentSessionId = UUID.fromString(sessionUUIDString);
+        }
+
+        if(this.fromStartPage){
+            this.startNearby();
+            this.fromStartPage = false;
+        }
+
+        refreshRecycler();
+    }
+
+    public void onAddStudentsClicked(View view){
+        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
+        startActivity(addStudentsIntent);
+    }
+
+    public void onAddClassesClicked(View view){
+        Intent addClassesIntent = new Intent(this, AddClassesActivity.class);
+        startActivity(addClassesIntent);
     }
 
     protected void onStartClicked(){
@@ -417,50 +394,49 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
     }
 
-    protected void startNearby(){
-        Nearby.getMessagesClient(this).subscribe(realListener);
-        Nearby.getMessagesClient(this).publish(myStudentData);
-        Log.d(TAG, "Started Nearby Searching");
-    }
+    protected List<Student> findPriorClassmates() {
+        SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
+        List<Student> sessionStudents = mySession.getStudents();
+        sessionStudents.remove(user.getStudent());
 
-    protected void stopNearby(){
-        Nearby.getMessagesClient(this).unsubscribe(realListener);
-        Nearby.getMessagesClient(this).unpublish(myStudentData);
-        Log.d(TAG, "Stopped Nearby Searching");
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopNearby();
-    }
+        List<StudentWithClasses> studentList = new ArrayList<>();
+        for(Student student : sessionStudents) {
+            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
+        }
+        List<Student> commonClassmates = new ArrayList<>();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        PriorityQueue<Student> pq;
+        String filterString = filterSpinner.getSelectedItem().toString();
+        String thisYearString = thisYearSpinner.getSelectedItem().toString();
+        String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
 
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
-        if(preferences.contains("current_session_id")) {
-            String sessionUUIDString = preferences.getString("current_session_id", "");
-            currentSessionId = UUID.fromString(sessionUUIDString);
+        switch (filterString) {
+            case "prioritize recent":
+                pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
+                break;
+            case "prioritize small classes":
+                pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
+                break;
+            case "this quarter only":
+                pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
+                break;
+            case "default":
+                pq = new PriorityQueue<>(1000, new StudentClassComparator());
+            default:
+                pq = new PriorityQueue<>(1000, new StudentClassComparator());
         }
 
-        if(this.fromStartPage){
-            this.startNearby();
-            this.fromStartPage = false;
+        for (StudentWithClasses classmate : studentList) {
+
+            if (countSimilarClasses(classmate) > 0) {
+                pq.add(classmate.getStudent());
+            }
         }
-
-        refreshRecycler();
-    }
-
-    public void onAddStudentsClicked(View view){
-        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
-        startActivity(addStudentsIntent);
-    }
-
-    public void onAddClassesClicked(View view){
-        Intent addClassesIntent = new Intent(this, AddClassesActivity.class);
-        startActivity(addClassesIntent);
+        while (!pq.isEmpty()) {
+            commonClassmates.add(Objects.requireNonNull(pq.poll()));
+        }
+        return commonClassmates;
     }
 
     public void setAllScore(StudentWithClasses student) {
@@ -529,6 +505,33 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
         student.getStudent().setQuarterScore(score);
     }
+
+    protected int countSimilarClasses(StudentWithClasses classmate){
+        Set<Class> mateClasses = classmate.getClasses();
+
+        mateClasses.retainAll(userClasses);
+
+        return mateClasses.size();
+    }
+
+    protected Set<Class> getSimilarClasses(StudentWithClasses classmate) {
+        Set<Class> mateClasses = classmate.getClasses();
+        mateClasses.retainAll(userClasses);
+        return mateClasses;
+    }
+
+    public int calculatePosition (Student classmate) {
+        user = db.studentWithClassesDao().getStudent(userId);
+        userClasses = user.getClasses();
+        List<Student> userClassmates = findPriorClassmates();
+        for(int i=0; i<userClassmates.size(); i++) {
+            if(userClassmates.get(i).getId().equals(classmate.getId())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 }
 
 class StudentClassComparator implements Comparator<Student> {
