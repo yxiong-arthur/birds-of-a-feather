@@ -73,4 +73,10 @@ public class Student {
     public double getSizeScore() { return sizeScore; }
 
     public int getQuarterScore() { return quarterScore; }
+
+    public void setClassScore(int score) { this.classScore = score; }
+
+    public void setRecencyScore(int score) { this.recencyScore = score; }
+
+    public void setSizeScore(double score) { this.sizeScore = score; }
 }

@@ -611,4 +611,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Intent addClassesIntent = new Intent(this, AddClassesActivity.class);
         startActivity(addClassesIntent);
     }
+
+    public void setSizeScore(StudentWithClasses student) {
+        Set<Class> classes = getSimilarClasses(student);
+        double score = 0;
+        for (Class course : classes) {
+            score += Utils.getClassSize(course.getCourseSize());
+        }
+        student.getStudent().setSizeScore(score);
+    }
 }

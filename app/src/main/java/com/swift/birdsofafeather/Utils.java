@@ -138,20 +138,20 @@ public class Utils {
         return bitmap;
     }
 
-    public static int getClassSize(String classSize) {
+    public static double getClassSize(String classSize) {
         switch (classSize) {
             case "tiny":
                 return 1;
             case "small":
-                return 2;
+                return 0.33;
             case "medium":
-                return 3;
+                return 0.18;
             case "large":
-                return 4;
+                return 0.10;
             case "huge":
-                return 5;
+                return 0.06;
             case "gigantic":
-                return 6;
+                return 0.03;
             default:
                 return 0;
         }
