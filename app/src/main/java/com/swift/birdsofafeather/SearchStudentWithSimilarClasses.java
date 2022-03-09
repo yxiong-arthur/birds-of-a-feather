@@ -563,6 +563,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
      */
 
+
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
         public int compare(StudentWithClasses student1, StudentWithClasses student2) {
