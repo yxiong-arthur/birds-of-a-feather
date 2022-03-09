@@ -31,7 +31,7 @@ public class AddClassesActivity extends AppCompatActivity {
     private Spinner quarterSpinner;
     private Spinner courseSizeSpinner;
 
-    private final String[] courseSizes = getResources().getStringArray(R.array.courseSize_array_actual);
+    private final String[] courseSizes = {"Tiny", "Small", "Medium", "Large", "Huge", "Gigantic"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

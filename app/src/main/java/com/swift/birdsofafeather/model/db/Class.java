@@ -9,6 +9,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import com.swift.birdsofafeather.Utils;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -109,8 +111,7 @@ public class Class implements Comparable{
     @Override
     public int compareTo(Object o) {
         Class other = (Class) o;
-        Map<String, Integer> quarterOrder = Quarters.getQuarterOrder();
 
-        return (this.year*4+quarterOrder.get(this.quarter)) - (other.year*4+quarterOrder.get(other.quarter));
+        return (this.year*4 + Utils.getRecencyScore(this.quarter)) - (other.year*4 + Utils.getRecencyScore(other.quarter));
     }
 }

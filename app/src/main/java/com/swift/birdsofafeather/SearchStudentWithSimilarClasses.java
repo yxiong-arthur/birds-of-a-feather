@@ -43,15 +43,15 @@ import java.util.concurrent.Executors;
 
 public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private static final String TAG = "BluetoothActivity";
-    private static final String currentYear = "2022";
+    private static final int currentYear = 2022;
     private static final String currentQuarter = "wi";
 
     private MessageListener realListener;
     private Message myStudentData;
 
     private Spinner filterSpinner;
-    private Spinner thisYearSpinner;
-    private Spinner thisQuarterSpinner;
+//    private Spinner thisYearSpinner;
+//    private Spinner thisQuarterSpinner;
     private AppDatabase db;
 
     private UUID currentSessionId;
@@ -79,17 +79,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
 
-        thisYearSpinner = findViewById(R.id.year_select);
-        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
-                R.array.years_array, android.R.layout.simple_spinner_item);
-        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        thisYearSpinner.setAdapter(yearAdapter);
-
-        thisQuarterSpinner = findViewById(R.id.quarter_select);
-        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
-                R.array.quarters_array, android.R.layout.simple_spinner_item);
-        quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        thisQuarterSpinner.setAdapter(quarterAdapter);
+//        thisYearSpinner = findViewById(R.id.year_select);
+//        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
+//                R.array.years_array, android.R.layout.simple_spinner_item);
+//        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        thisYearSpinner.setAdapter(yearAdapter);
+//
+//        thisQuarterSpinner = findViewById(R.id.quarter_select);
+//        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
+//                R.array.quarters_array, android.R.layout.simple_spinner_item);
+//        quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        thisQuarterSpinner.setAdapter(quarterAdapter);
 
         db = AppDatabase.singleton(getApplicationContext());
 
@@ -152,13 +152,15 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void startNearby(){
         Nearby.getMessagesClient(this).subscribe(realListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
-        Log.d(TAG, "Started Nearby Searching");
+        Log.d(TAG, "Started Nearby Subscribing");
+        Log.d(TAG, "Started Nearby Publishing");
     }
 
     protected void stopNearby(){
         Nearby.getMessagesClient(this).unsubscribe(realListener);
         Nearby.getMessagesClient(this).unpublish(myStudentData);
-        Log.d(TAG, "Stopped Nearby Searching");
+        Log.d(TAG, "Stopped Nearby Subscribing");
+        Log.d(TAG, "Stopped Nearby Publishing");
     }
 
     @Override
@@ -277,13 +279,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
                 List<String> spinnerArray = new ArrayList<>();
 
-                String thisYearString = thisYearSpinner.getSelectedItem().toString();
-                String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
-
                 userClasses = user.getClasses();
                 for (Class course : userClasses) {
 
-                    if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
+                    if (course.getYear() == currentYear && course.getQuarter().equals(currentQuarter)) {
                         String courseString = course.getSubject() + " " + course.getCourseNumber();
                         spinnerArray.add(courseString);
                     }
@@ -374,6 +373,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 int listPosition = calculatePosition(classmate);
 
                 StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
+
                 setAllScore(studentWithClasses);
                 studentsViewAdapter.addStudent(listPosition, classmate);
             }
@@ -404,12 +404,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         for(Student student : sessionStudents) {
             studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
         }
+
         List<Student> commonClassmates = new ArrayList<>();
 
         PriorityQueue<Student> pq;
         String filterString = filterSpinner.getSelectedItem().toString();
-        String thisYearString = thisYearSpinner.getSelectedItem().toString();
-        String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
+//        String thisYearString = thisYearSpinner.getSelectedItem().toString();
+//        String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
 
         switch (filterString) {
             case "prioritize recent":
@@ -421,14 +422,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             case "this quarter only":
                 pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
                 break;
-            case "default":
-                pq = new PriorityQueue<>(1000, new StudentClassComparator());
             default:
                 pq = new PriorityQueue<>(1000, new StudentClassComparator());
         }
 
         for (StudentWithClasses classmate : studentList) {
-
             if (countSimilarClasses(classmate) > 0) {
                 pq.add(classmate.getStudent());
             }
@@ -446,64 +444,47 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         setQuarterScore(student);
     }
 
-    public void setClassScore(StudentWithClasses student) {
-        int score = countSimilarClasses(student);
-        db.studentDao().updateClassScore(student.getStudent().getId(), score);
+    public void setClassScore(StudentWithClasses student){
+        int classScore = countSimilarClasses(student);
+
+        db.studentDao().updateClassScore(student.getStudent().getId(), classScore);
     }
 
     public void setSizeScore(StudentWithClasses student) {
         Set<Class> classes = getSimilarClasses(student);
-        double score = 0;
+        double sizeScore = 0;
+
         for (Class course : classes) {
-            score += Utils.getClassSizeScore(course.getCourseSize());
+            sizeScore += Utils.getClassSizeScore(course.getCourseSize());
         }
-        db.studentDao().updateSizeScore(student.getStudent().getId(), score);
+
+        db.studentDao().updateSizeScore(student.getStudent().getId(), sizeScore);
     }
 
     public void setRecencyScore(StudentWithClasses student) {
-        int thisYear = Integer.parseInt(currentYear);
         int thisQuarterScore = Utils.getRecencyScore(currentQuarter);
 
         Set<Class> classes = getSimilarClasses(student);
-        int totalScore = 0;
+        int recencyScore = 0;
         for (Class course : classes) {
             int year = course.getYear();
             int quarter = Utils.getRecencyScore(course.getQuarter());
-            int score = (thisYear - year) * 4 + (thisQuarterScore - quarter);
-            switch(score) {
-                case 0:
-                    totalScore += 5;
-                    break;
-                case 1:
-                    totalScore += 4;
-                    break;
-                case 2:
-                    totalScore += 3;
-                    break;
-                case 3:
-                    totalScore += 2;
-                    break;
-                case 4:
-                    totalScore += 1;
-                    break;
-                default:
-                    totalScore += 1;
-                    break;
-            }
-
+            int score = (currentYear - year) * 4 + (thisQuarterScore - quarter);
+            recencyScore += score > 4 ? 1 : 5 - score;
         }
-        db.studentDao().updateRecencyScore(student.getStudent().getId(), totalScore);
+
+        db.studentDao().updateRecencyScore(student.getStudent().getId(), recencyScore);
     }
 
     public void setQuarterScore(StudentWithClasses student) {
         Set<Class> classes = getSimilarClasses(student);
-        int score = 0;
+        int quarterScore = 0;
         for (Class course : classes) {
-            if (course.getYear() == Integer.parseInt(currentYear) && course.getQuarter().equals(currentQuarter)) {
-                score++;
+            if (course.getYear() == currentYear && course.getQuarter().equals(currentQuarter)) {
+                quarterScore++;
             }
         }
-        db.studentDao().updateClassScore(student.getStudent().getId(), score);
+        db.studentDao().updateClassScore(student.getStudent().getId(), quarterScore);
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){
@@ -531,30 +512,20 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
         return -1;
     }
-
 }
 
 class StudentClassComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        if (student1.getClassScore() > student2.getClassScore()) {
-            return -1;
-        }
-        else {
-            return 1;
-        }
+        return student1.getClassScore() - student2.getClassScore();
     }
 }
 
 
 class StudentClassSizeComparator implements Comparator<Student> {
+    @Override
     public int compare (Student student1, Student student2) {
-        if (student1.getSizeScore() > student2.getSizeScore()) {
-            return -1;
-        }
-        else {
-            return 1;
-        }
+        return (int) (student1.getSizeScore() - student2.getSizeScore());
     }
 }
 
@@ -562,23 +533,13 @@ class StudentClassSizeComparator implements Comparator<Student> {
 class StudentClassRecencyComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        if (student1.getRecencyScore() > student2.getRecencyScore()) {
-            return -1;
-        }
-        else {
-            return 1;
-        }
+        return student1.getRecencyScore() - student2.getRecencyScore();
     }
 }
 
 class StudentThisQuarterComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        if (student1.getQuarterScore() > student2.getQuarterScore()) {
-            return -1;
-        }
-        else {
-            return 1;
-        }
+        return student1.getQuarterScore() - student2.getQuarterScore();
     }
 }

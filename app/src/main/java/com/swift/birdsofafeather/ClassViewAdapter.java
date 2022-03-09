@@ -13,11 +13,11 @@ import com.swift.birdsofafeather.model.db.Class;
 import java.util.List;
 
 public class ClassViewAdapter extends RecyclerView.Adapter<ClassViewAdapter.ViewHolder> {
-    private final List<Class> commonC;
+    private final List<Class> commonClasses;
 
     public ClassViewAdapter(List<Class> classes) {
         super();
-        this.commonC = classes;
+        this.commonClasses = classes;
     }
 
     @NonNull
@@ -32,12 +32,12 @@ public class ClassViewAdapter extends RecyclerView.Adapter<ClassViewAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ClassViewAdapter.ViewHolder holder, int position) {
-        holder.setClass(commonC.get(position));
+        holder.setClass(commonClasses.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return this.commonC.size();
+        return this.commonClasses.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,7 +47,6 @@ public class ClassViewAdapter extends RecyclerView.Adapter<ClassViewAdapter.View
         ViewHolder(View itemView) {
             super(itemView);
             this.classView = itemView.findViewById(R.id.student_class);
-            //itemView.setOnClickListener(this);
         }
 
         public void setClass(Class aClass) {
