@@ -33,7 +33,7 @@ public interface StudentDao {
     void updateRecencyScore(UUID studentId, int recencyScore);
 
     @Query("UPDATE students SET size_score=:sizeScore WHERE student_id= :studentId")
-    void updateSizeScore(UUID studentId, int sizeScore);
+    void updateSizeScore(UUID studentId, double sizeScore);
 
     @Query("UPDATE students SET quarter_score=:quarterScore WHERE student_id= :studentId")
     void updateQuarterScore(UUID studentId, int quarterScore);

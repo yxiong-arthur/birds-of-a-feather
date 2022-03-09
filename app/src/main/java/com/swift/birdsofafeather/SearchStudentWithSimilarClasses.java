@@ -448,7 +448,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     public void setClassScore(StudentWithClasses student) {
         int score = countSimilarClasses(student);
-        student.getStudent().setClassScore(score);
+        db.studentDao().updateClassScore(student.getStudent().getId(), score);
     }
 
     public void setSizeScore(StudentWithClasses student) {
@@ -457,7 +457,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         for (Class course : classes) {
             score += Utils.getClassSizeScore(course.getCourseSize());
         }
-        student.getStudent().setSizeScore(score);
+        db.studentDao().updateSizeScore(student.getStudent().getId(), score);
     }
 
     public void setRecencyScore(StudentWithClasses student) {
@@ -492,7 +492,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
 
         }
-        student.getStudent().setRecencyScore(totalScore);
+        db.studentDao().updateRecencyScore(student.getStudent().getId(), totalScore);
     }
 
     public void setQuarterScore(StudentWithClasses student) {
@@ -503,7 +503,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 score++;
             }
         }
-        student.getStudent().setQuarterScore(score);
+        db.studentDao().updateClassScore(student.getStudent().getId(), score);
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){
