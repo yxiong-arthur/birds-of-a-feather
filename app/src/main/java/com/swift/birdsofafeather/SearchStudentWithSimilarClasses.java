@@ -420,8 +420,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
                 break;
             case "this quarter only":
-                pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
-                break;
+                return findStudentsThisQuarter(studentList, commonClassmates);
             default:
                 pq = new PriorityQueue<>(1000, new StudentClassComparator());
         }
@@ -434,6 +433,26 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         while (!pq.isEmpty()) {
             commonClassmates.add(Objects.requireNonNull(pq.poll()));
         }
+        return commonClassmates;
+    }
+
+    public List<Student> findStudentsThisQuarter(List<StudentWithClasses> studentList, List<Student> commonClassmates) {
+        PriorityQueue<Student> pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
+
+        for(StudentWithClasses student : studentList) {
+            Set<Class> classes = getSimilarClasses(student);
+            for (Class course : classes) {
+                if (course.getYear() == currentYear && course.getQuarter().equals(currentQuarter)) {
+                    pq.add(student.getStudent());
+                    break;
+                }
+            }
+        }
+
+        while (!pq.isEmpty()) {
+            commonClassmates.add(Objects.requireNonNull(pq.poll()));
+        }
+
         return commonClassmates;
     }
 
@@ -524,7 +543,7 @@ class StudentClassComparator implements Comparator<Student> {
 
 class StudentClassSizeComparator implements Comparator<Student> {
     @Override
-    public int compare (Student student1, Student student2) {
+    public int compare(Student student1, Student student2) {
         return (int) (student1.getSizeScore() - student2.getSizeScore());
     }
 }
