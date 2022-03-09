@@ -145,14 +145,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
         List<Student> sessionStudents = mySession.getStudents();
         sessionStudents.remove(user.getStudent());
+
         List<StudentWithClasses> studentList = new ArrayList<>();
         for(Student student : sessionStudents) {
             studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
         }
 
+
+
         List<Student> commonClassmates = new ArrayList<>();
 
-        PriorityQueue<StudentWithClasses> pq = new PriorityQueue<>(1000, new StudentComparator());
+        PriorityQueue<StudentWithClasses> pq;
         String filterString = filterSpinner.getSelectedItem().toString();
         String thisYearString = thisYearSpinner.getSelectedItem().toString();
         String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
@@ -162,25 +165,13 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
                 break;
             case "prioritize small classes":
-                // pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
+                pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
                 break;
             case "this quarter only":
                 pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
-                for (StudentWithClasses classmate : studentList) {
-                    if (countSimilarClasses(classmate) > 0) {
-                        Set<Class> classList = getSimilarClasses(classmate);
-                        for (Class course : classList) {
-                            if (course.getYear() == Integer.parseInt(thisYearString) && course.getQuarter().equals(thisQuarterString)) {
-                                pq.add(classmate);
-                                break;
-                            }
-                        }
-                    }
-                }
-                while (!pq.isEmpty()) {
-                    commonClassmates.add(Objects.requireNonNull(pq.poll()).getStudent());
-                }
-                return commonClassmates;
+                break;
+            default:
+                pq = new PriorityQueue<>(1000, new StudentComparator());
         }
 
         for (StudentWithClasses classmate : studentList) {
@@ -484,31 +475,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
-    /*
+
     class StudentClassSizeComparator implements Comparator<StudentWithClasses> {
         public int compare (StudentWithClasses student1, StudentWithClasses student2) {
-            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassSizeComparator());
-            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
-            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
-
-            int index = 0;
-            int s1_num_classes = s1_classes_sorted.size();
-            int s2_num_classes = s2_classes_sorted.size();
-
-            while (index < s1_num_classes && index < s2_num_classes) {
-                Class class1 = s1_classes_sorted.get(index);
-                Class class2 = s2_classes_sorted.get(index);
-
-                if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
-                    return -1;
-                }
-                else if (Utils.getClassSize(class1.getSize()) > Utils.getClassSize(class2.getSize())) {
-                    return 1;
-                }
-                index++;
-            }
-
-            if (s1_num_classes > s2_num_classes) {
+            if (student1.getStudent().getSizeScore() > student2.getStudent().getSizeScore()) {
                 return -1;
             }
             else {
@@ -517,23 +487,16 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
-    class ClassSizeComparator implements Comparator<Class> {
-        @Override
-        public int compare(Class class1, Class class2) {
-            if (Utils.getClassSize(class1.getSize()) < Utils.getClassSize(class2.getSize())) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-     */
 
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
         public int compare(StudentWithClasses student1, StudentWithClasses student2) {
-            return student1.getStudent().getRecencyScore() - student2.getStudent().getRecencyScore();
+            if (student1.getStudent().getRecencyScore() > student2.getStudent().getRecencyScore()) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
 //
 //            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
 //            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
@@ -564,21 +527,17 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
     }
 
-    class ClassRecencyComparator implements Comparator<Class> {
+    class StudentThisQuarterComparator implements Comparator<StudentWithClasses> {
         @Override
-        public int compare(Class class1, Class class2) {
-            if (class1.compareTo(class2) > 0) {
+        public int compare(StudentWithClasses student1, StudentWithClasses student2) {
+            if (student1.getStudent().getQuarterScore() > student2.getStudent().getQuarterScore()) {
                 return -1;
             }
             else {
                 return 1;
             }
-        }
-    }
 
-    class StudentThisQuarterComparator implements Comparator<StudentWithClasses> {
-        @Override
-        public int compare(StudentWithClasses student1, StudentWithClasses student2) {
+            /*
             Set<Class> s1_classes = getSimilarClasses(student1);
             Set<Class> s2_classes = getSimilarClasses(student2);
 
@@ -607,6 +566,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             else {
                 return 1;
             }
+
+             */
         }
     }
 
