@@ -612,6 +612,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         startActivity(addClassesIntent);
     }
 
+    public void setAllScore(StudentWithClasses student) {
+        setSizeScore(student);
+        setRecencyScore(student);
+        setQuarterScore(student);
+    }
+
     public void setSizeScore(StudentWithClasses student) {
         Set<Class> classes = getSimilarClasses(student);
         double score = 0;
@@ -654,5 +660,16 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         }
         student.getStudent().setRecencyScore(totalScore);
+    }
+
+    public void setQuarterScore(StudentWithClasses student) {
+        Set<Class> classes = getSimilarClasses(student);
+        int score = 0;
+        for (Class course : classes) {
+            if (course.getYear() == Integer.parseInt(currentYear) && course.getQuarter().equals(currentQuarter)) {
+                score++;
+            }
+        }
+        student.getStudent().setQuarterScore(score);
     }
 }
