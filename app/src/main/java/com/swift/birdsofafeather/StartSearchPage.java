@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class CourseDashboard  extends AppCompatActivity {
+public class StartSearchPage extends AppCompatActivity {
     private static final String TAG = "CourseDashboard";
     private AppDatabase db;
     private UUID studentId;

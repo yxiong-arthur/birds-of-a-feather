@@ -2,7 +2,6 @@ package com.swift.birdsofafeather;
 
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -26,7 +25,6 @@ import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
-import com.swift.birdsofafeather.model.db.Session;
 import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.SessionWithStudents;
 import com.swift.birdsofafeather.model.db.Student;
@@ -234,7 +232,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Button toggle_button = findViewById(R.id.toggle_search_button);
         toggle_button.setText("Stop Search");
         this.fromStartPage = true;
-        Intent intent3 = new Intent(this, CourseDashboard.class);
+        Intent intent3 = new Intent(this, StartSearchPage.class);
         startActivity(intent3);
     }
 

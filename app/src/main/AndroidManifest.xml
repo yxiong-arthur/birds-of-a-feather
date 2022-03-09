@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CourseDashboard"
+            android:name=".StartSearchPage"
             android:exported="false"/>
 
         <activity
