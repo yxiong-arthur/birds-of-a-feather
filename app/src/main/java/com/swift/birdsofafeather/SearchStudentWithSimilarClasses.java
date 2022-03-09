@@ -524,7 +524,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
         List<Student> userClassmates = findPriorClassmates();
-        for(int i=0; i<userClassmates.size(); i++) {
+        for(int i = 0; i < userClassmates.size(); i++) {
             if(userClassmates.get(i).getId().equals(classmate.getId())){
                 return i;
             }
