@@ -30,13 +30,13 @@ public class NameActivity extends AppCompatActivity {
         }else{
             setContentView(R.layout.activity_name);
             String firstName = getUserDisplayName(this);
-            TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
+            TextView firstNameTextView = findViewById(R.id.first_name_textview);
             if(!Utils.isEmpty(firstName)) firstNameTextView.setText(firstName);
         }
     }
 
     public void onConfirmClicked(View view){
-        TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
+        TextView firstNameTextView = findViewById(R.id.first_name_textview);
         String enteredName = firstNameTextView.getText().toString();
 
         if(Utils.isEmpty(enteredName)) {

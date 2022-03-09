@@ -63,7 +63,6 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             itemView.setOnClickListener(this);
         }
 
-
         public void setStudent(Student student) {
             this.student = student;
             this.studentNameView.setText(student.getName());

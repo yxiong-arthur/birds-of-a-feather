@@ -52,7 +52,8 @@ public class ClassViewAdapter extends RecyclerView.Adapter<ClassViewAdapter.View
 
         public void setClass(Class aClass) {
             this.aClass = aClass;
-            String result = aClass.toString().replaceAll(",", " ");
+            String result;
+            result = aClass.toString().replaceAll(",", " ");
             this.classView.setText(result);
         }
     }

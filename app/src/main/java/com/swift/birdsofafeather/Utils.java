@@ -2,38 +2,23 @@ package com.swift.birdsofafeather;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
-import android.transition.Transition;
 import android.util.Base64;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.swift.birdsofafeather.model.db.Class;
-import com.swift.birdsofafeather.model.db.Student;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -69,9 +54,7 @@ public class Utils {
 
         alertBuilder.setTitle("Alert!")
                 .setMessage(message)
-                .setPositiveButton("OK", (dialog, id) -> {
-                    dialog.cancel();
-                })
+                .setPositiveButton("OK", (dialog, id) -> dialog.cancel())
                 .setCancelable(true);
 
         AlertDialog alertDialog = alertBuilder.create();
@@ -79,9 +62,8 @@ public class Utils {
     }
 
     public static SharedPreferences getSharedPreferences(Context context) {
-        SharedPreferences preferences = context.getSharedPreferences(
+        return context.getSharedPreferences(
                 context.getApplicationContext().getString(R.string.preference_file_key), MODE_PRIVATE);
-        return preferences;
     }
 
     public static Bitmap urlToBitmap(Context context, String URL) {
@@ -118,16 +100,13 @@ public class Utils {
         bmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
 
-        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-        return encodedImage;
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public static Bitmap stringToBitmap(String bmap_string) {
         byte[] b = Base64.decode(bmap_string, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
 
-        return bitmap;
+        return BitmapFactory.decodeByteArray(b, 0, b.length);
     }
 
     public static String encodeStudent(Context context) {
@@ -141,13 +120,13 @@ public class Utils {
     }
 
     public static String encodeClasses(List<Class> classes) {
-        String res = "";
+        StringBuilder res = new StringBuilder();
 
         for (Class c : classes) {
-            res += "," + c;
+            res.append(",").append(c);
         }
 
-        return res;
+        return res.toString();
     }
 
     public static Bitmap createImage(int width, int height, int color) {
@@ -160,25 +139,21 @@ public class Utils {
     }
 
     public static int getClassSize(String classSize) {
-        if (classSize.equals("tiny")) {
-            return 1;
-        }
-        else if (classSize.equals("small")) {
-            return 2;
-        }
-        else if (classSize.equals("medium")) {
-            return 3;
-        }
-        else if (classSize.equals("large")) {
-            return 4;
-        }
-        else if (classSize.equals("huge")) {
-            return 5;
-        }
-        else if (classSize.equals("gigantic")) {
-            return 6;
-        } else {
-            return 0;
+        switch (classSize) {
+            case "tiny":
+                return 1;
+            case "small":
+                return 2;
+            case "medium":
+                return 3;
+            case "large":
+                return 4;
+            case "huge":
+                return 5;
+            case "gigantic":
+                return 6;
+            default:
+                return 0;
         }
     }
 }

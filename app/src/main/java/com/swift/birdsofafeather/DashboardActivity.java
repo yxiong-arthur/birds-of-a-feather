@@ -19,7 +19,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        answerbox = (TextView) findViewById(R.id.answerbox_textview);
+        answerbox = findViewById(R.id.answerbox_textview);
         db = AppDatabase.singleton(this.getApplicationContext());
     }
 

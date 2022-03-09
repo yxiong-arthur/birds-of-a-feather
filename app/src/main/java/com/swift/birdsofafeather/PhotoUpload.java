@@ -36,7 +36,7 @@ public class PhotoUpload extends AppCompatActivity {
     }
 
     public void onLoadClicked(View view) {
-        EditText loadURL = (EditText) findViewById(R.id.photoUploadURL);;
+        EditText loadURL = findViewById(R.id.photoUploadURL);
         ImageView imageResult = findViewById(R.id.uploadedPhoto);
 
 

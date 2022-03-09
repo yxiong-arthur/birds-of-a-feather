@@ -2,27 +2,19 @@ package com.swift.birdsofafeather;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.swift.birdsofafeather.model.db.AppDatabase;
-import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Session;
-import com.swift.birdsofafeather.model.db.Student;
-import com.swift.birdsofafeather.model.db.StudentWithClasses;
 import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.ViewHolder> {
     private final List<Session> courses;
