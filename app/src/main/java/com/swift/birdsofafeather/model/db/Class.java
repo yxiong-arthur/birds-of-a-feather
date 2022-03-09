@@ -44,13 +44,17 @@ public class Class implements Comparable{
     @ColumnInfo(name = "course_number")
     public String courseNumber;
 
-    public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber){
+    @ColumnInfo(name = "course_size")
+    public String courseSize;
+
+    public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber, String courseSize){
         this.classId = classId;
         this.studentId = studentId;
         this.year = year;
         this.quarter = quarter.toLowerCase();
         this.subject = subject.toLowerCase();
         this.courseNumber = courseNumber.toLowerCase();
+        this.courseSize = courseSize.toLowerCase();
     }
 
     public UUID getId() {
@@ -73,6 +77,10 @@ public class Class implements Comparable{
         return this.courseNumber;
     }
 
+    public String getCourseSize() {
+        return this.courseSize;
+    }
+
     @Override
     public boolean equals(Object o){
         if (this == o)
@@ -85,19 +93,20 @@ public class Class implements Comparable{
         return this.year == other.year &&
                 this.quarter.equals(other.quarter) &&
                 this.subject.equals(other.subject) &&
-                this.courseNumber.equals(other.courseNumber);
+                this.courseNumber.equals(other.courseNumber) &&
+                this.courseSize.equals(other.courseSize);
     }
 
     @Override
     public int hashCode(){
-        String toHash = this.year + this.quarter + this.subject + this.courseNumber;
+        String toHash = this.year + this.quarter + this.subject + this.courseNumber + this.courseSize;
         return toHash.hashCode();
     }
 
     @Override
     public String toString(){
         return this.classId + "," + this.year + "," + this.quarter + "," + this.subject
-                + "," + this.courseNumber;
+                + "," + this.courseNumber + "," + this.courseSize;
     }
 
     @Override

@@ -71,27 +71,26 @@ public class AddStudentActivity extends AppCompatActivity {
 
                 Student student = new Student(studentId, studentName, pictureBMap);
                 encodedString += student + "," + pictureURL;
-                // studentDao.insert(student);
             }
             if(i >= 2) {
                 String yearString = studentRowData.get(0).toString();
                 String quarter = studentRowData.get(1).toString().toLowerCase();
                 String subject = studentRowData.get(2).toString().toLowerCase();
                 String courseNumber = studentRowData.get(3).toString().toLowerCase();
+                String courseSize = studentRowData.get(4).toString().toLowerCase();
 
-                if (validateInput(yearString, quarter, subject, courseNumber)) {
+                if (validateInput(yearString, quarter, subject, courseNumber, courseSize)) {
                     int year = Integer.parseInt(yearString);
 
-                    if (db.classesDao().checkExist(studentId, year, quarter, subject, courseNumber)) {
+                    if (db.classesDao().checkExist(studentId, year, quarter, subject, courseNumber, courseSize)) {
                         Toast.makeText(getApplicationContext(), "Skipped duplicate class(es)", Toast.LENGTH_SHORT).show();
                         continue;
                     }
 
                     UUID newClassId = UUID.randomUUID();
 
-                    Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber);
+                    Class newClass = new Class(newClassId, studentId, year, quarter, subject, courseNumber, courseSize);
                     encodedString += "," + newClass;
-                    //db.classesDao().insert(newClass);
                 }
             }
         }
@@ -120,21 +119,22 @@ public class AddStudentActivity extends AppCompatActivity {
                 SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
                 db.sessionStudentDao().insert(studentInSession);
 
-                for(int i = 3; i < decodedMessage.length; i+=5) {
+                for(int i = 3; i < decodedMessage.length; i+=6) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
                     int year = Integer.parseInt(decodedMessage[i + 1]);
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
                     String courseNumber = decodedMessage[i + 4];
+                    String courseSize = decodedMessage[i + 5];
 
-                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
                     db.classesDao().insert(newClass);
                 }
             }
 
             @Override
             public void onLost(@NonNull Message message) {
-                //Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
             }
         };
 
@@ -146,7 +146,7 @@ public class AddStudentActivity extends AppCompatActivity {
         finish();
     }
 
-    protected boolean validateInput(String yearString, String quarter, String subject, String courseNumber){
+    protected boolean validateInput(String yearString, String quarter, String subject, String courseNumber, String courseSize){
         try {
             Integer.parseInt(yearString);
         } catch(Exception e) {
@@ -154,7 +154,7 @@ public class AddStudentActivity extends AppCompatActivity {
             return false;
         }
 
-        if(Utils.isEmpty(quarter) || Utils.isEmpty(subject) || Utils.isEmpty(courseNumber)){
+        if(Utils.isEmpty(quarter) || Utils.isEmpty(subject) || Utils.isEmpty(courseNumber) || Utils.isEmpty(courseSize)){
             Utils.showAlert(this, "No empty boxes allowed");
             return false;
         }

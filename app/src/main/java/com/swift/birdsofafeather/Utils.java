@@ -160,26 +160,25 @@ public class Utils {
     }
 
     public static int getClassSize(String classSize) {
-        if (classSize.equals("Tiny")) {
+        if (classSize.equals("tiny")) {
             return 1;
         }
-        else if (classSize.equals("Small")) {
+        else if (classSize.equals("small")) {
             return 2;
         }
-        else if (classSize.equals("Medium")) {
+        else if (classSize.equals("medium")) {
             return 3;
         }
-        else if (classSize.equals("Large")) {
+        else if (classSize.equals("large")) {
             return 4;
         }
-        else if (classSize.equals("Huge")) {
+        else if (classSize.equals("huge")) {
             return 5;
         }
-        else if (classSize.equals("Gigantic")) {
+        else if (classSize.equals("gigantic")) {
             return 6;
         } else {
             return 0;
         }
     }
-
 }

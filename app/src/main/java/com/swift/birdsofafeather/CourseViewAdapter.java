@@ -77,7 +77,6 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
             SharedPreferences preferences = Utils.getSharedPreferences(context.getApplicationContext());
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("current_session_id", UUIDConverter.fromUUID(course.getId()));
-            editor.putBoolean("new_class", false);
             editor.apply();
             ((Activity)context).finish();
         }

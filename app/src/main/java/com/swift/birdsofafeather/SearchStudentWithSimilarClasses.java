@@ -47,6 +47,9 @@ import java.util.concurrent.Executors;
 
 public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private static final String TAG = "BluetoothActivity";
+    private static final String currentYear = "2022";
+    private static final String currentQuarter = "wi";
+
     private MessageListener realListener;
     private Message myStudentData;
 
@@ -168,7 +171,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             // pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
         }
         else if (filterString.equals("this quarter only")) {
-            pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
             for (StudentWithClasses classmate : studentList) {
                 if (countSimilarClasses(classmate) > 0) {
                     Set<Class> classList = getSimilarClasses(classmate);
@@ -183,7 +185,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             while (!pq.isEmpty()) {
                 StudentWithClasses studentWithClasses = pq.poll();
                 Student student = studentWithClasses.getStudent();
-                student.setScore(countSimilarClasses(studentWithClasses));
                 commonClassmates.add(student);
             }
             return commonClassmates;
@@ -197,7 +198,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         while (!pq.isEmpty()) {
             StudentWithClasses studentWithClasses = pq.poll();
             Student student = studentWithClasses.getStudent();
-            student.setScore(countSimilarClasses(studentWithClasses));
             commonClassmates.add(student);
         }
         return commonClassmates;
@@ -410,14 +410,15 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
                 db.sessionStudentDao().insert(studentInSession);
 
-                for(int i = 3; i < decodedMessage.length; i+=5) {
+                for(int i = 3; i < decodedMessage.length; i+=6) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
                     int year = Integer.parseInt(decodedMessage[i + 1]);
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
                     String courseNumber = decodedMessage[i + 4];
+                    String courseSize = decodedMessage[i + 5];
 
-                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
                     db.classesDao().insert(newClass);
                 }
 
@@ -565,33 +566,34 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     class StudentClassRecencyComparator implements Comparator<StudentWithClasses> {
         @Override
         public int compare(StudentWithClasses student1, StudentWithClasses student2) {
-
-            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
-            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
-            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
-
-            int index = 0;
-            int s1_num_classes = s1_classes_sorted.size();
-            int s2_num_classes = s2_classes_sorted.size();
-
-            while (index < s1_num_classes && index < s2_num_classes) {
-                int compareIndicator = (s1_classes_sorted.get(index)).compareTo(s2_classes_sorted.get(index));
-
-                if (compareIndicator > 0) {
-                    return -1;
-                }
-                else if (compareIndicator < 0) {
-                    return 1;
-                }
-                index++;
-            }
-
-            if (s1_num_classes > s2_num_classes) {
-                return -1;
-            }
-            else {
-                return 1;
-            }
+            return student1.getStudent().getRecencyScore() - student2.getStudent().getRecencyScore();
+//
+//            PriorityQueue<Class> pq = new PriorityQueue<>(1000, new ClassRecencyComparator());
+//            ArrayList<Class> s1_classes_sorted = sortClasses(getSimilarClasses(student1), pq);
+//            ArrayList<Class> s2_classes_sorted = sortClasses(getSimilarClasses(student2), pq);
+//
+//            int index = 0;
+//            int s1_num_classes = s1_classes_sorted.size();
+//            int s2_num_classes = s2_classes_sorted.size();
+//
+//            while (index < s1_num_classes && index < s2_num_classes) {
+//                int compareIndicator = (s1_classes_sorted.get(index)).compareTo(s2_classes_sorted.get(index));
+//
+//                if (compareIndicator > 0) {
+//                    return -1;
+//                }
+//                else if (compareIndicator < 0) {
+//                    return 1;
+//                }
+//                index++;
+//            }
+//
+//            if (s1_num_classes > s2_num_classes) {
+//                return -1;
+//            }
+//            else {
+//                return 1;
+//            }
         }
     }
 
