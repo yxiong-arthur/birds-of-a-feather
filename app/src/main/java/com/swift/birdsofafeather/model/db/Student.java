@@ -30,6 +30,9 @@ public class Student {
     @ColumnInfo(name = "size_score")
     public double sizeScore;
 
+    @ColumnInfo(name = "quarter_score")
+    public int quarterScore;
+
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
@@ -37,6 +40,7 @@ public class Student {
         this.classScore = 0;
         this.recencyScore = 0;
         this.sizeScore = 0.0;
+        this.quarterScore = 0;
     }
 
     @Override
@@ -67,4 +71,6 @@ public class Student {
     public int getRecencyScore() { return recencyScore; }
 
     public double getSizeScore() { return sizeScore; }
+
+    public int getQuarterScore() { return quarterScore; }
 }
