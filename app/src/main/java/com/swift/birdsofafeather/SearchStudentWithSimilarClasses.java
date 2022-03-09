@@ -171,6 +171,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             // pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
         }
         else if (filterString.equals("this quarter only")) {
+            pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
             for (StudentWithClasses classmate : studentList) {
                 if (countSimilarClasses(classmate) > 0) {
                     Set<Class> classList = getSimilarClasses(classmate);
@@ -185,6 +186,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             while (!pq.isEmpty()) {
                 StudentWithClasses studentWithClasses = pq.poll();
                 Student student = studentWithClasses.getStudent();
+                student.setScore(countSimilarClasses(studentWithClasses));
                 commonClassmates.add(student);
             }
             return commonClassmates;
@@ -198,6 +200,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         while (!pq.isEmpty()) {
             StudentWithClasses studentWithClasses = pq.poll();
             Student student = studentWithClasses.getStudent();
+            student.setScore(countSimilarClasses(studentWithClasses));
             commonClassmates.add(student);
         }
         return commonClassmates;
@@ -410,15 +413,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
                 db.sessionStudentDao().insert(studentInSession);
 
-                for(int i = 3; i < decodedMessage.length; i+=6) {
+                for(int i = 3; i < decodedMessage.length; i+=5) {
                     UUID classId = UUID.fromString(decodedMessage[i]);
                     int year = Integer.parseInt(decodedMessage[i + 1]);
                     String quarter = decodedMessage[i + 2];
                     String subject = decodedMessage[i + 3];
                     String courseNumber = decodedMessage[i + 4];
-                    String courseSize = decodedMessage[i + 5];
 
-                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
+                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);
                     db.classesDao().insert(newClass);
                 }
 
