@@ -184,10 +184,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 }
             }
             while (!pq.isEmpty()) {
-                StudentWithClasses studentWithClasses = pq.poll();
-                Student student = studentWithClasses.getStudent();
-                student.setScore(countSimilarClasses(studentWithClasses));
-                commonClassmates.add(student);
+                commonClassmates.add(pq.poll().getStudent());
             }
             return commonClassmates;
         }
@@ -198,10 +195,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
         }
         while (!pq.isEmpty()) {
-            StudentWithClasses studentWithClasses = pq.poll();
-            Student student = studentWithClasses.getStudent();
-            student.setScore(countSimilarClasses(studentWithClasses));
-            commonClassmates.add(student);
+            commonClassmates.add(pq.poll().getStudent());
         }
         return commonClassmates;
     }

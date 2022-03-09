@@ -26,6 +26,15 @@ public interface StudentDao {
     @Insert
     void insert(Student student);
 
+    @Query("UPDATE students SET class_score=:classScore WHERE student_id= :studentId")
+    void updateClassScore(UUID studentId, int classScore);
+
+    @Query("UPDATE students SET recency_score=:recencyScore WHERE student_id= :studentId")
+    void updateRecencyScore(UUID studentId, int recencyScore);
+
+    @Query("UPDATE students SET size_score=:sizeScore WHERE student_id= :studentId")
+    void updateSizeScore(UUID studentId, int sizeScore);
+
     @Query("DELETE FROM students")
     void nukeTable();
 }
