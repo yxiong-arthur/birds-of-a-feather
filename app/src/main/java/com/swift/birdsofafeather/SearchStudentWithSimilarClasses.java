@@ -496,7 +496,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 quarterScore++;
             }
         }
-        db.studentDao().updateClassScore(student.getStudent().getId(), quarterScore);
+        db.studentDao().updateQuarterScore(student.getStudent().getId(), quarterScore);
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){
