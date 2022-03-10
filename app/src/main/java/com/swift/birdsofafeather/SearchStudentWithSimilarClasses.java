@@ -422,7 +422,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
 
         for (StudentWithClasses classmate : studentList) {
-            if (countSimilarClasses(classmate) > 0) {
+            if (classmate.getStudent().getClassScore() > 0) {
                 pq.add(classmate.getStudent());
             }
         }
