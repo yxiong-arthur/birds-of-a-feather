@@ -27,11 +27,11 @@ public interface StudentDao {
     @Query("SELECT EXISTS(SELECT * FROM students WHERE student_id=:studentId)")
     boolean checkExists(UUID studentId);
 
-    @Query("UPDATE students SET favorite=:favorited WHERE student_id=:id")
-    void updateFavorited(UUID id, boolean favorited);
-
     @Insert
     void insert(Student student);
+
+    @Query("UPDATE students SET favorite=:favorited WHERE student_id=:id")
+    void updateFavorited(UUID id, boolean favorited);
 
     @Query("UPDATE students SET class_score=:classScore WHERE student_id= :studentId")
     void updateClassScore(UUID studentId, int classScore);
