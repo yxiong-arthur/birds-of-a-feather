@@ -389,7 +389,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         UUID studentUUID = UUID.fromString(studentUUIDString);
         List<Class> classes = db.classesDao().getForStudent(studentUUID);
 
-        String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
+        String encodedString = Utils.encodeStudent(this) + Utils.encodeClasses(classes);
         myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
     }
 

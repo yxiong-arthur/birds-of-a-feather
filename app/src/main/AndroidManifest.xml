@@ -29,7 +29,7 @@
         android:theme="@style/Theme.Birdsofafeather">
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyCi7aS2dyhsq8QWtBQBqPRAAy4cINmQ_ko" />
+            android:value="AIzaSyC5Y2WT2ZaLJZolyCjloItK_D80OsPCjps" />
         <activity
             android:name=".AddStudentActivity"
             android:exported="false" />
