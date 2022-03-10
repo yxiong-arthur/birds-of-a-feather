@@ -443,7 +443,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             }
         }
         while (!pq.isEmpty()) {
-            commonClassmates.add(Objects.requireNonNull(pq.poll()));
+            Student student = Objects.requireNonNull(pq.poll());
+            commonClassmates.add(student);
         }
         return commonClassmates;
     }
@@ -557,7 +558,12 @@ class StudentClassComparator implements Comparator<Student> {
 class StudentClassSizeComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        return - ((int) (student1.getSizeScore() - student2.getSizeScore()));
+        if (student1.getSizeScore() > student2.getSizeScore()) {
+            return -1;
+        }
+        else {
+            return 1;
+        }
     }
 }
 
