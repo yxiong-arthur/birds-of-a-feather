@@ -179,6 +179,7 @@ public class AddStudentActivity extends AppCompatActivity {
 
     public void setClassScore(StudentWithClasses student){
         int classScore = countSimilarClasses(student);
+        Log.d(TAG, "Class score is: " + classScore);
         db.studentDao().updateClassScore(student.getStudent().getId(), classScore);
     }
 
@@ -190,6 +191,7 @@ public class AddStudentActivity extends AppCompatActivity {
             sizeScore += Utils.getClassSizeScore(course.getCourseSize());
         }
 
+        Log.d(TAG, "Size score is: " + sizeScore);
         db.studentDao().updateSizeScore(student.getStudent().getId(), sizeScore);
     }
 
@@ -205,6 +207,7 @@ public class AddStudentActivity extends AppCompatActivity {
             recencyScore += score > 4 ? 1 : 5 - score;
         }
 
+        Log.d(TAG, "Recency score is: " + recencyScore);
         db.studentDao().updateRecencyScore(student.getStudent().getId(), recencyScore);
     }
 
@@ -212,11 +215,13 @@ public class AddStudentActivity extends AppCompatActivity {
         Set<Class> classes = getSimilarClasses(student);
         int quarterScore = 0;
         for (Class course : classes) {
-            if (course.getYear() == currentYear && course.getQuarter().equals(currentQuarter)) {
+            if ((course.getYear() == currentYear) && (course.getQuarter().equals(currentQuarter))) {
                 quarterScore++;
             }
         }
-        db.studentDao().updateClassScore(student.getStudent().getId(), quarterScore);
+
+        Log.d(TAG, "Quarter score is: " + quarterScore);
+        db.studentDao().updateQuarterScore(student.getStudent().getId(), quarterScore);
     }
 
     protected int countSimilarClasses(StudentWithClasses classmate){

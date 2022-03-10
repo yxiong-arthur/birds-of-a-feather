@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,6 +79,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 R.array.filters_array, android.R.layout.simple_spinner_item);
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
+
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                refreshRecycler();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
 
 //        thisYearSpinner = findViewById(R.id.year_select);
 //        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
@@ -438,9 +451,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     public List<Student> findStudentsThisQuarter(List<StudentWithClasses> studentList) {
         PriorityQueue<Student> pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
         List<Student> commonClassmates = new ArrayList<>();
-        for(StudentWithClasses studentWithClasses : studentList) {
-            Student student = studentWithClasses.getStudent();
-            if (student.getClassScore() > 0 && student.getQuarterScore() > 0) {
+        for(StudentWithClasses classmate : studentList) {
+            Student student = classmate.getStudent();
+            if (student.getClassScore() > 0 && student.getQuarterScore() > 1) {
                 pq.add(student);
             }
         }
@@ -460,6 +473,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     public void setClassScore(StudentWithClasses student){
         int classScore = countSimilarClasses(student);
+        Log.d(TAG, "Class score is: " + classScore);
         db.studentDao().updateClassScore(student.getStudent().getId(), classScore);
     }
 
@@ -471,6 +485,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             sizeScore += Utils.getClassSizeScore(course.getCourseSize());
         }
 
+        Log.d(TAG, "Size score is: " + sizeScore);
         db.studentDao().updateSizeScore(student.getStudent().getId(), sizeScore);
     }
 
@@ -486,6 +501,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             recencyScore += score > 4 ? 1 : 5 - score;
         }
 
+        Log.d(TAG, "Recency score is: " + recencyScore);
         db.studentDao().updateRecencyScore(student.getStudent().getId(), recencyScore);
     }
 
@@ -497,6 +513,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 quarterScore++;
             }
         }
+
+        Log.d(TAG, "Quarter score is: " + quarterScore);
         db.studentDao().updateQuarterScore(student.getStudent().getId(), quarterScore);
     }
 
