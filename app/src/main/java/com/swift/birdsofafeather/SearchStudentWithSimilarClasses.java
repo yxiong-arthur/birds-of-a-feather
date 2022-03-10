@@ -181,6 +181,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         if(this.fromStartPage){
             this.startNearby();
+            Toast.makeText(getApplicationContext(), "Starting search...", Toast.LENGTH_SHORT).show();
             this.fromStartPage = false;
         }
 
@@ -204,6 +205,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Button toggle_button = findViewById(R.id.toggle_search_button);
         toggle_button.setText("Start Search");
         this.stopNearby();
+        Toast.makeText(getApplicationContext(), "Stopping search...", Toast.LENGTH_SHORT).show();
 
         if (!(db.sessionDao().checkNamed(currentSessionId))) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -330,6 +332,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         this.realListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
+                Toast.makeText(getApplicationContext(), "Found Nearby Message...", Toast.LENGTH_SHORT).show();
                 String messageContent = new String(message.getContent());
                 Log.d(TAG, messageContent);
                 String[] decodedMessage = messageContent.split(",");
