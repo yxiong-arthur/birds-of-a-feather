@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class Utils {
     public static int MESSAGE_READ = 0;
@@ -120,13 +121,9 @@ public class Utils {
     }
 
     public static String encodeClasses(List<Class> classes) {
-        StringBuilder res = new StringBuilder();
-
-        for (Class c : classes) {
-            res.append(",").append(c);
-        }
-
-        return res.toString();
+        return classes.stream()
+                .map(c -> c.toString())
+                .collect(Collectors.joining(","));
     }
 
     public static Bitmap createImage(int width, int height, int color) {
