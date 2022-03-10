@@ -47,7 +47,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private static final int currentYear = 2022;
     private static final String currentQuarter = "wi";
 
-    private MessageListener realListener;
+    private MessageListener studentInfoListener;
     private Message myStudentData;
 
     private Spinner filterSpinner;
@@ -163,14 +163,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     protected void startNearby(){
-        Nearby.getMessagesClient(this).subscribe(realListener);
+        Nearby.getMessagesClient(this).subscribe(studentInfoListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
         Log.d(TAG, "Started Nearby Subscribing");
         Log.d(TAG, "Started Nearby Publishing");
     }
 
     protected void stopNearby(){
-        Nearby.getMessagesClient(this).unsubscribe(realListener);
+        Nearby.getMessagesClient(this).unsubscribe(studentInfoListener);
         Nearby.getMessagesClient(this).unpublish(myStudentData);
         Log.d(TAG, "Stopped Nearby Subscribing");
         Log.d(TAG, "Stopped Nearby Publishing");
@@ -342,7 +342,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     protected void setUpNearby(){
-        this.realListener = new MessageListener() {
+        this.studentInfoListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
                 Toast.makeText(getApplicationContext(), "Found Nearby Message...", Toast.LENGTH_SHORT).show();
