@@ -108,6 +108,11 @@ public class Class implements Comparable{
                 + "," + this.courseNumber + "," + this.courseSize;
     }
 
+    public String toDisplayString(){
+        return this.year + " " + this.quarter + " " + this.subject + " " + this.courseNumber + " "
+                + this.courseSize;
+    }
+
     @Override
     public int compareTo(Object o) {
         Class other = (Class) o;
