@@ -17,14 +17,23 @@ import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.SessionStudent;
 import com.swift.birdsofafeather.model.db.Student;
+import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class AddStudentActivity extends AppCompatActivity {
     private static final String TAG = "AddStudentActivity";
+    private static final int currentYear = 2022;
+    private static final String currentQuarter = "wi";
+
     private AppDatabase db;
+
+    private UUID userId;
+    private StudentWithClasses user;
+    private Set<Class> userClasses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,13 @@ public class AddStudentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_student);
 
         db = AppDatabase.singleton(getApplicationContext());
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        String UUIDString = preferences.getString("student_id", "");
+
+        userId = UUID.fromString(UUIDString);
+        user = db.studentWithClassesDao().getStudent(userId);
+        userClasses = user.getClasses();
     }
 
     public void onAddStudentClicked(View view) {
@@ -119,6 +135,9 @@ public class AddStudentActivity extends AppCompatActivity {
                     Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
                     db.classesDao().insert(newClass);
                 }
+
+                StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
+                setAllScore(studentWithClasses);
             }
 
             @Override
@@ -149,5 +168,68 @@ public class AddStudentActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void setAllScore(StudentWithClasses student) {
+        setClassScore(student);
+        setSizeScore(student);
+        setRecencyScore(student);
+        setQuarterScore(student);
+    }
+
+    public void setClassScore(StudentWithClasses student){
+        int classScore = countSimilarClasses(student);
+        db.studentDao().updateClassScore(student.getStudent().getId(), classScore);
+    }
+
+    public void setSizeScore(StudentWithClasses student) {
+        Set<Class> classes = getSimilarClasses(student);
+        double sizeScore = 0;
+
+        for (Class course : classes) {
+            sizeScore += Utils.getClassSizeScore(course.getCourseSize());
+        }
+
+        db.studentDao().updateSizeScore(student.getStudent().getId(), sizeScore);
+    }
+
+    public void setRecencyScore(StudentWithClasses student) {
+        int thisQuarterScore = Utils.getRecencyScore(currentQuarter);
+
+        Set<Class> classes = getSimilarClasses(student);
+        int recencyScore = 0;
+        for (Class course : classes) {
+            int year = course.getYear();
+            int quarter = Utils.getRecencyScore(course.getQuarter());
+            int score = (currentYear - year) * 4 + (thisQuarterScore - quarter);
+            recencyScore += score > 4 ? 1 : 5 - score;
+        }
+
+        db.studentDao().updateRecencyScore(student.getStudent().getId(), recencyScore);
+    }
+
+    public void setQuarterScore(StudentWithClasses student) {
+        Set<Class> classes = getSimilarClasses(student);
+        int quarterScore = 0;
+        for (Class course : classes) {
+            if (course.getYear() == currentYear && course.getQuarter().equals(currentQuarter)) {
+                quarterScore++;
+            }
+        }
+        db.studentDao().updateClassScore(student.getStudent().getId(), quarterScore);
+    }
+
+    protected int countSimilarClasses(StudentWithClasses classmate){
+        Set<Class> mateClasses = classmate.getClasses();
+
+        mateClasses.retainAll(userClasses);
+
+        return mateClasses.size();
+    }
+
+    protected Set<Class> getSimilarClasses(StudentWithClasses classmate) {
+        Set<Class> mateClasses = classmate.getClasses();
+        mateClasses.retainAll(userClasses);
+        return mateClasses;
     }
 }
