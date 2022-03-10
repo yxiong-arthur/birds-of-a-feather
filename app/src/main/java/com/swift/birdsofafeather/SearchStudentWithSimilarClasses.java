@@ -102,8 +102,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         }
 
         String UUIDString = preferences.getString("student_id", "");
-        userId = UUID.fromString(UUIDString);
 
+        userId = UUID.fromString(UUIDString);
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
 
@@ -190,11 +190,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     public void onAddStudentsClicked(View view){
         Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
         startActivity(addStudentsIntent);
-    }
-
-    public void onAddClassesClicked(View view){
-        Intent addClassesIntent = new Intent(this, AddClassesActivity.class);
-        startActivity(addClassesIntent);
     }
 
     protected void onStartClicked(){
