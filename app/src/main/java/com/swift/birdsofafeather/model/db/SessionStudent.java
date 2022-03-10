@@ -35,4 +35,8 @@ public class SessionStudent {
         this.sessionId = sessionId;
         this.studentId = studentId;
     }
+
+    public UUID getStudentId(){
+        return studentId;
+    }
 }

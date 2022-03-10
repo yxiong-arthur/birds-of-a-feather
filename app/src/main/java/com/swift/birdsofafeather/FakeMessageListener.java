@@ -1,7 +1,6 @@
 package com.swift.birdsofafeather;
 
 import com.google.android.gms.nearby.messages.Message;
-import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;

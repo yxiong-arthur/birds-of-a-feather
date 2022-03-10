@@ -12,19 +12,31 @@ import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 public class NameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_name);
 
-        String firstName = getUserDisplayName(this);
-        TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
-        if(!Utils.isEmpty(firstName)) firstNameTextView.setText(firstName);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        if(preferences.contains("first_name")){
+            Intent intent = new Intent(this, PhotoUpload.class);
+            startActivity(intent);
+        }else{
+            setContentView(R.layout.activity_name);
+            String firstName = getUserDisplayName(this);
+            TextView firstNameTextView = findViewById(R.id.first_name_textview);
+            if(!Utils.isEmpty(firstName)) firstNameTextView.setText(firstName);
+        }
     }
 
     public void onConfirmClicked(View view){
-        TextView firstNameTextView = (TextView) findViewById(R.id.first_name_textview);
+        TextView firstNameTextView = findViewById(R.id.first_name_textview);
         String enteredName = firstNameTextView.getText().toString();
 
         if(Utils.isEmpty(enteredName)) {

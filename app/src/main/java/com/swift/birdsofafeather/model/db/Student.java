@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
@@ -24,6 +23,18 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
+    @ColumnInfo(name = "class_score")
+    public int classScore;
+
+    @ColumnInfo(name = "recency_score")
+    public int recencyScore;
+
+    @ColumnInfo(name = "size_score")
+    public double sizeScore;
+
+    @ColumnInfo(name = "quarter_score")
+    public int quarterScore;
+
     @ColumnInfo(name = "favorite")
     public boolean favorited;
 
@@ -34,16 +45,16 @@ public class Student {
     public boolean wavedBack;
 
     @Ignore
-    public int score;
-
-    @Ignore
     public List<Student> wavedBackList;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
-        this.score = 0;
+        this.classScore = 0;
+        this.recencyScore = 0;
+        this.sizeScore = 0.0;
+        this.quarterScore = 0;
         this.favorited = false;
     }
 
@@ -60,30 +71,25 @@ public class Student {
                 this.name.equals(other.name);
      }
 
-    public UUID getId() {
-        return studentId;
-    }
+    public UUID getId() { return studentId; }
 
-    public String getName() {
-        return name;
-      }
+    public String getName() { return name; }
 
     public Bitmap getPicture() { return picture; }
 
+    @NonNull
     public boolean isFavorited() { return favorited; }
 
     @Override
-    public String toString() {
-        return studentId + "," + name;
-    }
+    public String toString() { return studentId + "," + name; }
 
-    public int getScore() {
-        return score;
-    }
+    public int getClassScore() { return classScore; }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
+    public int getRecencyScore() { return recencyScore; }
+
+    public double getSizeScore() { return sizeScore; }
+
+    public int getQuarterScore() { return quarterScore; }
 
     public void toggleFavorited() {
         this.favorited = !this.favorited;

@@ -1,11 +1,8 @@
 package com.swift.birdsofafeather.model.db;
 
-import android.graphics.Bitmap;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
@@ -24,10 +21,14 @@ public class Session {
     @ColumnInfo(name = "time_created")
     public Date timeCreated;
 
+    @ColumnInfo(name = "named")
+    public boolean named;
+
     public Session(UUID sessionId){
         this.sessionId = sessionId;
         this.timeCreated = new Date();
         this.name = this.timeCreated.toString();
+        this.named = false;
     }
 
     public UUID getId() {

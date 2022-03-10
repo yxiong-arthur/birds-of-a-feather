@@ -17,13 +17,22 @@ public interface SessionDao {
     @Query("SELECT * FROM sessions WHERE session_id=:sessionId")
     Session getSession(UUID sessionId);
 
+    @Query("SELECT name FROM sessions WHERE session_id=:sessionId")
+    String getName(UUID sessionId);
+
     @Query("SELECT COUNT(*) FROM sessions")
     int count();
+
+    @Query("SELECT EXISTS(SELECT * FROM sessions WHERE session_id=:sessionId)")
+    boolean checkExists(UUID sessionId);
+
+    @Query("SELECT named FROM sessions WHERE session_id=:sessionId")
+    boolean checkNamed(UUID sessionId);
 
     @Insert
     void insert(Session session);
 
-    @Query("UPDATE sessions SET name=:name WHERE session_id= :sessionId")
+    @Query("UPDATE sessions SET name=:name, named=1 WHERE session_id= :sessionId")
     void updateName(UUID sessionId, String name);
 
     @Query("DELETE FROM sessions")

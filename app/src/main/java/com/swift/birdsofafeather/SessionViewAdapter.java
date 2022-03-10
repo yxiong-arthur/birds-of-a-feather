@@ -1,36 +1,32 @@
 package com.swift.birdsofafeather;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.swift.birdsofafeather.model.db.AppDatabase;
-import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Session;
-import com.swift.birdsofafeather.model.db.Student;
-import com.swift.birdsofafeather.model.db.StudentWithClasses;
+import com.swift.birdsofafeather.model.db.UUIDConverter;
 
 import java.util.List;
-import java.util.Set;
 
-public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.ViewHolder> {
-    private final List<Session> courses;
+public class SessionViewAdapter extends RecyclerView.Adapter<SessionViewAdapter.ViewHolder> {
+    private final List<Session> sessions;
 
-    public CourseViewAdapter(List<Session> courses) {
+    public SessionViewAdapter(List<Session> sessions) {
         super();
-        this.courses = courses;
+        this.sessions = sessions;
     }
 
     @NonNull
     @Override
-    public CourseViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SessionViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.display_course_with_student, parent, false);
@@ -39,13 +35,13 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CourseViewAdapter.ViewHolder holder, int position) {
-        holder.setCourse(courses.get(position));
+    public void onBindViewHolder(@NonNull SessionViewAdapter.ViewHolder holder, int position) {
+        holder.setCourse(sessions.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return this.courses.size();
+        return this.sessions.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -66,10 +62,15 @@ public class CourseViewAdapter extends RecyclerView.Adapter<CourseViewAdapter.Vi
 
         @Override
         public void onClick(View view) {
+            // set current_session_id in preferences to the new session_id
+            // finish back to search student with similar classes
+
             Context context = view.getContext();
-            Intent intent = new Intent(context, SearchStudentWithSimilarClasses.class);
-            intent.putExtra("course_id", this.course.getName().toString());
-            context.startActivity(intent);
+            SharedPreferences preferences = Utils.getSharedPreferences(context.getApplicationContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("current_session_id", UUIDConverter.fromUUID(course.getId()));
+            editor.apply();
+            ((Activity)context).finish();
         }
     }
 }

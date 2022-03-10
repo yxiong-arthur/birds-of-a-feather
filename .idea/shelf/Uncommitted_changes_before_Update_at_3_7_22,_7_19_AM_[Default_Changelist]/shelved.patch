@@ -1,0 +1,78 @@
+Index: app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swift.birdsofafeather;\n\n\nimport androidx.annotation.NonNull;\nimport androidx.appcompat.app.AppCompatActivity;\nimport androidx.recyclerview.widget.LinearLayoutManager;\nimport androidx.recyclerview.widget.RecyclerView;\n\nimport android.app.AlertDialog;\nimport android.content.DialogInterface;\nimport android.content.Intent;\nimport android.content.SharedPreferences;\nimport android.graphics.Bitmap;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.view.View;\nimport android.widget.Button;\nimport android.widget.EditText;\n\nimport com.google.android.gms.nearby.Nearby;\nimport com.google.android.gms.nearby.messages.Message;\nimport com.google.android.gms.nearby.messages.MessageListener;\nimport com.swift.birdsofafeather.model.db.AppDatabase;\nimport com.swift.birdsofafeather.model.db.Class;\nimport com.swift.birdsofafeather.model.db.Session;\nimport com.swift.birdsofafeather.model.db.SessionStudent;\nimport com.swift.birdsofafeather.model.db.SessionStudentDao;\nimport com.swift.birdsofafeather.model.db.SessionWithStudents;\nimport com.swift.birdsofafeather.model.db.Student;\nimport com.swift.birdsofafeather.model.db.StudentWithClasses;\n\nimport java.nio.charset.StandardCharsets;\nimport java.util.ArrayList;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.PriorityQueue;\nimport java.util.Set;\nimport java.util.UUID;\nimport java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\n\npublic class SearchStudentWithSimilarClasses extends AppCompatActivity {\n    private static final String TAG = \"BluetoothActivity\";\n    private MessageListener realListener;\n    private Message myStudentData;\n\n    private AppDatabase db;\n\n    private UUID currentSessionId;\n    private boolean isNewClass;\n\n    private UUID userId;\n    private StudentWithClasses user;\n    private Set<Class> userClasses;\n\n    private RecyclerView studentsRecyclerView;\n    private RecyclerView.LayoutManager studentsLayoutManager;\n    private StudentViewAdapter studentsViewAdapter;\n    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();\n\n    private boolean searching = false;\n    private boolean fromStartPage = false;\n    private boolean stopSearch = false;\n\n\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_student_with_similar_classes);\n\n        db = AppDatabase.singleton(getApplicationContext());\n\n        SharedPreferences preferences = Utils.getSharedPreferences(this);\n\n        // get session and user id from preferences\n        if(preferences.contains(\"current_session_id\")) {\n            String sessionUUIDString = preferences.getString(\"current_session_id\", \"\");\n            currentSessionId = UUID.fromString(sessionUUIDString);\n        }\n\n        String UUIDString = preferences.getString(\"student_id\", \"\");\n        userId = UUID.fromString(UUIDString);\n        this.isNewClass = true;\n\n        user = db.studentWithClassesDao().getStudent(userId);\n        userClasses = user.getClasses();\n\n        refreshRecycler();\n        setUpNearby();\n    }\n\n    protected void refreshRecycler(){\n        backgroundThreadExecutor.submit(() -> {\n            List<Student> userClassmates = findPriorClassmates();\n\n            runOnUiThread(() -> {\n                // Set up the recycler view to show our database contents\n                studentsRecyclerView = findViewById(R.id.persons_view);\n\n                studentsLayoutManager = new LinearLayoutManager(this);\n                studentsRecyclerView.setLayoutManager(studentsLayoutManager);\n\n                studentsViewAdapter = new StudentViewAdapter(userClassmates);\n                studentsRecyclerView.setAdapter(studentsViewAdapter);\n            });\n        });\n    }\n\n    protected List<Student> findPriorClassmates() {\n        SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);\n        List<Student> sessionStudents = mySession.getStudents();\n        List<StudentWithClasses> studentList = new ArrayList<StudentWithClasses>();\n        for(Student student : sessionStudents) {\n            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));\n        }\n\n        List<Student> commonClassmates = new ArrayList<>();\n\n        PriorityQueue<Student> pq = new PriorityQueue<>(100, new StudentComparator());\n\n        for (StudentWithClasses classmate : studentList) {\n            int count = countSimilarClasses(classmate);\n\n            Student student = classmate.getStudent();\n            student.setScore(count);\n\n            if (count > 0) {\n                pq.add(student);\n            }\n        }\n        while (!pq.isEmpty()) {\n            commonClassmates.add(pq.poll());\n        }\n        return commonClassmates;\n    }\n\n    protected int countSimilarClasses(StudentWithClasses classmate){\n        Set<Class> mateClasses = classmate.getClasses();\n\n        mateClasses.retainAll(userClasses);\n\n        return mateClasses.size();\n    }\n\n    public int calculatePosition (Student classmate) {\n        user = db.studentWithClassesDao().getStudent(userId);\n        userClasses = user.getClasses();\n        List<Student> userClassmates = findPriorClassmates();\n        for(int i=0; i<userClassmates.size(); i++) {\n            if(userClassmates.get(i).getId().equals(classmate.getId())){\n                return i;\n            }\n        }\n        return -1;\n    }\n\n    //for milestone2's turn-off button\n    public void onToggleClicked(View view) {\n        if(searching) {\n            this.onStopClicked();\n        }\n        else {\n            this.onStartClicked();\n        }\n        searching = !searching;\n    }\n\n    protected void onStartClicked(){\n        Button toggle_button = findViewById(R.id.toggle_search_button);\n        toggle_button.setText(\"Stop Search\");\n        this.fromStartPage = true;\n        Intent intent3 = new Intent(this, CourseDashboard.class);\n        startActivity(intent3);\n        // put start page code here\n    }\n\n    protected void onStopClicked(){\n        Button toggle_button = findViewById(R.id.toggle_search_button);\n        toggle_button.setText(\"Start Search\");\n        this.stopSearch = true;\n\n        if (this.isNewClass) {\n            final View contactPopupView = getLayoutInflater().inflate(R.layout.popup_save_class, null);\n            EditText classInfo = (EditText)contactPopupView.findViewById(R.id.save_class);\n\n            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);\n            final View saveNewClassView = getLayoutInflater().inflate(R.layout.popup_save_class, null);\n\n            // set title\n            alertDialogBuilder.setTitle(\"Save your class\");\n            alertDialogBuilder.setView(saveNewClassView);\n\n            // set dialog message\n            alertDialogBuilder\n                    .setCancelable(false)\n                    .setPositiveButton(\"Save\", new DialogInterface.OnClickListener() {\n                        public void onClick(DialogInterface dialog, int id) {\n                            // if this button is clicked, close\n                            // current activity\n\n\n                            String className = classInfo.getText().toString();\n                            // SharedPreferences preferences = Utils.getSharedPreferences(SearchStudentWithSimilarClasses.this);\n                            // String sessionUUIDString = preferences.getString(\"current_session_id\", \"\");\n                            // currentSessionId = UUID.fromString(sessionUUIDString);\n                            db.sessionDao().updateName(currentSessionId, \"Actual Name\");\n\n\n                            dialog.dismiss();\n                            // finish();\n                        }\n                    });\n\n            // create alert dialog\n            AlertDialog alertDialog = alertDialogBuilder.create();\n\n            // show it\n            alertDialog.show();\n        }\n    }\n\n    protected void setUpNearby(){\n        this.realListener = new MessageListener() {\n            @Override\n            public void onFound(@NonNull Message message) {\n                String messageContent = new String(message.getContent());\n                String[] decodedMessage = messageContent.split(\",\");\n\n                UUID studentUUID = UUID.fromString(decodedMessage[0]);\n                String name = decodedMessage[1];\n                String pictureURL = decodedMessage[2];\n\n                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);\n                db.sessionStudentDao().insert(studentInSession);\n\n                // if student exists in database\n                if(db.studentDao().checkExists(studentUUID)) return;\n\n                Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);\n\n                Student classmate = new Student(studentUUID, name, image);\n                db.studentDao().insert(classmate);\n\n                for(int i = 3; i < decodedMessage.length; i+=5) {\n                    UUID classId = UUID.fromString(decodedMessage[i]);\n                    int year = Integer.parseInt(decodedMessage[i + 1]);\n                    String quarter = decodedMessage[i + 2];\n                    String subject = decodedMessage[i + 3];\n                    String courseNumber = decodedMessage[i + 4];\n\n                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber);\n                    db.classesDao().insert(newClass);\n                }\n\n                int listPosition = calculatePosition(classmate);\n                studentsViewAdapter.addStudent(listPosition, classmate);\n            }\n\n            @Override\n            public void onLost(@NonNull Message message) {\n                Log.d(TAG, \"Lost sight of message: \" + new String(message.getContent()));\n            }\n        };\n\n        SharedPreferences preferences = Utils.getSharedPreferences(this);\n\n        String studentUUIDString = preferences.getString(\"student_id\", \"default\");\n        UUID studentUUID = UUID.fromString(studentUUIDString);\n        List<Class> classes = db.classesDao().getForStudent(studentUUID);\n\n        String encodedString = Utils.encodeStudent(this) + \",\" + Utils.encodeClasses(classes);\n        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));\n    }\n\n    protected void startNearby(){\n        Nearby.getMessagesClient(this).subscribe(realListener);\n        Nearby.getMessagesClient(this).publish(myStudentData);\n    }\n\n    protected void stopNearby(){\n        Nearby.getMessagesClient(this).unsubscribe(realListener);\n        Nearby.getMessagesClient(this).unpublish(myStudentData);\n    }\n\n    @Override\n    protected void onDestroy() {\n        super.onDestroy();\n        stopNearby();\n    }\n\n    @Override\n    protected void onResume() {\n        super.onResume();\n\n        SharedPreferences preferences = Utils.getSharedPreferences(this);\n        if(preferences.contains(\"current_session_id\")) {\n            String sessionUUIDString = preferences.getString(\"current_session_id\", \"\");\n            currentSessionId = UUID.fromString(sessionUUIDString);\n        }\n\n        if (preferences.contains(\"new_class\")) {\n            this.isNewClass = preferences.getBoolean(\"new_class\", true);\n        }\n\n        if(this.fromStartPage){\n            this.startNearby();\n            this.fromStartPage = false;\n        }\n        if(this.stopSearch){\n            this.stopNearby();\n            this.stopSearch = false;\n        }\n        refreshRecycler();\n    }\n\n    //public void\n    public void onAddStudentsClicked(View view){\n        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);\n        startActivity(addStudentsIntent);\n    }\n\n    public void onRefresh(View view){\n        refreshRecycler();\n    }\n\n\n    public void saveStudent(List<Student> s, String sessionName){\n        UUID sessionId = UUID.randomUUID();\n        Session newS = new Session(sessionId);\n        newS.setName(sessionName);\n        db.sessionDao().insert(newS);\n        for(Student eachStudent : s){\n            UUID studentId = eachStudent.getId();\n            db.sessionStudentDao().insert(new SessionStudent(studentId, sessionId));\n        }\n    }\n}\n\nclass StudentComparator implements Comparator<Student> {\n    public int compare(Student s1, Student s2) {\n        if (s1.getScore() > s2.getScore()) {\n            return -1;\n        }\n        else {\n            return 1;\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java b/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java
+--- a/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java	(revision 74b4b434bf9ee2e2a29dfc2666a15388f58bba90)
++++ b/app/src/main/java/com/swift/birdsofafeather/SearchStudentWithSimilarClasses.java	(date 1646641629592)
+@@ -16,7 +16,9 @@
+ import android.view.View;
+ import android.widget.Button;
+ import android.widget.EditText;
++import android.widget.Toast;
+ 
++import com.bumptech.glide.util.Util;
+ import com.google.android.gms.nearby.Nearby;
+ import com.google.android.gms.nearby.messages.Message;
+ import com.google.android.gms.nearby.messages.MessageListener;
+@@ -117,7 +119,7 @@
+ 
+         List<Student> commonClassmates = new ArrayList<>();
+ 
+-        PriorityQueue<Student> pq = new PriorityQueue<>(100, new StudentComparator());
++        PriorityQueue<Student> pq = new PriorityQueue<>(1000, new StudentComparator());
+ 
+         for (StudentWithClasses classmate : studentList) {
+             int count = countSimilarClasses(classmate);
+@@ -218,6 +220,9 @@
+             // show it
+             alertDialog.show();
+         }
++        else {
++            Toast.makeText(getApplicationContext(), "saved to the existing session", Toast.LENGTH_SHORT).show();
++        }
+     }
+ 
+     protected void setUpNearby(){
+@@ -346,4 +351,35 @@
+             return 1;
+         }
+     }
+-}
+\ No newline at end of file
++}
++
++/*
++class studentClassSizeComparator implements Comparator<StudentWithClasses> {
++    public int compare(StudentWithClasses s1, StudentWithClasses s2) {
++        Set<Class> s1_class = s1.getClasses();
++        Set<Class> s2_class = s2.getClasses();
++
++        int s1_max_size = 0;
++        for (Class course : s1_class) {
++        // Utils.findCapacity give an int based on the provided string
++            if (Utils.findCapacity(course.getSize()) > s1_max_size) {
++                s1_max_size = course.getSize();
++            }
++        }
++
++        int s2_max_size = 0;
++        for (Class course : s2_class) {
++            if (Utils.findCapacity(course.getSize()) > s2_max_size) {
++                s2_max_size = course.getSize();
++            }
++        }
++
++        if (s1_max_size < s2_max_size) {
++            return -1;
++        }
++        else {
++            return 1;
++        }
++    }
++}
++ */
+\ No newline at end of file

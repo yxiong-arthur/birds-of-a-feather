@@ -1,16 +1,11 @@
 package com.swift.birdsofafeather.model.db;
 
-import android.graphics.Bitmap;
-import android.media.Image;
-
-import androidx.room.DatabaseView;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class StudentWithClasses{
     @Embedded
@@ -26,7 +21,16 @@ public class StudentWithClasses{
     }
 
     @Override
-    public boolean equals(Object o){ return this.student.equals(o); }
+    public boolean equals(Object o){
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        StudentWithClasses other = (StudentWithClasses) o;
+
+        return this.student.equals(other.student);
+    }
 
     public Set<Class> getClasses() {
         return new HashSet<>(this.classes);

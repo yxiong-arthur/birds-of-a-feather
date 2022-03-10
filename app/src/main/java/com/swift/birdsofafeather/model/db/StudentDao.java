@@ -33,8 +33,17 @@ public interface StudentDao {
     @Insert
     void insert(Student student);
 
-    @Query("DELETE FROM students WHERE NOT student_id=:studentId")
-    void deleteExcept(UUID studentId);
+    @Query("UPDATE students SET class_score=:classScore WHERE student_id= :studentId")
+    void updateClassScore(UUID studentId, int classScore);
+
+    @Query("UPDATE students SET recency_score=:recencyScore WHERE student_id= :studentId")
+    void updateRecencyScore(UUID studentId, int recencyScore);
+
+    @Query("UPDATE students SET size_score=:sizeScore WHERE student_id= :studentId")
+    void updateSizeScore(UUID studentId, double sizeScore);
+
+    @Query("UPDATE students SET quarter_score=:quarterScore WHERE student_id= :studentId")
+    void updateQuarterScore(UUID studentId, int quarterScore);
 
     @Query("DELETE FROM students")
     void nukeTable();

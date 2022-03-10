@@ -88,12 +88,11 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             });
         }
 
-
         public void setStudent(Student student) {
             this.student = student;
             this.studentNameView.setText(student.getName());
             this.thumbnail.setImageBitmap(student.getPicture());
-            this.number.setText(String.valueOf(this.student.getScore()));
+            this.number.setText(String.valueOf(this.student.getClassScore()));
 
             if(student.isFavorited()) {
                 this.favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);

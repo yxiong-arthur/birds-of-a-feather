@@ -1,5 +1,6 @@
 package com.swift.birdsofafeather;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -32,6 +33,7 @@ public class BluetoothCheckActivity extends AppCompatActivity{
 
         checkPermissions();
 
+        assert bluetoothAdapter != null;
         if (!bluetoothAdapter.isEnabled() && ALLOW_BT_CONNECT) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -42,7 +44,7 @@ public class BluetoothCheckActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if(grantResults.length == 0)
@@ -62,7 +64,6 @@ public class BluetoothCheckActivity extends AppCompatActivity{
                 else
                     Utils.showAlert(this, "Bluetooth scan permissions will be required to scan for nearby bluetooth devices. " +
                             "This isn't needed right now, but we will ask again later to ensure app functionality.");
-                return;
         }
     }
 
