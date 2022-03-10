@@ -6,28 +6,27 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.Arrays;
-import java.util.List;
+import com.swift.birdsofafeather.Utils;
+
+import java.util.Map;
 import java.util.UUID;
 
 @Entity(tableName = "classes", foreignKeys = {
-        @ForeignKey(onDelete = CASCADE,entity = Student.class,
-                parentColumns = "id",childColumns = "student_id")
+            @ForeignKey(onDelete = CASCADE, entity = Student.class,
+                    parentColumns = "student_id", childColumns = "student_id")
         },
         indices = {
-                @Index("student_id"),
+                @Index("student_id")
         })
 public class Class implements Comparable{
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "class_id")
     public UUID classId;
 
-    @NonNull
     @ColumnInfo(name = "student_id")
     public UUID studentId;
 
@@ -43,16 +42,17 @@ public class Class implements Comparable{
     @ColumnInfo(name = "course_number")
     public String courseNumber;
 
-    @Ignore
-    List<String> quarterOrder = Arrays.asList("wi", "sp", "ss1", "ss2", "sss", "fa");
+    @ColumnInfo(name = "course_size")
+    public String courseSize;
 
-    public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber){
+    public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber, String courseSize){
         this.classId = classId;
         this.studentId = studentId;
         this.year = year;
         this.quarter = quarter.toLowerCase();
         this.subject = subject.toLowerCase();
         this.courseNumber = courseNumber.toLowerCase();
+        this.courseSize = courseSize.toLowerCase();
     }
 
     public UUID getId() {
@@ -75,6 +75,10 @@ public class Class implements Comparable{
         return this.courseNumber;
     }
 
+    public String getCourseSize() {
+        return this.courseSize;
+    }
+
     @Override
     public boolean equals(Object o){
         if (this == o)
@@ -87,27 +91,32 @@ public class Class implements Comparable{
         return this.year == other.year &&
                 this.quarter.equals(other.quarter) &&
                 this.subject.equals(other.subject) &&
-                this.courseNumber.equals(other.courseNumber);
+                this.courseNumber.equals(other.courseNumber) &&
+                this.courseSize.equals(other.courseSize);
     }
 
     @Override
     public int hashCode(){
-        String toHash = this.year + this.quarter + this.subject + this.courseNumber;
+        String toHash = this.year + this.quarter + this.subject + this.courseNumber + this.courseSize;
         return toHash.hashCode();
     }
 
+    @NonNull
     @Override
     public String toString(){
         return this.classId + "," + this.year + "," + this.quarter + "," + this.subject
-                + "," + this.courseNumber;
+                + "," + this.courseNumber + "," + this.courseSize;
+    }
+
+    public String toDisplayString(){
+        return this.year + " " + this.quarter + " " + this.subject + " " + this.courseNumber + " "
+                + this.courseSize;
     }
 
     @Override
     public int compareTo(Object o) {
         Class other = (Class) o;
 
-        if(this.year != other.year)
-            return this.year - other.year;
-        return Integer.compare(quarterOrder.indexOf(this.quarter), quarterOrder.indexOf(other.quarter));
+        return (this.year*4 + Utils.getRecencyScore(this.quarter)) - (other.year*4 + Utils.getRecencyScore(other.quarter));
     }
 }

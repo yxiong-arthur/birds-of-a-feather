@@ -21,4 +21,29 @@
         <item>SS2</item>
         <item>SSS</item>
     </string-array>
+
+    <string-array name="courseSize_array_actual">
+        <item>Tiny</item>
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Huge</item>
+        <item>Gigantic</item>
+    </string-array>
+
+    <string-array name="courseSize_array_display">
+        <item>Tiny (&lt;40)</item>
+        <item>Small (4--75)</item>
+        <item>Medium (75-150)</item>
+        <item>Large (150-250)</item>
+        <item>Huge (250-400)</item>
+        <item>Gigantic (400+)</item>
+    </string-array>
+
+    <string-array name="filters_array">
+        <item>default</item>
+        <item>prioritize recent</item>
+        <item>prioritize small classes</item>
+        <item>this quarter only</item>
+    </string-array>
 </resources>

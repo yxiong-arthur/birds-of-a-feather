@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.UUID;
@@ -14,7 +13,7 @@ import java.util.UUID;
 public class Student {
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "student_id")
     public UUID studentId;
 
     @ColumnInfo(name = "name")
@@ -23,14 +22,26 @@ public class Student {
     @ColumnInfo(name = "profile_picture")
     public Bitmap picture;
 
-    @Ignore
-    public int count;
+    @ColumnInfo(name = "class_score")
+    public int classScore;
+
+    @ColumnInfo(name = "recency_score")
+    public int recencyScore;
+
+    @ColumnInfo(name = "size_score")
+    public double sizeScore;
+
+    @ColumnInfo(name = "quarter_score")
+    public int quarterScore;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
-        this.count = 0;
+        this.classScore = 0;
+        this.recencyScore = 0;
+        this.sizeScore = 0.0;
+        this.quarterScore = 0;
     }
 
     @Override
@@ -46,26 +57,21 @@ public class Student {
                 this.name.equals(other.name);
      }
 
-    public UUID getId() {
-        return studentId;
-    }
+    public UUID getId() { return studentId; }
 
-    public String getName() {
-        return name;
-      }
+    public String getName() { return name; }
 
     public Bitmap getPicture() { return picture; }
 
+    @NonNull
     @Override
-    public String toString() {
-        return studentId + "," + name;
-    }
+    public String toString() { return studentId + "," + name; }
 
-    public int getCount() {
-        return count;
-    }
+    public int getClassScore() { return classScore; }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+    public int getRecencyScore() { return recencyScore; }
+
+    public double getSizeScore() { return sizeScore; }
+
+    public int getQuarterScore() { return quarterScore; }
 }
