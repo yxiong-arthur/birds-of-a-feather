@@ -372,10 +372,11 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
                 int listPosition = calculatePosition(classmate);
 
+                // Set all score for this new student
                 StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
-
                 setAllScore(studentWithClasses);
-                studentsViewAdapter.addStudent(listPosition, classmate);
+
+                studentsViewAdapter.addStudent(listPosition, studentWithClasses.getStudent());
             }
 
             @Override
@@ -460,7 +461,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     public void setClassScore(StudentWithClasses student){
         int classScore = countSimilarClasses(student);
-
         db.studentDao().updateClassScore(student.getStudent().getId(), classScore);
     }
 
@@ -518,6 +518,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     public int calculatePosition (Student classmate) {
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
+
         List<Student> userClassmates = findPriorClassmates();
         for(int i = 0; i < userClassmates.size(); i++) {
             if(userClassmates.get(i).getId().equals(classmate.getId())){
