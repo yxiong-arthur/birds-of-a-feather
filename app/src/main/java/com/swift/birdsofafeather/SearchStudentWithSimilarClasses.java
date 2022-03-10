@@ -527,7 +527,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 class StudentClassComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        return student1.getClassScore() - student2.getClassScore();
+        return - (student1.getClassScore() - student2.getClassScore());
     }
 }
 
@@ -535,7 +535,7 @@ class StudentClassComparator implements Comparator<Student> {
 class StudentClassSizeComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        return (int) (student1.getSizeScore() - student2.getSizeScore());
+        return - ((int) (student1.getSizeScore() - student2.getSizeScore()));
     }
 }
 
@@ -543,13 +543,13 @@ class StudentClassSizeComparator implements Comparator<Student> {
 class StudentClassRecencyComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        return student1.getRecencyScore() - student2.getRecencyScore();
+        return - (student1.getRecencyScore() - student2.getRecencyScore());
     }
 }
 
 class StudentThisQuarterComparator implements Comparator<Student> {
     @Override
     public int compare(Student student1, Student student2) {
-        return student1.getQuarterScore() - student2.getQuarterScore();
+        return - (student1.getQuarterScore() - student2.getQuarterScore());
     }
 }
