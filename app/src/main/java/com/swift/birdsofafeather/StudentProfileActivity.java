@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
@@ -106,5 +107,6 @@ public class StudentProfileActivity extends AppCompatActivity {
     public void onWaveClicked(View view) {
         waveBtn.setVisibility(View.GONE);
         db.studentDao().updateWavedTo(classmateId, true);
+        Toast.makeText(getApplicationContext(), "Wave sent", Toast.LENGTH_SHORT).show();
     }
 }
