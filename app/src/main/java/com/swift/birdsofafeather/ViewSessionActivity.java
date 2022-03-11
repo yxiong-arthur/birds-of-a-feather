@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Session;
@@ -47,7 +48,11 @@ public class ViewSessionActivity extends AppCompatActivity {
 
             sessionViewAdapter = new SessionViewAdapter(mySessions);
             sessionRecyclerView.setAdapter(sessionViewAdapter);
-            // finish();
+
         }));
+    }
+
+    public void onGoBackClicked(View view) {
+        finish();
     }
 }

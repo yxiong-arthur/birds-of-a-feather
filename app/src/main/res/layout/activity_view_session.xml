@@ -21,9 +21,10 @@
         app:layout_constraintVertical_bias="0.071" />
 
     <ScrollView
+        android:id="@+id/scrollView4"
         android:layout_width="365dp"
-        android:layout_height="495dp"
 
+        android:layout_height="495dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.347"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,5 +35,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ScrollView>
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:onClick="onGoBackClicked"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView4"
+        app:layout_constraintVertical_bias="0.34" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
