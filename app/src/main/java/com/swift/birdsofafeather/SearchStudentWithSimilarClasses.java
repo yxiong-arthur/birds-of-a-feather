@@ -456,6 +456,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                     handleStudentInfo(messageContent);
                 } else {
                     handleWaveInfo(messageContent, studentUUID);
+                    refreshRecycler(false);
                 }
             }
 
@@ -475,7 +476,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             if(decodedMessage[i].equals(myId)) {
                 if(db.studentDao().checkExists(classmateUUID)) {
                     db.studentDao().updateWavedFrom(classmateUUID, true);
-                    refreshRecycler(false);
                 }
                 break;
             }
