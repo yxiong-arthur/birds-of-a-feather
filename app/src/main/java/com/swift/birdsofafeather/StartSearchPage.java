@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -31,10 +32,14 @@ public class StartSearchPage extends AppCompatActivity {
     private final ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private Future future;
 
+    Button backButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
+
+
 
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         if (!getIntent().hasExtra("viewing")) {
@@ -91,11 +96,17 @@ public class StartSearchPage extends AppCompatActivity {
 
         db = AppDatabase.singleton(getApplicationContext());
 
+        backButton = findViewById(R.id.back_button);
+
 
         String UUIDString = preferences.getString("student_id", "");
         studentId = UUID.fromString(UUIDString);
 
         List<Session> mySessions = db.sessionDao().getAllSessions();
+
+        if (!mySessions.isEmpty()) {
+            backButton.setVisibility(View.GONE);
+        }
 
         this.future = backgroundThreadExecutor.submit(() -> runOnUiThread(() -> {
             // Set up the recycler view to show our database contents
@@ -107,5 +118,9 @@ public class StartSearchPage extends AppCompatActivity {
             sessionViewAdapter = new SessionViewAdapter(mySessions);
             sessionRecyclerView.setAdapter(sessionViewAdapter);
         }));
+    }
+
+    public void onGoBackClicked(View view) {
+        finish();
     }
 }
