@@ -123,27 +123,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
             // if not clear then build list
             if(!clear) {
-                List<Student> sessionStudents = db.sessionWithStudentsDao()
-                        .getSession(currentSessionId)
-                        .getStudents();
-
-                sessionStudents.remove(user.getStudent());
-
-                List<Student> favoritedAndWavedFromStudents = db.studentDao().getAllFavoritedAndWavedFromStudents();
-                favoritedAndWavedFromStudents.retainAll(sessionStudents);
-                classmates.addAll(findPriorClassmates(favoritedAndWavedFromStudents));
-
-                List<Student> favoritedOnlyStudents = db.studentDao().getAllFavoritedOnlyStudents();
-                favoritedOnlyStudents.retainAll(sessionStudents);
-                classmates.addAll(findPriorClassmates(favoritedOnlyStudents));
-
-                List<Student> wavedFromOnlyStudents = db.studentDao().getAllWavedFromOnlyStudents();
-                wavedFromOnlyStudents.retainAll(sessionStudents);
-                classmates.addAll(findPriorClassmates(wavedFromOnlyStudents));
-
-                List<Student> regularStudents = db.studentDao().getAllRegularStudents();
-                regularStudents.retainAll(sessionStudents);
-                classmates.addAll(findPriorClassmates(regularStudents));
+                rebuildClassmates();
             }
 
             runOnUiThread(() -> {
@@ -157,6 +137,30 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
+    }
+
+    protected void rebuildClassmates(){
+        List<Student> sessionStudents = db.sessionWithStudentsDao()
+                .getSession(currentSessionId)
+                .getStudents();
+
+        sessionStudents.remove(user.getStudent());
+
+        List<Student> favoritedAndWavedFromStudents = db.studentDao().getAllFavoritedAndWavedFromStudents();
+        favoritedAndWavedFromStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(favoritedAndWavedFromStudents));
+
+        List<Student> favoritedOnlyStudents = db.studentDao().getAllFavoritedOnlyStudents();
+        favoritedOnlyStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(favoritedOnlyStudents));
+
+        List<Student> wavedFromOnlyStudents = db.studentDao().getAllWavedFromOnlyStudents();
+        wavedFromOnlyStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(wavedFromOnlyStudents));
+
+        List<Student> regularStudents = db.studentDao().getAllRegularStudents();
+        regularStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(regularStudents));
     }
 
     protected List<Student> findPriorClassmates(List<Student> classmatesToOrder) {
@@ -590,6 +594,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     public int calculatePosition (Student classmate) {
+        rebuildClassmates();
         for(int i = 0; i < classmates.size(); i++) {
             if(classmates.get(i).getId().equals(classmate.getId())){
                 return i;
