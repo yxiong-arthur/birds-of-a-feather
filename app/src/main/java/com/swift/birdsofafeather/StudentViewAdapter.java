@@ -62,7 +62,7 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
         private final ImageView thumbnail;
         private final TextView number;
         private final ImageButton favButton;
-        private final ImageButton waveButton;
+        private final ImageView waveIndicator;
         private Student student;
         private Context context;
         private AppDatabase db;
@@ -73,14 +73,10 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
             this.thumbnail = itemView.findViewById(R.id.thumbnail);
             this.number = itemView.findViewById(R.id.number_of_classes);
             this.context = itemView.getContext();
-            db = AppDatabase.singleton(context);
             this.favButton = itemView.findViewById(R.id.favButton);
-            this.waveButton = itemView.findViewById(R.id.waveButton);
+            this.waveIndicator = itemView.findViewById(R.id.waveIndicator);
 
-            //TODO also if we waved back??? does it disappear?
-            if(student.isWavedBack()) {
-                waveButton.setVisibility(View.GONE);
-            }
+            db = AppDatabase.singleton(context);
 
             itemView.setOnClickListener(this);
             favButton.setOnClickListener(new View.OnClickListener() {
@@ -99,21 +95,22 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
                 }
             });
 
-            //TODO idk what we should do with the button (should it disappear? turn solid? Also when should we make it show up?
-            //TODO we don't want to add it to the list if it already exists (so make it unclickable)
-            //TODO DELETE EVERYTHIGN BELOW IM CONFUSED IF THE OTHER STUDENT NEEDS TO KNOW IF THEY GOT WAVED BACK
-            waveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SharedPreferences preferences = Utils.getSharedPreferences(context);
-                    String studentUUIDString = preferences.getString("student_id", "default");
-                    UUID studentUUID = UUID.fromString(studentUUIDString);
-                    Student myStudent = db.studentDao().getStudent(studentUUID);
-                    myStudent.classmatesWavedToList.add(student);
-                    waveButton.setEnabled(false);
-                    waveButton.setVisibility(View.GONE);
-                }
-            });
+//            //TODO idk what we should do with the button (should it disappear? turn solid? Also when should we make it show up?
+//            //TODO we don't want to add it to the list if it already exists (so make it unclickable)
+//            //TODO DELETE EVERYTHIGN BELOW IM CONFUSED IF THE OTHER STUDENT NEEDS TO KNOW IF THEY GOT WAVED BACK
+//            //TODO Darren: it shouldn't *do* anything
+//            waveButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    SharedPreferences preferences = Utils.getSharedPreferences(context);
+//                    String studentUUIDString = preferences.getString("student_id", "default");
+//                    UUID studentUUID = UUID.fromString(studentUUIDString);
+//                    Student myStudent = db.studentDao().getStudent(studentUUID);
+//                    myStudent.classmatesWavedToList.add(student);
+//                    waveButton.setEnabled(false);
+//                    waveButton.setVisibility(View.GONE);
+//                }
+//            });
         }
 
         public void setStudent(Student student) {
@@ -124,6 +121,9 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
 
             if(student.isFavorited()) {
                 this.favButton.setBackgroundResource(R.drawable.ic_baseline_star_24);
+            }
+            if(student.isWavedFrom()) {
+                this.waveIndicator.setVisibility(View.VISIBLE);
             }
         }
 

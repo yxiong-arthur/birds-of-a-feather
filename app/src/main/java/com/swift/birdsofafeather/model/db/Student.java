@@ -48,9 +48,6 @@ public class Student {
     @ColumnInfo(name = "waved_from")
     public boolean wavedFrom;
 
-    @Ignore
-    public List<Student> classmatesWavedToList;
-
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
@@ -62,7 +59,6 @@ public class Student {
         this.favorited = false;
         this.wavedFrom = false;
         this.wavedTo = false;
-        this.classmatesWavedToList = new ArrayList<Student>();
     }
 
     @Override
@@ -102,10 +98,5 @@ public class Student {
         this.favorited = !this.favorited;
     }
 
-    public boolean isWavedBack() { return this.wavedFrom; }
-
-    public void addStudentToWavedToList(Student classmate) {
-        this.classmatesWavedToList.add(classmate);
-    }
-
+    public boolean isWavedFrom() { return this.wavedFrom; }
 }

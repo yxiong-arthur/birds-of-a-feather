@@ -51,6 +51,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private Message myStudentData;
     private Message wavedToData;
 
+    private List<Student> classmatesWavedToList;
+
     private Spinner filterSpinner;
 //    private Spinner thisYearSpinner;
 //    private Spinner thisQuarterSpinner;
@@ -121,6 +123,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         user = db.studentWithClassesDao().getStudent(userId);
         userClasses = user.getClasses();
 
+        classmatesWavedToList = new ArrayList<>();
+
         clearRecycler();
         setUpNearby();
     }
@@ -173,6 +177,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void stopNearby(){
         Nearby.getMessagesClient(this).unsubscribe(messageListener);
         Nearby.getMessagesClient(this).unpublish(myStudentData);
+        if(wavedToData != null) Nearby.getMessagesClient(this).unpublish(wavedToData);
         Log.d(TAG, "Stopped Nearby Subscribing");
         Log.d(TAG, "Stopped Nearby Publishing");
     }
@@ -188,11 +193,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         super.onResume();
 
         SharedPreferences preferences = Utils.getSharedPreferences(this);
+
+        // retrieve session id if existing
         if(preferences.contains("current_session_id")) {
             String sessionUUIDString = preferences.getString("current_session_id", "");
             currentSessionId = UUID.fromString(sessionUUIDString);
         }
 
+        // from start page
         if(this.fromStartPage){
             this.startNearby();
             Toast.makeText(getApplicationContext(), "Starting search...", Toast.LENGTH_SHORT).show();
@@ -202,15 +210,16 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         // Publishing the wavedTo Message
         List<Student> allWavedToStudents = db.studentDao().getAllWavedToStudents();
 
-        if(allWavedToStudents.size() != user.student.classmatesWavedToList.size()) {
-            user.student.classmatesWavedToList = allWavedToStudents;
+        if(allWavedToStudents.size() != this.classmatesWavedToList.size()) {
+            this.classmatesWavedToList = allWavedToStudents;
             Nearby.getMessagesClient(this).unpublish(this.wavedToData);
-            updateWavedToData(allWavedToStudents);
             Log.d(TAG, "Unpublished WaveTo Message: ");
-        }
 
-        Nearby.getMessagesClient(this).publish(this.wavedToData);
-        Log.d(TAG, "Published WaveTo Message: ");
+            updateWavedToData(allWavedToStudents);
+
+            Nearby.getMessagesClient(this).publish(this.wavedToData);
+            Log.d(TAG, "Published WaveTo Message: ");
+        }
 
         refreshRecycler();
     }
@@ -235,8 +244,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Button toggle_button = findViewById(R.id.toggle_search_button);
         toggle_button.setText("Stop Search");
         this.fromStartPage = true;
-        Intent intent3 = new Intent(this, StartSearchPage.class);
-        startActivity(intent3);
+        Intent startSearchIntent = new Intent(this, StartSearchPage.class);
+        startActivity(startSearchIntent);
     }
 
     protected void onStopClicked(){

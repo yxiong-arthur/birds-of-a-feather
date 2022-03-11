@@ -72,7 +72,7 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <ImageView
-        android:id="@+id/waveButton"
+        android:id="@+id/waveIndicator"
         android:layout_width="40dp"
         android:layout_height="47dp"
         app:layout_constraintBottom_toBottomOf="parent"

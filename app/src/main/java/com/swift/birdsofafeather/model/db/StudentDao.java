@@ -22,6 +22,10 @@ public interface StudentDao {
     @Query("SELECT * FROM students WHERE waved_to=1")
     List<Student> getAllWavedToStudents();
 
+    @Transaction
+    @Query("SELECT * FROM students WHERE waved_from=1")
+    List<Student> getAllWavedFromStudents();
+
     @Query("SELECT * FROM students WHERE student_id=:studentId")
     Student getStudent(UUID studentId);
 
