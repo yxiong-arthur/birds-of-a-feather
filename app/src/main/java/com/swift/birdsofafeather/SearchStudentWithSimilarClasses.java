@@ -220,6 +220,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             viewSessionIntent.putExtra("viewing", true);
             startActivity(viewSessionIntent);
         }
+        else {
+            Toast.makeText(getApplicationContext(), "Can't view when you are searching", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onToggleClicked(View view) {
@@ -305,6 +308,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         if (searching) {
             Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
             startActivity(addStudentsIntent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Can't add if you are not searching", Toast.LENGTH_SHORT).show();
         }
     }
 
