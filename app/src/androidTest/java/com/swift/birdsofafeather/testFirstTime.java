@@ -1,22 +1,24 @@
 package com.swift.birdsofafeather;
 
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -32,14 +34,13 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class testOverAll {
+public class testFirstTime {
 
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
 
-
     @Test
-    public void testOverAll() {
+    public void testFirstTime() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.first_name_textview),
                         childAtPosition(
@@ -48,7 +49,7 @@ public class testOverAll {
                                         0),
                                 0),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("ziyan"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("Emily"), closeSoftKeyboard());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.submit_name_button), withText("Confirm"),
@@ -68,7 +69,7 @@ public class testOverAll {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("a"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText("s"), closeSoftKeyboard());
 
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.loadPhotoButton), withText("Load"),
@@ -90,13 +91,30 @@ public class testOverAll {
                         isDisplayed()));
         materialButton3.perform(click());
 
+        ViewInteraction appCompatSpinner = onView(
+                allOf(withId(R.id.quarter_select),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        appCompatSpinner.perform(click());
+
+        DataInteraction appCompatCheckedTextView = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(1);
+        appCompatCheckedTextView.perform(click());
+
         ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.subject_textview),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                0),
+                                2),
                         isDisplayed()));
         appCompatEditText3.perform(replaceText("cse"), closeSoftKeyboard());
 
@@ -106,9 +124,26 @@ public class testOverAll {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText4.perform(replaceText("110"), closeSoftKeyboard());
+
+        ViewInteraction appCompatSpinner2 = onView(
+                allOf(withId(R.id.courseSize_select),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                4),
+                        isDisplayed()));
+        appCompatSpinner2.perform(click());
+
+        DataInteraction materialTextView = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(3);
+        materialTextView.perform(click());
 
         ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -116,7 +151,7 @@ public class testOverAll {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
         materialButton4.perform(click());
 
@@ -126,29 +161,19 @@ public class testOverAll {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
-        appCompatEditText5.perform(click());
+        appCompatEditText5.perform(replaceText("105"));
 
         ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.courseNumber_textview), withText("110"),
+                allOf(withId(R.id.courseNumber_textview), withText("105"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
-        appCompatEditText6.perform(replaceText("120"));
-
-        ViewInteraction appCompatEditText7 = onView(
-                allOf(withId(R.id.courseNumber_textview), withText("120"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText7.perform(closeSoftKeyboard());
+        appCompatEditText6.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -156,12 +181,32 @@ public class testOverAll {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
         materialButton5.perform(click());
 
+        ViewInteraction appCompatEditText7 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("105"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText7.perform(replaceText("101"));
+
+        ViewInteraction appCompatEditText8 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("101"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText8.perform(closeSoftKeyboard());
+
         ViewInteraction materialButton6 = onView(
-                allOf(withId(R.id.done_button), withText("done"),
+                allOf(withId(R.id.enter_button), withText("Enter"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -170,150 +215,200 @@ public class testOverAll {
                         isDisplayed()));
         materialButton6.perform(click());
 
-        ViewInteraction materialButton7 = onView(
-                allOf(withId(R.id.toggle_search_button), withText("Start Search"),
+        ViewInteraction appCompatSpinner3 = onView(
+                allOf(withId(R.id.quarter_select),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                6),
+                        isDisplayed()));
+        appCompatSpinner3.perform(click());
+
+        DataInteraction appCompatCheckedTextView2 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(0);
+        appCompatCheckedTextView2.perform(click());
+
+        ViewInteraction appCompatEditText9 = onView(
+                allOf(withId(R.id.subject_textview), withText("cse"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatEditText9.perform(replaceText("math"));
+
+        ViewInteraction appCompatEditText10 = onView(
+                allOf(withId(R.id.subject_textview), withText("math"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatEditText10.perform(closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText11 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("101"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 5),
+                        isDisplayed()));
+        appCompatEditText11.perform(replaceText("170a"));
+
+        ViewInteraction appCompatEditText12 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("170a"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText12.perform(closeSoftKeyboard());
+
+        ViewInteraction appCompatSpinner4 = onView(
+                allOf(withId(R.id.courseSize_select),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                4),
+                        isDisplayed()));
+        appCompatSpinner4.perform(click());
+
+        DataInteraction materialTextView2 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(1);
+        materialTextView2.perform(click());
+
+        ViewInteraction materialButton7 = onView(
+                allOf(withId(R.id.enter_button), withText("Enter"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
                         isDisplayed()));
         materialButton7.perform(click());
 
-        ViewInteraction materialButton8 = onView(
-                allOf(withId(android.R.id.button1), withText("New Session"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                0)));
-        materialButton8.perform(scrollTo(), click());
-
-        ViewInteraction materialButton9 = onView(
-                allOf(withId(R.id.add_students_button), withText("Add Students"),
+        ViewInteraction appCompatSpinner5 = onView(
+                allOf(withId(R.id.year_select),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                4),
+                                1),
                         isDisplayed()));
-        materialButton9.perform(click());
+        appCompatSpinner5.perform(click());
 
-        ViewInteraction appCompatEditText8 = onView(
-                allOf(withId(R.id.student_info),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText8.perform(scrollTo(), replaceText("ArthurCopy,,,\nqwe,,,\n2021,FA,cse,100\n2021,FA,cse,110\n2021,FA,cse,120"), closeSoftKeyboard());
+        DataInteraction appCompatCheckedTextView3 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(1);
+        appCompatCheckedTextView3.perform(click());
 
-        ViewInteraction materialButton10 = onView(
-                allOf(withId(R.id.add_student_button), withText("Add Student"),
+        ViewInteraction appCompatSpinner6 = onView(
+                allOf(withId(R.id.quarter_select),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                6),
                         isDisplayed()));
-        materialButton10.perform(click());
+        appCompatSpinner6.perform(click());
 
-        ViewInteraction materialButton11 = onView(
-                allOf(withId(R.id.back_button), withText("Back"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton11.perform(click());
+        DataInteraction appCompatCheckedTextView4 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(1);
+        appCompatCheckedTextView4.perform(click());
 
-        ViewInteraction materialButton12 = onView(
-                allOf(withId(R.id.add_students_button), withText("Add Students"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
-                        isDisplayed()));
-        materialButton12.perform(click());
-
-        ViewInteraction appCompatEditText9 = onView(
-                allOf(withId(R.id.student_info),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText9.perform(scrollTo(), replaceText("David,,,\nasd,,,\n2022,FA,cse,110\n2022,FA,cse,120\n2022,FA,cse,130"), closeSoftKeyboard());
-
-        ViewInteraction materialButton13 = onView(
-                allOf(withId(R.id.add_student_button), withText("Add Student"),
+        ViewInteraction appCompatEditText13 = onView(
+                allOf(withId(R.id.subject_textview), withText("math"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 2),
                         isDisplayed()));
-        materialButton13.perform(click());
+        appCompatEditText13.perform(replaceText("cse"));
 
-        ViewInteraction materialButton14 = onView(
-                allOf(withId(R.id.back_button), withText("Back"),
+        ViewInteraction appCompatEditText14 = onView(
+                allOf(withId(R.id.subject_textview), withText("cse"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                2),
                         isDisplayed()));
-        materialButton14.perform(click());
+        appCompatEditText14.perform(closeSoftKeyboard());
 
-        ViewInteraction materialButton15 = onView(
-                allOf(withId(R.id.toggle_search_button), withText("Stop Search"),
+        ViewInteraction appCompatEditText15 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("170a"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 5),
                         isDisplayed()));
-        materialButton15.perform(click());
+        appCompatEditText15.perform(replaceText("20"));
 
-        ViewInteraction materialButton16 = onView(
-                allOf(withId(android.R.id.button2), withText("Give it a name"),
+        ViewInteraction appCompatEditText16 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("20"),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
+                                        withId(android.R.id.content),
                                         0),
-                                2)));
-        materialButton16.perform(scrollTo(), click());
-
-        ViewInteraction editText = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(android.R.id.custom),
-                                0),
-                        0),
+                                5),
                         isDisplayed()));
-        editText.perform(replaceText("math"), closeSoftKeyboard());
+        appCompatEditText16.perform(closeSoftKeyboard());
 
-        ViewInteraction editText2 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(android.R.id.custom),
-                                0),
-                        1),
-                        isDisplayed()));
-        editText2.perform(replaceText("100"), closeSoftKeyboard());
-
-        ViewInteraction materialButton17 = onView(
-                allOf(withId(android.R.id.button1), withText("Save"),
+        ViewInteraction appCompatSpinner7 = onView(
+                allOf(withId(R.id.courseSize_select),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
+                                        withId(android.R.id.content),
                                         0),
-                                3)));
-        materialButton17.perform(scrollTo(), click());
+                                4),
+                        isDisplayed()));
+        appCompatSpinner7.perform(click());
+
+        DataInteraction materialTextView3 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(2);
+        materialTextView3.perform(click());
+
+        ViewInteraction materialButton8 = onView(
+                allOf(withId(R.id.enter_button), withText("Enter"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton8.perform(click());
+
+        ViewInteraction materialButton9 = onView(
+                allOf(withId(R.id.done_button), withText("done"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        materialButton9.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
