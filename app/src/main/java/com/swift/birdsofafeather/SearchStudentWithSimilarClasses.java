@@ -214,12 +214,22 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         return commonClassmates;
     }
 
+    public void onViewSessionClicked(View view) {
+        if (!searching) {
+            Intent viewSessionIntent = new Intent(this, ViewSessionActivity.class);
+            startActivity(viewSessionIntent);
+        }
+    }
+
     public void onToggleClicked(View view) {
-        if(searching)
+        if(searching) {
             this.onStopClicked();
-        else
+            searching = false;
+        }
+        else{
             this.onStartClicked();
-        searching = !searching;
+            searching = true;
+        }
     }
 
     protected void startNearby(){
@@ -291,8 +301,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     public void onAddStudentsClicked(View view){
-        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
-        startActivity(addStudentsIntent);
+        if (searching) {
+            Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
+            startActivity(addStudentsIntent);
+        }
     }
 
     public void onViewFavClicked(View view){
