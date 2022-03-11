@@ -212,7 +212,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         if(allWavedToStudents.size() != this.classmatesWavedToList.size()) {
             this.classmatesWavedToList = allWavedToStudents;
-            Nearby.getMessagesClient(this).unpublish(this.wavedToData);
+            if(wavedToData != null) Nearby.getMessagesClient(this).unpublish(this.wavedToData);
             Log.d(TAG, "Unpublished WaveTo Message: ");
 
             updateWavedToData(allWavedToStudents);
@@ -225,14 +225,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     private void updateWavedToData(List<Student> classmatesWavedTo) {
-        String message = this.userId.toString();
+        StringBuilder message = new StringBuilder(this.userId.toString());
 
         for(Student classmate : classmatesWavedTo) {
             String classmateIdString = classmate.getId().toString();
-            message += "," + classmateIdString;
+            message.append(",").append(classmateIdString);
         }
 
-        this.wavedToData = new Message(message.getBytes(StandardCharsets.UTF_8), Utils.WAVE_INFO);
+        this.wavedToData = new Message(message.toString().getBytes(StandardCharsets.UTF_8), Utils.WAVE_INFO);
     }
 
     public void onAddStudentsClicked(View view){
