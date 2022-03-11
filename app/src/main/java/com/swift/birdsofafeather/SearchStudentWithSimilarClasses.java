@@ -216,7 +216,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
     public void onViewSessionClicked(View view) {
         if (!searching) {
-            Intent viewSessionIntent = new Intent(this, ViewSessionActivity.class);
+            Intent viewSessionIntent = new Intent(this, StartSearchPage.class);
+            viewSessionIntent.putExtra("viewing", true);
             startActivity(viewSessionIntent);
         }
     }

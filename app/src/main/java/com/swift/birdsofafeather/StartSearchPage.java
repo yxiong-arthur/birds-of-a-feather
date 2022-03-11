@@ -36,9 +36,62 @@ public class StartSearchPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
 
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        if (!getIntent().hasExtra("viewing")) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    this);
+
+            // set title
+            alertDialogBuilder.setTitle("Choose your session");
+
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("Do you want to continue from your existing session or start a new session?")
+                    .setCancelable(false)
+                    .setPositiveButton("New Session", (dialog, id) -> {
+                        // if this button is clicked, close
+                        // current activity
+                        UUID newSessionId = UUID.randomUUID();
+                        Session newSession = new Session(newSessionId);
+                        db.sessionDao().insert(newSession);
+
+                        Log.d(TAG, "Session object name: " + newSession.getName());
+                        Log.d(TAG, "Session database name: " + db.sessionDao().getName(newSessionId));
+
+                        SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
+                        db.sessionStudentDao().insert(studentInSession);
+
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("current_session_id", newSessionId.toString());
+                        editor.apply();
+
+                        dialog.dismiss();
+
+                        future.cancel(true);
+                        finish();
+                    }).setNegativeButton("Continue from existing session", null);
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+
+            Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            negativeButton.setOnClickListener(view -> {
+                if (db.sessionDao().getAllSessions().size() == 0) {
+                    Toast.makeText(getApplicationContext(), "You have no existing sessions!", Toast.LENGTH_SHORT).show();
+                } else {
+                    alertDialog.dismiss();
+                }
+            });
+
+            getIntent().removeExtra("viewing");
+        }
+
         db = AppDatabase.singleton(getApplicationContext());
 
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
+
         String UUIDString = preferences.getString("student_id", "");
         studentId = UUID.fromString(UUIDString);
 
@@ -54,54 +107,5 @@ public class StartSearchPage extends AppCompatActivity {
             sessionViewAdapter = new SessionViewAdapter(mySessions);
             sessionRecyclerView.setAdapter(sessionViewAdapter);
         }));
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
-
-        // set title
-        alertDialogBuilder.setTitle("Choose your session");
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("Do you want to continue from your existing session or start a new session?")
-                .setCancelable(false)
-                .setPositiveButton("New Session", (dialog, id) -> {
-                    // if this button is clicked, close
-                    // current activity
-                    UUID newSessionId = UUID.randomUUID();
-                    Session newSession = new Session(newSessionId);
-                    db.sessionDao().insert(newSession);
-
-                    Log.d(TAG, "Session object name: " + newSession.getName());
-                    Log.d(TAG, "Session database name: " + db.sessionDao().getName(newSessionId));
-
-                    SessionStudent studentInSession = new SessionStudent(newSessionId, studentId);
-                    db.sessionStudentDao().insert(studentInSession);
-
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("current_session_id", newSessionId.toString());
-                    editor.apply();
-
-                    dialog.dismiss();
-
-                    future.cancel(true);
-                    finish();
-                }).setNegativeButton("Continue from existing session", null);
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-
-        Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        negativeButton.setOnClickListener(view -> {
-            if (db.sessionDao().getAllSessions().size() == 0) {
-                Toast.makeText(getApplicationContext(), "You have no existing sessions!", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                alertDialog.dismiss();
-            }
-        });
     }
 }
