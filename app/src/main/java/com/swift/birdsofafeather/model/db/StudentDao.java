@@ -18,6 +18,10 @@ public interface StudentDao {
     @Query("SELECT * FROM students WHERE favorite=1")
     List<Student> getAllFavoritedStudents();
 
+    @Transaction
+    @Query("SELECT * FROM students WHERE waved_to=1")
+    List<Student> getAllWavedToStudents();
+
     @Query("SELECT * FROM students WHERE student_id=:studentId")
     Student getStudent(UUID studentId);
 
@@ -44,6 +48,9 @@ public interface StudentDao {
 
     @Query("UPDATE students SET quarter_score=:quarterScore WHERE student_id= :studentId")
     void updateQuarterScore(UUID studentId, int quarterScore);
+
+    @Query("UPDATE students SET waved_from=:wavedFrom WHERE student_id= :studentId")
+    void updateWavedFrom(UUID studentId, boolean wavedFrom);
 
     @Query("DELETE FROM students")
     void nukeTable();

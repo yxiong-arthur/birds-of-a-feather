@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 public class Utils {
     public static int MESSAGE_READ = 0;
     public static int MESSAGE_WRITE = 1;
+    public static String WAVE_INFO = "WAVE_INFO";
+    public static String STUDENT_INFO = "STUDENT_INFO";
 
     public static boolean isEmpty(String str) {
         if (str == null) {

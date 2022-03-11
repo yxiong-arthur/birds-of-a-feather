@@ -47,8 +47,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private static final int currentYear = 2022;
     private static final String currentQuarter = "wi";
 
-    private MessageListener studentInfoListener;
+    private MessageListener messageListener;
     private Message myStudentData;
+    private Message wavedToData;
 
     private Spinner filterSpinner;
 //    private Spinner thisYearSpinner;
@@ -163,14 +164,14 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     protected void startNearby(){
-        Nearby.getMessagesClient(this).subscribe(studentInfoListener);
+        Nearby.getMessagesClient(this).subscribe(messageListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
         Log.d(TAG, "Started Nearby Subscribing");
         Log.d(TAG, "Started Nearby Publishing");
     }
 
     protected void stopNearby(){
-        Nearby.getMessagesClient(this).unsubscribe(studentInfoListener);
+        Nearby.getMessagesClient(this).unsubscribe(messageListener);
         Nearby.getMessagesClient(this).unpublish(myStudentData);
         Log.d(TAG, "Stopped Nearby Subscribing");
         Log.d(TAG, "Stopped Nearby Publishing");
@@ -198,7 +199,31 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             this.fromStartPage = false;
         }
 
+        // Publishing the wavedTo Message
+        List<Student> allWavedToStudents = db.studentDao().getAllWavedToStudents();
+
+        if(allWavedToStudents.size() != user.student.classmatesWavedToList.size()) {
+            user.student.classmatesWavedToList = allWavedToStudents;
+            Nearby.getMessagesClient(this).unpublish(this.wavedToData);
+            updateWavedToData(allWavedToStudents);
+            Log.d(TAG, "Unpublished WaveTo Message: ");
+        }
+
+        Nearby.getMessagesClient(this).publish(this.wavedToData);
+        Log.d(TAG, "Published WaveTo Message: ");
+
         refreshRecycler();
+    }
+
+    private void updateWavedToData(List<Student> classmatesWavedTo) {
+        String message = this.userId.toString();
+
+        for(Student classmate : classmatesWavedTo) {
+            String classmateIdString = classmate.getId().toString();
+            message += "," + classmateIdString;
+        }
+
+        this.wavedToData = new Message(message.getBytes(StandardCharsets.UTF_8), Utils.WAVE_INFO);
     }
 
     public void onAddStudentsClicked(View view){
@@ -342,60 +367,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     protected void setUpNearby(){
-        this.studentInfoListener = new MessageListener() {
-            @Override
-            public void onFound(@NonNull Message message) {
-                Toast.makeText(getApplicationContext(), "Found Nearby Message...", Toast.LENGTH_SHORT).show();
-                String messageContent = new String(message.getContent());
-                Log.d(TAG, messageContent);
-                String[] decodedMessage = messageContent.split(",");
-
-                UUID studentUUID = UUID.fromString(decodedMessage[0]);
-                String name = decodedMessage[1];
-                String pictureURL = decodedMessage[2];
-
-                // if student exists in database
-                if(db.studentDao().checkExists(studentUUID)){
-                    SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
-                    db.sessionStudentDao().insert(studentInSession);
-                    return;
-                }
-
-                Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
-
-                Student classmate = new Student(studentUUID, name, image);
-                db.studentDao().insert(classmate);
-
-                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
-                db.sessionStudentDao().insert(studentInSession);
-
-                for(int i = 3; i < decodedMessage.length; i+=6) {
-                    UUID classId = UUID.fromString(decodedMessage[i]);
-                    int year = Integer.parseInt(decodedMessage[i + 1]);
-                    String quarter = decodedMessage[i + 2];
-                    String subject = decodedMessage[i + 3];
-                    String courseNumber = decodedMessage[i + 4];
-                    String courseSize = decodedMessage[i + 5];
-
-                    Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
-                    db.classesDao().insert(newClass);
-                }
-
-                int listPosition = calculatePosition(classmate);
-
-                // Set all score for this new student
-                StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
-                setAllScore(studentWithClasses);
-
-                studentsViewAdapter.addStudent(listPosition, studentWithClasses.getStudent());
-            }
-
-            @Override
-            public void onLost(@NonNull Message message) {
-                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
-            }
-        };
-
         SharedPreferences preferences = Utils.getSharedPreferences(this);
 
         String studentUUIDString = preferences.getString("student_id", "default");
@@ -403,7 +374,86 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         List<Class> classes = db.classesDao().getForStudent(studentUUID);
 
         String encodedString = Utils.encodeStudent(this) + "," + Utils.encodeClasses(classes);
-        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8));
+        myStudentData = new Message(encodedString.getBytes(StandardCharsets.UTF_8), Utils.STUDENT_INFO);
+
+        this.messageListener = new MessageListener() {
+            @Override
+            public void onFound(@NonNull Message message) {
+                Toast.makeText(getApplicationContext(), "Found Nearby Message...", Toast.LENGTH_SHORT).show();
+                String contentType = message.getType();
+                String messageContent = new String(message.getContent());
+
+                if(contentType.equals(Utils.STUDENT_INFO)) {
+                    handleStudentInfo(messageContent);
+                } else {
+                    handleWaveInfo(messageContent, studentUUID);
+                }
+            }
+
+            @Override
+            public void onLost(@NonNull Message message) {
+                Log.d(TAG, "Lost sight of message: " + new String(message.getContent()));
+            }
+        };
+    }
+
+    private void handleWaveInfo(String messageContent, UUID thisStudentId) {
+        String[] decodedMessage = messageContent.split(",");
+        String myId = thisStudentId.toString();
+        UUID classmateUUID = UUID.fromString(decodedMessage[0]);
+
+        for(int i = 1; i < decodedMessage.length; i++) {
+            if(decodedMessage[i].equals(myId)) {
+                if(db.studentDao().checkExists(classmateUUID)) {
+                    db.studentDao().updateWavedFrom(classmateUUID, true);
+                }
+                break;
+            }
+        }
+    }
+
+    private void handleStudentInfo(String messageContent) {
+        Log.d(TAG, messageContent);
+        String[] decodedMessage = messageContent.split(",");
+
+        UUID studentUUID = UUID.fromString(decodedMessage[0]);
+        String name = decodedMessage[1];
+        String pictureURL = decodedMessage[2];
+
+        // if student exists in database
+        if(db.studentDao().checkExists(studentUUID)){
+            SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+            db.sessionStudentDao().insert(studentInSession);
+            return;
+        }
+
+        Bitmap image = Utils.urlToBitmap(SearchStudentWithSimilarClasses.this, pictureURL);
+
+        Student classmate = new Student(studentUUID, name, image);
+        db.studentDao().insert(classmate);
+
+        SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+        db.sessionStudentDao().insert(studentInSession);
+
+        for(int i = 3; i < decodedMessage.length; i+=6) {
+            UUID classId = UUID.fromString(decodedMessage[i]);
+            int year = Integer.parseInt(decodedMessage[i + 1]);
+            String quarter = decodedMessage[i + 2];
+            String subject = decodedMessage[i + 3];
+            String courseNumber = decodedMessage[i + 4];
+            String courseSize = decodedMessage[i + 5];
+
+            Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
+            db.classesDao().insert(newClass);
+        }
+
+        int listPosition = calculatePosition(classmate);
+
+        // Set all score for this new student
+        StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
+        setAllScore(studentWithClasses);
+
+        studentsViewAdapter.addStudent(listPosition, studentWithClasses.getStudent());
     }
 
     protected List<Student> findPriorClassmates() {

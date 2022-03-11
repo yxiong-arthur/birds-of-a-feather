@@ -7,15 +7,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +32,7 @@ import java.util.concurrent.Future;
 public class StudentProfileActivity extends AppCompatActivity {
     private AppDatabase db;
     private UUID studentId;
+    private UUID classmateId;
     private StudentWithClasses myself;
     private StudentWithClasses classmate;
     private Set<Class> myClasses;
@@ -38,16 +43,18 @@ public class StudentProfileActivity extends AppCompatActivity {
     private Future future;
     private ImageView portrait;
     private TextView name;
+    private ImageView waveBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //TODO MAKE THE BUTTON HOLLOW/NOT HOLLOW BASED ON IF WE WAVED TO THEM ALREADY
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
         portrait = findViewById(R.id.portrait);
         name = findViewById(R.id.name);
 
         Intent intent = getIntent();
-        UUID classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
+        this.classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
 
         db = AppDatabase.singleton(getApplicationContext());
 
@@ -91,5 +98,11 @@ public class StudentProfileActivity extends AppCompatActivity {
     public void onGoBackHome(View view) {
         this.future.cancel(true);
         finish();
+    }
+
+    public void onWaveClicked(View view) {
+        //TODO ONLY WHEN IT IS HOLLOW DO THIS add an if statement
+        //TODO change it to not be hollow
+        myself.student.classmatesWavedToList.add(db.studentDao().getStudent(classmateId));
     }
 }

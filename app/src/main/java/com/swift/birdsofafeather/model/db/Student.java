@@ -8,7 +8,10 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity(tableName = "students")
@@ -39,14 +42,14 @@ public class Student {
     @ColumnInfo(name = "favorite")
     public boolean favorited;
 
-    @ColumnInfo(name = "waved_at")
-    public boolean wavedAt;
+    @ColumnInfo(name = "waved_to")
+    public boolean wavedTo;
 
-    @ColumnInfo(name = "waved_back")
-    public boolean wavedBack;
+    @ColumnInfo(name = "waved_from")
+    public boolean wavedFrom;
 
     @Ignore
-    public List<Student> wavedBackList;
+    public List<Student> classmatesWavedToList;
 
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
@@ -57,6 +60,9 @@ public class Student {
         this.sizeScore = 0.0;
         this.quarterScore = 0;
         this.favorited = false;
+        this.wavedFrom = false;
+        this.wavedTo = false;
+        this.classmatesWavedToList = new ArrayList<Student>();
     }
 
     @Override
@@ -96,12 +102,10 @@ public class Student {
         this.favorited = !this.favorited;
     }
 
-    public void waveTo(Student student) { student.wavedAt = true; }
+    public boolean isWavedBack() { return this.wavedFrom; }
 
-    public void waveBack(Student student) {
-        if (!wavedBackList.contains(student) && student.wavedAt == true) {
-            wavedBackList.add(student);
-            student.wavedBack = true;
-        }
+    public void addStudentToWavedToList(Student classmate) {
+        this.classmatesWavedToList.add(classmate);
     }
+
 }
