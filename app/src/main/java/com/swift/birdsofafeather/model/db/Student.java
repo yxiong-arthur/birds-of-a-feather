@@ -70,9 +70,13 @@ public class Student {
 
         Student other = (Student) o;
 
-        return this.studentId.equals(other.studentId) &&
-                this.name.equals(other.name);
+        return this.studentId.equals(other.studentId);
      }
+
+    @Override
+    public int hashCode(){
+        return studentId.hashCode();
+    }
 
     public UUID getId() { return studentId; }
 

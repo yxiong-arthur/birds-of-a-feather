@@ -47,16 +47,19 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO MAKE THE BUTTON HOLLOW/NOT HOLLOW BASED ON IF WE WAVED TO THEM ALREADY
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
         portrait = findViewById(R.id.portrait);
         name = findViewById(R.id.name);
+        waveBtn = findViewById(R.id.waveBtn);
 
         Intent intent = getIntent();
         this.classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
 
         db = AppDatabase.singleton(getApplicationContext());
+
+        if(db.studentDao().hasWavedTo(classmateId))
+            waveBtn.setVisibility(View.GONE);
 
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         String UUIDString = preferences.getString("student_id", "");
@@ -101,8 +104,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     public void onWaveClicked(View view) {
-        //TODO ONLY WHEN IT IS HOLLOW DO THIS add an if statement
-        //TODO change it to not be hollow
-        myself.student.classmatesWavedToList.add(db.studentDao().getStudent(classmateId));
+        waveBtn.setVisibility(View.GONE);
+        db.studentDao().updateWavedTo(classmateId, true);
     }
 }
