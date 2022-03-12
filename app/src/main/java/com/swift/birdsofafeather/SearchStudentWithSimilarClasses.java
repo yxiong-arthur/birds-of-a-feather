@@ -512,8 +512,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         // if student exists in database
         if(db.studentDao().checkExists(studentUUID)){
-            SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
-            db.sessionStudentDao().insert(studentInSession);
+            if(!db.sessionStudentDao().checkStudentInSession(currentSessionId, studentUUID)) {
+                SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
+                db.sessionStudentDao().insert(studentInSession);
+            }
             return;
         }
 
