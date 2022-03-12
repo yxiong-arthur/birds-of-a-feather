@@ -1,13 +1,10 @@
 package com.swift.birdsofafeather.model.db;
 
-import static androidx.room.ForeignKey.CASCADE;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import java.util.UUID;
 
@@ -31,11 +28,12 @@ public class SessionStudent {
     @ColumnInfo(name = "student_id")
     public UUID studentId;
 
-    public SessionStudent(UUID sessionId, UUID studentId){
+    public SessionStudent(@NonNull UUID sessionId, @NonNull UUID studentId){
         this.sessionId = sessionId;
         this.studentId = studentId;
     }
 
+    @NonNull
     public UUID getStudentId(){
         return studentId;
     }

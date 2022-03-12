@@ -22,7 +22,7 @@ public class FavStudentListActivity extends AppCompatActivity {
     private List<Student> favoriteStudentList;
     private UUID sessionId;
     private Future future;
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
     private RecyclerView favoriteStudentRecyclerView;
     private RecyclerView.LayoutManager favoriteStudentLayoutManager;
     private StudentViewAdapter studentViewAdapter;

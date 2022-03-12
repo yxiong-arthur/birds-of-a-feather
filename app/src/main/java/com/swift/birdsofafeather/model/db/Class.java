@@ -11,7 +11,6 @@ import androidx.room.PrimaryKey;
 
 import com.swift.birdsofafeather.Utils;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Entity(tableName = "classes", foreignKeys = {
@@ -45,7 +44,7 @@ public class Class implements Comparable{
     @ColumnInfo(name = "course_size")
     public String courseSize;
 
-    public Class(UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber, String courseSize){
+    public Class(@NonNull UUID classId, UUID studentId, int year, String quarter, String subject, String courseNumber, String courseSize){
         this.classId = classId;
         this.studentId = studentId;
         this.year = year;

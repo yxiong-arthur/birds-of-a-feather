@@ -27,7 +27,6 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.SessionStudent;
-import com.swift.birdsofafeather.model.db.SessionWithStudents;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
@@ -239,6 +238,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     protected void startNearby(){
         Nearby.getMessagesClient(this).subscribe(messageListener);
         Nearby.getMessagesClient(this).publish(myStudentData);
+        if(wavedToData != null) Nearby.getMessagesClient(this).publish(wavedToData);
         Log.d(TAG, "Started Nearby Subscribing");
         Log.d(TAG, "Started Nearby Publishing");
     }
@@ -282,12 +282,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         if(allWavedToStudents.size() != this.classmatesWavedToList.size()) {
             this.classmatesWavedToList = allWavedToStudents;
             if(wavedToData != null) Nearby.getMessagesClient(this).unpublish(this.wavedToData);
-            Log.d(TAG, "Unpublished WaveTo Message: ");
+            Log.d(TAG, "Unpublished WaveTo Message...");
 
             updateWavedToData(allWavedToStudents);
 
             Nearby.getMessagesClient(this).publish(this.wavedToData);
-            Log.d(TAG, "Published WaveTo Message: ");
+            Log.d(TAG, "Published WaveTo Message...");
         }
 
         refreshRecycler(false);
@@ -473,11 +473,10 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
                 if(contentType.equals(Utils.STUDENT_INFO)) {
                     handleStudentInfo(messageContent);
-                    refreshRecycler(false);
                 } else {
                     handleWaveInfo(messageContent, studentUUID);
-                    refreshRecycler(false);
                 }
+                refreshRecycler(false);
             }
 
             @Override
@@ -609,16 +608,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         Set<Class> mateClasses = classmate.getClasses();
         mateClasses.retainAll(userClasses);
         return mateClasses;
-    }
-
-    public int calculatePosition (Student classmate) {
-        rebuildClassmates();
-        for(int i = 0; i < classmates.size(); i++) {
-            if(classmates.get(i).getId().equals(classmate.getId())){
-                return i;
-            }
-        }
-        return -1;
     }
 }
 

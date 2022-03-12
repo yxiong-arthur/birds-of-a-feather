@@ -5,13 +5,8 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity(tableName = "students")
@@ -48,7 +43,7 @@ public class Student {
     @ColumnInfo(name = "waved_from")
     public boolean wavedFrom;
 
-    public Student (UUID studentId, String name, Bitmap picture){
+    public Student (@NonNull UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
         this.picture = picture;
@@ -84,9 +79,9 @@ public class Student {
 
     public Bitmap getPicture() { return picture; }
 
-    @NonNull
     public boolean isFavorited() { return favorited; }
 
+    @NonNull
     @Override
     public String toString() { return studentId + "," + name; }
 

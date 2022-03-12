@@ -24,7 +24,7 @@ public class Session {
     @ColumnInfo(name = "named")
     public boolean named;
 
-    public Session(UUID sessionId){
+    public Session(@NonNull UUID sessionId){
         this.sessionId = sessionId;
         this.timeCreated = new Date();
         this.name = this.timeCreated.toString();
