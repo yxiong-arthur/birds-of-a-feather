@@ -54,8 +54,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private List<Student> classmatesWavedToList;
 
     private Spinner filterSpinner;
-//    private Spinner thisYearSpinner;
-//    private Spinner thisQuarterSpinner;
     private AppDatabase db;
 
     private UUID currentSessionId;
@@ -63,6 +61,8 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     private UUID userId;
     private StudentWithClasses user;
     private Set<Class> userClasses;
+
+    private List<Student> classmates;
 
     private RecyclerView studentsRecyclerView;
     private RecyclerView.LayoutManager studentsLayoutManager;
@@ -86,7 +86,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                refreshRecycler();
+                refreshRecycler(false);
             }
 
             @Override
@@ -94,18 +94,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 // your code here
             }
         });
-
-//        thisYearSpinner = findViewById(R.id.year_select);
-//        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
-//                R.array.years_array, android.R.layout.simple_spinner_item);
-//        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        thisYearSpinner.setAdapter(yearAdapter);
-//
-//        thisQuarterSpinner = findViewById(R.id.quarter_select);
-//        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
-//                R.array.quarters_array, android.R.layout.simple_spinner_item);
-//        quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        thisQuarterSpinner.setAdapter(quarterAdapter);
 
         db = AppDatabase.singleton(getApplicationContext());
 
@@ -125,13 +113,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
         classmatesWavedToList = new ArrayList<>();
 
-        clearRecycler();
+        refreshRecycler(true);
         setUpNearby();
     }
 
-    protected void refreshRecycler(){
+    protected void refreshRecycler(boolean clear){
         backgroundThreadExecutor.submit(() -> {
-            List<Student> userClassmates = findPriorClassmates();
+            classmates = new ArrayList<>();
+
+            // if not clear then build list
+            if(!clear) {
+                rebuildClassmates();
+            }
 
             runOnUiThread(() -> {
                 // Set up the recycler view to show our database contents
@@ -140,31 +133,107 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 studentsLayoutManager = new LinearLayoutManager(this);
                 studentsRecyclerView.setLayoutManager(studentsLayoutManager);
 
-                studentsViewAdapter = new StudentViewAdapter(userClassmates);
+                studentsViewAdapter = new StudentViewAdapter(classmates);
                 studentsRecyclerView.setAdapter(studentsViewAdapter);
             });
         });
     }
 
-    protected void clearRecycler(){
-        backgroundThreadExecutor.submit(() -> runOnUiThread(() -> {
-            // Set up the recycler view to show our database contents
-            studentsRecyclerView = findViewById(R.id.persons_view);
+    protected void rebuildClassmates(){
+        List<Student> sessionStudents = db.sessionWithStudentsDao()
+                .getSession(currentSessionId)
+                .getStudents();
 
-            studentsLayoutManager = new LinearLayoutManager(this);
-            studentsRecyclerView.setLayoutManager(studentsLayoutManager);
+        sessionStudents.remove(user.getStudent());
 
-            studentsViewAdapter = new StudentViewAdapter(new ArrayList<>());
-            studentsRecyclerView.setAdapter(studentsViewAdapter);
-        }));
+        List<Student> favoritedAndWavedFromStudents = db.studentDao().getAllFavoritedAndWavedFromStudents();
+        favoritedAndWavedFromStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(favoritedAndWavedFromStudents));
+
+        List<Student> favoritedOnlyStudents = db.studentDao().getAllFavoritedOnlyStudents();
+        favoritedOnlyStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(favoritedOnlyStudents));
+
+        List<Student> wavedFromOnlyStudents = db.studentDao().getAllWavedFromOnlyStudents();
+        wavedFromOnlyStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(wavedFromOnlyStudents));
+
+        List<Student> regularStudents = db.studentDao().getAllRegularStudents();
+        regularStudents.retainAll(sessionStudents);
+        classmates.addAll(findPriorClassmates(regularStudents));
+    }
+
+    protected List<Student> findPriorClassmates(List<Student> classmatesToOrder) {
+        List<StudentWithClasses> studentList = new ArrayList<>();
+        for(Student student : classmatesToOrder) {
+            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
+        }
+
+        List<Student> commonClassmates = new ArrayList<>();
+
+        PriorityQueue<Student> pq;
+        String filterString = filterSpinner.getSelectedItem().toString();
+
+        switch (filterString) {
+            case "prioritize recent":
+                pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
+                break;
+            case "prioritize small classes":
+                pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
+                break;
+            case "this quarter only":
+                return findStudentsThisQuarter(studentList);
+            default:
+                pq = new PriorityQueue<>(1000, new StudentClassComparator());
+        }
+
+        for (StudentWithClasses classmate : studentList) {
+            if (classmate.getStudent().getClassScore() > 0) {
+                pq.add(classmate.getStudent());
+            }
+        }
+        while (!pq.isEmpty()) {
+            commonClassmates.add(Objects.requireNonNull(pq.poll()));
+        }
+        return commonClassmates;
+    }
+
+    public List<Student> findStudentsThisQuarter(List<StudentWithClasses> studentList) {
+        PriorityQueue<Student> pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
+        List<Student> commonClassmates = new ArrayList<>();
+        for(StudentWithClasses classmate : studentList) {
+            Student student = classmate.getStudent();
+            if (student.getClassScore() > 0 && student.getQuarterScore() > 1) {
+                pq.add(student);
+            }
+        }
+        while (!pq.isEmpty()) {
+            commonClassmates.add(Objects.requireNonNull(pq.poll()));
+        }
+
+        return commonClassmates;
+    }
+
+    public void onViewSessionClicked(View view) {
+        if (!searching) {
+            Intent viewSessionIntent = new Intent(this, StartSearchPage.class);
+            viewSessionIntent.putExtra("viewing", true);
+            startActivity(viewSessionIntent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Can't view when you are searching", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onToggleClicked(View view) {
-        if(searching)
+        if(searching) {
             this.onStopClicked();
-        else
+            searching = false;
+        }
+        else{
             this.onStartClicked();
-        searching = !searching;
+            searching = true;
+        }
     }
 
     protected void startNearby(){
@@ -221,7 +290,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             Log.d(TAG, "Published WaveTo Message: ");
         }
 
-        refreshRecycler();
+        refreshRecycler(false);
     }
 
     private void updateWavedToData(List<Student> classmatesWavedTo) {
@@ -236,8 +305,18 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     public void onAddStudentsClicked(View view){
-        Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
-        startActivity(addStudentsIntent);
+        if (searching) {
+            Intent addStudentsIntent = new Intent(this, AddStudentActivity.class);
+            startActivity(addStudentsIntent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Can't add if you are not searching", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onViewFavClicked(View view){
+        Intent viewFavoritesIntent = new Intent(this, FavStudentListActivity.class);
+        startActivity(viewFavoritesIntent);
     }
 
     protected void onStartClicked(){
@@ -372,7 +451,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         SharedPreferences.Editor edit = preferences.edit();
         edit.remove("current_session_id");
         edit.apply();
-        clearRecycler();
+        refreshRecycler(true);
     }
 
     protected void setUpNearby(){
@@ -396,6 +475,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                     handleStudentInfo(messageContent);
                 } else {
                     handleWaveInfo(messageContent, studentUUID);
+                    refreshRecycler(false);
                 }
             }
 
@@ -463,65 +543,6 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         setAllScore(studentWithClasses);
 
         studentsViewAdapter.addStudent(listPosition, studentWithClasses.getStudent());
-    }
-
-    protected List<Student> findPriorClassmates() {
-        SessionWithStudents mySession = db.sessionWithStudentsDao().getSession(currentSessionId);
-        List<Student> sessionStudents = mySession.getStudents();
-        sessionStudents.remove(user.getStudent());
-
-
-        List<StudentWithClasses> studentList = new ArrayList<>();
-        for(Student student : sessionStudents) {
-            studentList.add(db.studentWithClassesDao().getStudent(student.getId()));
-        }
-
-        List<Student> commonClassmates = new ArrayList<>();
-
-        PriorityQueue<Student> pq;
-        String filterString = filterSpinner.getSelectedItem().toString();
-//        String thisYearString = thisYearSpinner.getSelectedItem().toString();
-//        String thisQuarterString = thisQuarterSpinner.getSelectedItem().toString().toLowerCase();
-
-        switch (filterString) {
-            case "prioritize recent":
-                pq = new PriorityQueue<>(1000, new StudentClassRecencyComparator());
-                break;
-            case "prioritize small classes":
-                pq = new PriorityQueue<>(1000, new StudentClassSizeComparator());
-                break;
-            case "this quarter only":
-                return findStudentsThisQuarter(studentList);
-            default:
-                pq = new PriorityQueue<>(1000, new StudentClassComparator());
-        }
-
-        for (StudentWithClasses classmate : studentList) {
-            if (classmate.getStudent().getClassScore() > 0) {
-                pq.add(classmate.getStudent());
-            }
-        }
-        while (!pq.isEmpty()) {
-            Student student = Objects.requireNonNull(pq.poll());
-            commonClassmates.add(student);
-        }
-        return commonClassmates;
-    }
-
-    public List<Student> findStudentsThisQuarter(List<StudentWithClasses> studentList) {
-        PriorityQueue<Student> pq = new PriorityQueue<>(1000, new StudentThisQuarterComparator());
-        List<Student> commonClassmates = new ArrayList<>();
-        for(StudentWithClasses classmate : studentList) {
-            Student student = classmate.getStudent();
-            if (student.getClassScore() > 0 && student.getQuarterScore() > 1) {
-                pq.add(student);
-            }
-        }
-        while (!pq.isEmpty()) {
-            commonClassmates.add(Objects.requireNonNull(pq.poll()));
-        }
-
-        return commonClassmates;
     }
 
     public void setAllScore(StudentWithClasses student) {
@@ -593,12 +614,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
     }
 
     public int calculatePosition (Student classmate) {
-        user = db.studentWithClassesDao().getStudent(userId);
-        userClasses = user.getClasses();
-
-        List<Student> userClassmates = findPriorClassmates();
-        for(int i = 0; i < userClassmates.size(); i++) {
-            if(userClassmates.get(i).getId().equals(classmate.getId())){
+        rebuildClassmates();
+        for(int i = 0; i < classmates.size(); i++) {
+            if(classmates.get(i).getId().equals(classmate.getId())){
                 return i;
             }
         }

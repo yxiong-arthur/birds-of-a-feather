@@ -75,6 +75,7 @@
         android:id="@+id/waveIndicator"
         android:layout_width="40dp"
         android:layout_height="47dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/favButton"
         app:layout_constraintHorizontal_bias="0.0"

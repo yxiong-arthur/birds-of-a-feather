@@ -58,27 +58,36 @@ public class AddStudentActivity extends AppCompatActivity {
 
         studentInfoTextView.setText("");
 
-        UUID studentId = UUID.randomUUID();
         List<String> studentRows = Arrays.asList(studentInfo.split("\n"));
 
+        UUID studentId = UUID.randomUUID();
         String studentName = "";
+
+        boolean waveFlag = false;
 
         StringBuilder encodedString = new StringBuilder();
 
         for (int i = 0; i < studentRows.size(); i++) {
             List<String> studentRowData = Arrays.asList(studentRows.get(i).split("\\s*,\\s*"));
             if(i == 0){
-                studentName = studentRowData.get(0);
+                studentId = UUID.fromString(studentRowData.get(0));
             }
             if(i == 1){
+                studentName = studentRowData.get(0);
+            }
+            if(i == 2){
                 String pictureURL = studentRowData.get(0);
                 Bitmap pictureBMap = Utils.urlToBitmap(this, pictureURL);
 
                 Student student = new Student(studentId, studentName, pictureBMap);
                 encodedString.append(student).append(",").append(pictureURL);
             }
-            if(i >= 2) {
+            if(i >= 3) {
                 String yearString = studentRowData.get(0);
+                if(yearString.length() > 4){
+                    waveFlag = true;
+                    break;
+                }
                 String quarter = studentRowData.get(1).toLowerCase();
                 String subject = studentRowData.get(2).toLowerCase();
                 String courseNumber = studentRowData.get(3).toLowerCase();
@@ -100,6 +109,7 @@ public class AddStudentActivity extends AppCompatActivity {
             }
         }
 
+        boolean finalWaveFlag = waveFlag;
         MessageListener messageListener = new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
@@ -120,6 +130,10 @@ public class AddStudentActivity extends AppCompatActivity {
 
                 Student classmate = new Student(studentUUID, name, image);
                 db.studentDao().insert(classmate);
+
+                if(finalWaveFlag){
+                    db.studentDao().updateWavedFrom(studentUUID, true);
+                }
 
                 SessionStudent studentInSession = new SessionStudent(currentSessionId, studentUUID);
                 db.sessionStudentDao().insert(studentInSession);

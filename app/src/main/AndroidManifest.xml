@@ -2,19 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.swift.birdsofafeather">
 
-    <uses-permission android:name="android.permission."/>
+    <uses-permission android:name="android.permission." />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -27,9 +24,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Birdsofafeather">
+
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyC5Y2WT2ZaLJZolyCjloItK_D80OsPCjps" />
+
         <activity
             android:name=".AddStudentActivity"
             android:exported="false" />
@@ -62,8 +61,7 @@
         </activity>
         <activity
             android:name=".StartSearchPage"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".DashboardActivity"
             android:exported="true" />

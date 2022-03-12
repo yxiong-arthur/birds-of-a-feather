@@ -7,11 +7,10 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
@@ -37,19 +36,13 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class FavoritingTest {
-
+public class testFavouriteStudent {
+    //needs to run before wiping data
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
 
-    @Rule
-    public GrantPermissionRule mGrantPermissionRule =
-            GrantPermissionRule.grant(
-                    "android.permission.BLUETOOTH_SCAN",
-                    "android.permission.BLUETOOTH_CONNECT");
-
     @Test
-    public void favoriteIntegrationTest() {
+    public void testFavouriteStudent() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.first_name_textview),
                         childAtPosition(
@@ -58,17 +51,7 @@ public class FavoritingTest {
                                         0),
                                 0),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("Eugene"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.first_name_textview), withText("Eugene"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatEditText2.perform(click());
+        appCompatEditText.perform(replaceText("Emily"), closeSoftKeyboard());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.submit_name_button), withText("Confirm"),
@@ -80,7 +63,7 @@ public class FavoritingTest {
                         isDisplayed()));
         materialButton.perform(click());
 
-        ViewInteraction appCompatEditText3 = onView(
+        ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.photoUploadURL),
                         childAtPosition(
                                 childAtPosition(
@@ -88,7 +71,7 @@ public class FavoritingTest {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText3.perform(replaceText("a"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText("s"), closeSoftKeyboard());
 
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.loadPhotoButton), withText("Load"),
@@ -111,12 +94,12 @@ public class FavoritingTest {
         materialButton3.perform(click());
 
         ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.year_select),
+                allOf(withId(R.id.quarter_select),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                4),
+                                6),
                         isDisplayed()));
         appCompatSpinner.perform(click());
 
@@ -127,25 +110,42 @@ public class FavoritingTest {
                 .atPosition(1);
         appCompatCheckedTextView.perform(click());
 
-        ViewInteraction appCompatEditText4 = onView(
+        ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.subject_textview),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                0),
+                                2),
                         isDisplayed()));
-        appCompatEditText4.perform(replaceText("CSE"), closeSoftKeyboard());
+        appCompatEditText3.perform(replaceText("cse"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText5 = onView(
+        ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.courseNumber_textview),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
-        appCompatEditText5.perform(replaceText("210"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("110"), closeSoftKeyboard());
+
+        ViewInteraction appCompatSpinner2 = onView(
+                allOf(withId(R.id.courseSize_select),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                4),
+                        isDisplayed()));
+        appCompatSpinner2.perform(click());
+
+        DataInteraction materialTextView = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(3);
+        materialTextView.perform(click());
 
         ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -153,12 +153,32 @@ public class FavoritingTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
         materialButton4.perform(click());
 
+        ViewInteraction appCompatEditText5 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("110"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText5.perform(replaceText("105"));
+
+        ViewInteraction appCompatEditText6 = onView(
+                allOf(withId(R.id.courseNumber_textview), withText("105"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        appCompatEditText6.perform(closeSoftKeyboard());
+
         ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.done_button), withText("done"),
+                allOf(withId(R.id.enter_button), withText("Enter"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -168,16 +188,45 @@ public class FavoritingTest {
         materialButton5.perform(click());
 
         ViewInteraction materialButton6 = onView(
+                allOf(withId(R.id.done_button), withText("done"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        materialButton6.perform(click());
+
+        ViewInteraction materialButton7 = onView(
+                allOf(withId(R.id.toggle_search_button), withText("Start Search"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton7.perform(click());
+
+        ViewInteraction materialButton8 = onView(
+                allOf(withId(android.R.id.button1), withText("New Session"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                0)));
+        materialButton8.perform(scrollTo(), click());
+
+        ViewInteraction materialButton9 = onView(
                 allOf(withId(R.id.add_students_button), withText("Add Students"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                2),
                         isDisplayed()));
-        materialButton6.perform(click());
+        materialButton9.perform(click());
 
-        ViewInteraction appCompatEditText6 = onView(
+        ViewInteraction appCompatEditText7 = onView(
                 allOf(withId(R.id.student_info),
                         childAtPosition(
                                 allOf(withId(R.id.scrollView2),
@@ -185,71 +234,9 @@ public class FavoritingTest {
                                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                                 1)),
                                 0)));
-        appCompatEditText6.perform(scrollTo(), replaceText("Bill,,,\n\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"), closeSoftKeyboard());
+        appCompatEditText7.perform(scrollTo(), replaceText("a4cc50b6-941b-11ec-b909-0242ac120002,,,,\nArthur,,,,\ns,,,,\n2022,WI,CSE,110,large\n2022,WI,CSE,105,Large"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText7 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\n\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText7.perform(scrollTo(), click());
-
-        ViewInteraction appCompatEditText8 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\n\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText8.perform(scrollTo(), replaceText("Bill,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"));
-
-        ViewInteraction appCompatEditText9 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        appCompatEditText9.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText10 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText10.perform(scrollTo(), click());
-
-        ViewInteraction appCompatEditText11 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n\n2021,FA,CSE,210"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0)));
-        appCompatEditText11.perform(scrollTo(), replaceText("Bill,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n2021,FA,CSE,210"));
-
-        ViewInteraction appCompatEditText12 = onView(
-                allOf(withId(R.id.student_info), withText("Bill,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n2021,FA,CSE,210"),
-                        childAtPosition(
-                                allOf(withId(R.id.scrollView2),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        appCompatEditText12.perform(closeSoftKeyboard());
-
-        ViewInteraction materialButton7 = onView(
+        ViewInteraction materialButton10 = onView(
                 allOf(withId(R.id.add_student_button), withText("Add Student"),
                         childAtPosition(
                                 childAtPosition(
@@ -257,9 +244,9 @@ public class FavoritingTest {
                                         0),
                                 2),
                         isDisplayed()));
-        materialButton7.perform(click());
+        materialButton10.perform(click());
 
-        ViewInteraction materialButton8 = onView(
+        ViewInteraction materialButton11 = onView(
                 allOf(withId(R.id.back_button), withText("Back"),
                         childAtPosition(
                                 childAtPosition(
@@ -267,7 +254,61 @@ public class FavoritingTest {
                                         0),
                                 3),
                         isDisplayed()));
-        materialButton8.perform(click());
+        materialButton11.perform(click());
+
+        ViewInteraction materialButton12 = onView(
+                allOf(withId(R.id.toggle_search_button), withText("Stop Search"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton12.perform(click());
+
+        ViewInteraction materialButton13 = onView(
+                allOf(withId(android.R.id.button2), withText("Give it a name"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                2)));
+        materialButton13.perform(scrollTo(), click());
+
+        ViewInteraction editText = onView(
+                allOf(childAtPosition(
+                        childAtPosition(
+                                withId(android.R.id.custom),
+                                0),
+                        0),
+                        isDisplayed()));
+        editText.perform(replaceText("cse110"), closeSoftKeyboard());
+
+        ViewInteraction materialButton14 = onView(
+                allOf(withId(android.R.id.button1), withText("Save"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        materialButton14.perform(scrollTo(), click());
+
+        ViewInteraction materialButton15 = onView(
+                allOf(withId(R.id.button3), withText("View Sessions"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                10),
+                        isDisplayed()));
+        materialButton15.perform(click());
+
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.persons_view),
+                        childAtPosition(
+                                withClassName(is("android.widget.ScrollView")),
+                                0)));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withId(R.id.favButton),
@@ -279,29 +320,25 @@ public class FavoritingTest {
                                 3)));
         appCompatImageButton.perform(scrollTo(), click());
 
-        ViewInteraction materialButton9 = onView(
+        ViewInteraction materialButton16 = onView(
                 allOf(withId(R.id.fav_btn), withText("View Favorites"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                9),
                         isDisplayed()));
-        materialButton9.perform(click());
+        materialButton16.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.student_row_name), withText("Bill"),
-                        withParent(allOf(withId(R.id.frameLayout),
-                                withParent(withId(R.id.persons_view)))),
+        ViewInteraction materialButton17 = onView(
+                allOf(withId(R.id.back_btn), withText("Back"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
                         isDisplayed()));
-        textView.check(matches(withText("Bill")));
-
-        ViewInteraction imageButton = onView(
-                allOf(withId(R.id.favButton),
-                        withParent(allOf(withId(R.id.frameLayout),
-                                withParent(withId(R.id.persons_view)))),
-                        isDisplayed()));
-        imageButton.check(matches(isDisplayed()));
+        materialButton17.perform(click());
 
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withId(R.id.favButton),
@@ -310,11 +347,20 @@ public class FavoritingTest {
                                         childAtPosition(
                                                 withId(R.id.persons_view),
                                                 0)),
-                                3),
-                        isDisplayed()));
-        appCompatImageButton2.perform(click());
+                                3)));
+        appCompatImageButton2.perform(scrollTo(), click());
 
-        ViewInteraction materialButton10 = onView(
+        ViewInteraction materialButton18 = onView(
+                allOf(withId(R.id.fav_btn), withText("View Favorites"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                9),
+                        isDisplayed()));
+        materialButton18.perform(click());
+
+        ViewInteraction materialButton19 = onView(
                 allOf(withId(R.id.back_btn), withText("Back"),
                         childAtPosition(
                                 childAtPosition(
@@ -322,17 +368,7 @@ public class FavoritingTest {
                                         0),
                                 2),
                         isDisplayed()));
-        materialButton10.perform(click());
-
-        ViewInteraction materialButton11 = onView(
-                allOf(withId(R.id.fav_btn), withText("View Favorites"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
-                        isDisplayed()));
-        materialButton11.perform(click());
+        materialButton19.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
