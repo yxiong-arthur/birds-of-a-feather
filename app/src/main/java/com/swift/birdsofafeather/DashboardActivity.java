@@ -44,18 +44,11 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void onClearDatabaseClicked(View view) {
-        Utils.showAlert(this, "Cleared Database And Preferences");
+        Utils.showAlert(this, "Cleared Database");
         db.classesDao().nukeTable();
         db.sessionStudentDao().nukeTable();
         db.sessionDao().nukeTable();
         db.studentDao().nukeTable();
-
-        SharedPreferences preferences = Utils.getSharedPreferences(this);
-        SharedPreferences.Editor edit = preferences.edit();
-        edit.remove("first_name");
-        edit.remove("image_data");
-        edit.remove("image_url");
-        edit.apply();
     }
 
     public void onDatabaseSizeClicked(View view) {
@@ -72,9 +65,14 @@ public class DashboardActivity extends AppCompatActivity {
         answerbox.setText(answer);
     }
 
-    public void onBTFunctClicked(View view) {
-        Intent intent = new Intent(this, BluetoothCheckActivity.class);
-        startActivity(intent);
+    public void onClearPreferencesClicked(View view) {
+        Utils.showAlert(this, "Cleared Preferences");
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.remove("first_name");
+        edit.remove("image_data");
+        edit.remove("image_url");
+        edit.apply();
     }
 
     public void onFavStudentClicked(View view) {
