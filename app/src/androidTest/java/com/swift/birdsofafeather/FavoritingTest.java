@@ -42,12 +42,6 @@ public class FavoritingTest {
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
 
-    @Rule
-    public GrantPermissionRule mGrantPermissionRule =
-            GrantPermissionRule.grant(
-                    "android.permission.BLUETOOTH_SCAN",
-                    "android.permission.BLUETOOTH_CONNECT");
-
     @Test
     public void favoriteIntegrationTest() {
         ViewInteraction appCompatEditText = onView(

@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class testAllSorting {
-
+    //needs running testFirstTime before running this
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
 
