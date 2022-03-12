@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class testWaveAndWaveBack {
-
+    //needs wiping data before running it
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
 
