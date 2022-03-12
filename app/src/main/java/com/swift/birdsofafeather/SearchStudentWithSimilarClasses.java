@@ -202,7 +202,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         List<Student> commonClassmates = new ArrayList<>();
         for(StudentWithClasses classmate : studentList) {
             Student student = classmate.getStudent();
-            if (student.getClassScore() > 0 && student.getQuarterScore() > 0) {
+            if (student.getClassScore() > 0 && student.getQuarterScore() > 1) {
                 pq.add(student);
             }
         }
