@@ -44,11 +44,18 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void onClearDatabaseClicked(View view) {
-        Utils.showAlert(this, "Cleared Database");
+        Utils.showAlert(this, "Cleared Database And Preferences");
         db.classesDao().nukeTable();
         db.sessionStudentDao().nukeTable();
         db.sessionDao().nukeTable();
         db.studentDao().nukeTable();
+
+        SharedPreferences preferences = Utils.getSharedPreferences(this);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.remove("first_name");
+        edit.remove("image_data");
+        edit.remove("image_url");
+        edit.apply();
     }
 
     public void onDatabaseSizeClicked(View view) {
