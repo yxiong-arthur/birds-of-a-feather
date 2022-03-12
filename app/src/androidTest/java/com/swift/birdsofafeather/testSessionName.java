@@ -1,22 +1,26 @@
 package com.swift.birdsofafeather;
 
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -32,54 +36,50 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class testContinue {
-
+public class testSessionName {
+    //needs running testFirstTime before running this
     @Rule
     public ActivityTestRule<BluetoothCheckActivity> mActivityTestRule = new ActivityTestRule<>(BluetoothCheckActivity.class);
 
-
     @Test
-    public void testContinue() {
-
-
-
-        ViewInteraction materialButton7 = onView(
+    public void testSessionName() {
+        ViewInteraction materialButton6 = onView(
                 allOf(withId(R.id.toggle_search_button), withText("Start Search"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                3),
                         isDisplayed()));
-        materialButton7.perform(click());
+        materialButton6.perform(click());
 
-        ViewInteraction materialButton8 = onView(
+        ViewInteraction materialButton7 = onView(
                 allOf(withId(android.R.id.button1), withText("New Session"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
                                         0),
                                 0)));
-        materialButton8.perform(scrollTo(), click());
+        materialButton7.perform(scrollTo(), click());
 
-        ViewInteraction materialButton9 = onView(
+        ViewInteraction materialButton8 = onView(
                 allOf(withId(R.id.toggle_search_button), withText("Stop Search"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                3),
                         isDisplayed()));
-        materialButton9.perform(click());
+        materialButton8.perform(click());
 
-        ViewInteraction materialButton10 = onView(
+        ViewInteraction materialButton9 = onView(
                 allOf(withId(android.R.id.button2), withText("Give it a name"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
                                         0),
                                 2)));
-        materialButton10.perform(scrollTo(), click());
+        materialButton9.perform(scrollTo(), click());
 
         ViewInteraction editText = onView(
                 allOf(childAtPosition(
@@ -88,25 +88,52 @@ public class testContinue {
                                 0),
                         0),
                         isDisplayed()));
-        editText.perform(replaceText("cse"), closeSoftKeyboard());
+        editText.perform(replaceText("cse110"), closeSoftKeyboard());
 
-        ViewInteraction editText2 = onView(
-                allOf(childAtPosition(
-                        childAtPosition(
-                                withId(android.R.id.custom),
-                                0),
-                        1),
-                        isDisplayed()));
-        editText2.perform(replaceText("330"), closeSoftKeyboard());
-
-        ViewInteraction materialButton11 = onView(
+        ViewInteraction materialButton10 = onView(
                 allOf(withId(android.R.id.button1), withText("Save"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
                                         0),
                                 3)));
-        materialButton11.perform(scrollTo(), click());
+        materialButton10.perform(scrollTo(), click());
+
+        ViewInteraction materialButton11 = onView(
+                allOf(withId(R.id.toggle_search_button), withText("Start Search"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton11.perform(click());
+
+        ViewInteraction materialButton12 = onView(
+                allOf(withId(android.R.id.button2), withText("Continue from existing session"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                1)));
+        materialButton12.perform(scrollTo(), click());
+
+        ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.persons_view),
+                        childAtPosition(
+                                withClassName(is("android.widget.ScrollView")),
+                                0)));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        ViewInteraction materialButton13 = onView(
+                allOf(withId(R.id.toggle_search_button), withText("Stop Search"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        materialButton13.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

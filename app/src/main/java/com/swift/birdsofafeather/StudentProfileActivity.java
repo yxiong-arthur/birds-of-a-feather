@@ -7,15 +7,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
 import com.swift.birdsofafeather.model.db.AppDatabase;
 import com.swift.birdsofafeather.model.db.Class;
 import com.swift.birdsofafeather.model.db.Student;
 import com.swift.birdsofafeather.model.db.StudentWithClasses;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +33,7 @@ import java.util.concurrent.Future;
 public class StudentProfileActivity extends AppCompatActivity {
     private AppDatabase db;
     private UUID studentId;
+    private UUID classmateId;
     private StudentWithClasses myself;
     private StudentWithClasses classmate;
     private Set<Class> myClasses;
@@ -38,6 +44,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     private Future future;
     private ImageView portrait;
     private TextView name;
+    private ImageView waveBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +52,15 @@ public class StudentProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_profile);
         portrait = findViewById(R.id.portrait);
         name = findViewById(R.id.name);
+        waveBtn = findViewById(R.id.waveBtn);
 
         Intent intent = getIntent();
-        UUID classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
+        this.classmateId = UUID.fromString(intent.getStringExtra("classmate_id"));
 
         db = AppDatabase.singleton(getApplicationContext());
+
+        if(db.studentDao().hasWavedTo(classmateId))
+            waveBtn.setVisibility(View.GONE);
 
         SharedPreferences preferences = Utils.getSharedPreferences(this);
         String UUIDString = preferences.getString("student_id", "");
@@ -91,5 +102,11 @@ public class StudentProfileActivity extends AppCompatActivity {
     public void onGoBackHome(View view) {
         this.future.cancel(true);
         finish();
+    }
+
+    public void onWaveClicked(View view) {
+        waveBtn.setVisibility(View.GONE);
+        db.studentDao().updateWavedTo(classmateId, true);
+        Toast.makeText(getApplicationContext(), "Wave sent", Toast.LENGTH_SHORT).show();
     }
 }

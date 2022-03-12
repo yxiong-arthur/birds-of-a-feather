@@ -5,8 +5,13 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity(tableName = "students")
@@ -34,6 +39,15 @@ public class Student {
     @ColumnInfo(name = "quarter_score")
     public int quarterScore;
 
+    @ColumnInfo(name = "favorite")
+    public boolean favorited;
+
+    @ColumnInfo(name = "waved_to")
+    public boolean wavedTo;
+
+    @ColumnInfo(name = "waved_from")
+    public boolean wavedFrom;
+
     public Student (UUID studentId, String name, Bitmap picture){
         this.studentId = studentId;
         this.name = name;
@@ -42,6 +56,9 @@ public class Student {
         this.recencyScore = 0;
         this.sizeScore = 0.0;
         this.quarterScore = 0;
+        this.favorited = false;
+        this.wavedFrom = false;
+        this.wavedTo = false;
     }
 
     @Override
@@ -53,9 +70,13 @@ public class Student {
 
         Student other = (Student) o;
 
-        return this.studentId.equals(other.studentId) &&
-                this.name.equals(other.name);
+        return this.studentId.equals(other.studentId);
      }
+
+    @Override
+    public int hashCode(){
+        return studentId.hashCode();
+    }
 
     public UUID getId() { return studentId; }
 
@@ -64,6 +85,8 @@ public class Student {
     public Bitmap getPicture() { return picture; }
 
     @NonNull
+    public boolean isFavorited() { return favorited; }
+
     @Override
     public String toString() { return studentId + "," + name; }
 
@@ -74,4 +97,10 @@ public class Student {
     public double getSizeScore() { return sizeScore; }
 
     public int getQuarterScore() { return quarterScore; }
+
+    public void toggleFavorited() {
+        this.favorited = !this.favorited;
+    }
+
+    public boolean isWavedFrom() { return this.wavedFrom; }
 }
