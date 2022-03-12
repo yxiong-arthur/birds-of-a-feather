@@ -473,6 +473,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
 
                 if(contentType.equals(Utils.STUDENT_INFO)) {
                     handleStudentInfo(messageContent);
+                    refreshRecycler(false);
                 } else {
                     handleWaveInfo(messageContent, studentUUID);
                     refreshRecycler(false);
@@ -535,14 +536,9 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
             Class newClass = new Class(classId, studentUUID, year, quarter, subject, courseNumber, courseSize);
             db.classesDao().insert(newClass);
         }
-
-        int listPosition = calculatePosition(classmate);
-
         // Set all score for this new student
         StudentWithClasses studentWithClasses = db.studentWithClassesDao().getStudent(studentUUID);
         setAllScore(studentWithClasses);
-
-        studentsViewAdapter.addStudent(listPosition, studentWithClasses.getStudent());
     }
 
     public void setAllScore(StudentWithClasses student) {
