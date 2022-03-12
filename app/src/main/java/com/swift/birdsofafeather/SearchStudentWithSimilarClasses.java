@@ -474,7 +474,7 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
                 if(contentType.equals(Utils.STUDENT_INFO)) {
                     handleStudentInfo(messageContent);
                 } else {
-                    handleWaveInfo(messageContent, studentUUID);
+                    handleWaveInfo(messageContent);
                 }
                 refreshRecycler(false);
             }
@@ -486,13 +486,12 @@ public class SearchStudentWithSimilarClasses extends AppCompatActivity {
         };
     }
 
-    private void handleWaveInfo(String messageContent, UUID thisStudentId) {
+    private void handleWaveInfo(String messageContent) {
         String[] decodedMessage = messageContent.split(",");
-        String myId = thisStudentId.toString();
         UUID classmateUUID = UUID.fromString(decodedMessage[0]);
 
         for(int i = 1; i < decodedMessage.length; i++) {
-            if(decodedMessage[i].equals(myId)) {
+            if(decodedMessage[i].equals(userId)) {
                 if(db.studentDao().checkExists(classmateUUID)) {
                     db.studentDao().updateWavedFrom(classmateUUID, true);
                 }
