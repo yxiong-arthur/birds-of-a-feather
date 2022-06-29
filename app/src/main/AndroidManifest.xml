@@ -27,7 +27,7 @@
 
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyC5Y2WT2ZaLJZolyCjloItK_D80OsPCjps" />
+            android:value="ADD_KEY_HERE" />
 
         <activity
             android:name=".AddStudentActivity"
